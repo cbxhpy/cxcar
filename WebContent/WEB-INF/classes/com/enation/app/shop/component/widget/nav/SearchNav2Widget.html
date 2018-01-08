@@ -1,7 +1,0 @@
-<span>
-<#if catList?exists>
-<#list catList as cat>
-<a href="<#if cat.value=='0'>/index.html<#else>/search-cat-${cat.value}.html</#if>">${cat.name}</a><#if cat_has_next>&gt;</#if>
-</#list>
-</#if>
-</span>

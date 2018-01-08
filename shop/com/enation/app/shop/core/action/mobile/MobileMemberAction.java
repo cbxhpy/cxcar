@@ -74,13 +74,13 @@ import com.enation.framework.util.StringUtil;
 @Namespace("/shop")
 @Action("mobileMember")
 public class MobileMemberAction extends WWAction{
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public static HashMap<String, Object>  Code = new HashMap<String, Object>();
-	
+
 	@Autowired
 	private IMemberManager memberManager;
 	@Autowired
@@ -111,11 +111,11 @@ public class MobileMemberAction extends WWAction{
 	private IAdvanceLogsManager advanceLogsManager;
 	@Autowired
 	private ITransferLogManager transferLogManager;
-	
+
 	//头像参数
 	private File file;
 	private String fileFileName;
-	
+
 	private String company_name;
 	private String person_name;
 	private String  wx_code; //可以为空
@@ -126,7 +126,7 @@ public class MobileMemberAction extends WWAction{
 	private String region_id;
 	private String region;
 	private String address;
-	
+
 	/**
 	 * 2.24	修改密码
 	 * @author yexf
@@ -134,22 +134,22 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public String updatePassword(){
-		
+
 		//JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String rh = RequestHeaderUtil.requestHeader(request, response);
-		
+
 		String member_id = request.getHeader("u");
 		//member_id = request.getParameter("member_id");
 		//String token = request.getHeader("k");
 		//String platform = request.getHeader("p");//系统
 		//String version = request.getHeader("v");//版本号
-		
+
 		if(rh!=null && rh=="1"){
 			this.renderJson("-99", "用户未登录", "");
 			return WWAction.APPLICAXTION_JSON;
@@ -163,45 +163,45 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", "请升级到最新版本", "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 		try{
-			
+
 			String password = request.getParameter("password");
 			String new_password = request.getParameter("new_password");
 			String new_passwrod_repeat = request.getParameter("new_passwrod_repeat");
-			
+
 			if(StringUtil.isEmpty(password) || StringUtil.isEmpty(new_password) || StringUtil.isEmpty(new_passwrod_repeat)){
 				this.renderJson("1", "参数有误", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(!new_password.equals(new_passwrod_repeat)){
 				this.renderJson("1", "两次输入密码不一致", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(password.equals(new_password)){
 				this.renderJson("1", "新密码不能和原密码一样", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			Member old_member = this.memberManager.getMemberByMemberId(member_id);
 			if(!StringUtil.md5(password).equals(old_member.getPassword())){
 				this.renderJson("1", "原密码错误", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			Member member = new Member();
 			member.setPassword(StringUtil.md5(new_password));
-			
+
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("member_id", member_id);
-			
-			this.memberManager.updateMemberForAttr(member, map);	
-			
+
+			this.memberManager.updateMemberForAttr(member, map);
+
 			this.renderJson("0", "修改成功", jsonData.toString());
 			return WWAction.APPLICAXTION_JSON;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage();
@@ -212,54 +212,54 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", message, "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 	}
-	
+
 	/**
 	 * 8、修改个人资料
 	 * @author yexf
 	 * 2017-4-9
 	 */
 	public void updateMember(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
-		String file_path = request.getParameter("file_path"); 
+		String file_path = request.getParameter("file_path");
 		String nickname = request.getParameter("nickname");
 		//System.out.println("file_path&nickname："+file_path+" "+nickname);
-		
+
 		try{
-			
+
 			if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}
-			
+
 			String member_id = request.getHeader("member_id");
 			//member_id = "83";
-			
+
 			Member member = new Member();
-			
+
 			if(!StringUtil.isEmpty(file_path)){
 				member.setFace(file_path);
 			}
-			
+
 			if(!StringUtil.isEmpty(nickname)){
 				member.setNickname(nickname);
 			}
-			
+
 			Map<String, Object> map = new HashMap<String,Object>();
 			map.put("member_id", member_id);
-			
+
 			this.memberManager.updateMemberForAttr(member, map);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -267,37 +267,37 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * *8、修改个人资料上传图片
 	 * @author yexf
 	 * 2017-6-8
 	 */
 	public void updateMemberFile(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		try{
-			
+
 			if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}
-			
+
 			File image_file = this.file;
 
 			Member member = new Member();
 			String path = new String();
-			
+
 			if(image_file != null){
 				System.out.println("file长度："+image_file.length());
-			
+
 				FileInputStream ins = new FileInputStream(image_file);
 				System.out.println("图片大小："+ins.available());
 				if(ins.available() > 1024 * 10240){
@@ -308,18 +308,18 @@ public class MobileMemberAction extends WWAction{
 				}
 				path = UploadUtil.upload(image_file, "default.jpg", "face");
 				member.setFace(path);
-				
+
 			}
-			
+
 			if(!StringUtil.isEmpty(path)){
 				//图片地址转换 fs->服务器地址
 				String face = UploadUtil.replacePath(path);
 				jsonData.put("file_path", face);
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -327,9 +327,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 2.34 提交会员申请
 	 * @author yexf
@@ -338,22 +338,22 @@ public class MobileMemberAction extends WWAction{
 	 * http://localhost:8080/lysks/shop/mobileMember!sendMemberApply.do?member_id=83&company_name=12&person_name=23&wx_code=34&province_id=9&province=沈河区&city_id=122&city=沈阳市&region_id=1105&region=沈河区&address=金家街94-1
 	 */
 	public String sendMemberApply(){
-		
+
 		//JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String rh = RequestHeaderUtil.requestHeader(request, response);
-		
+
 		String member_id = request.getHeader("u");
 		//member_id = request.getParameter("member_id");
 		//String token = request.getHeader("k");
 		//String platform = request.getHeader("p");//系统
 		//String version = request.getHeader("v");//版本号
-		
+
 		if(rh!=null && rh=="1"){
 			this.renderJson("-99", "用户未登录", "");
 			return WWAction.APPLICAXTION_JSON;
@@ -367,9 +367,9 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", "请升级到最新版本", "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 		try{
-			
+
 			String company_name = this.company_name;
 			//String company_name = request.getParameter("company_name");
 			String person_name = this.person_name;
@@ -381,26 +381,26 @@ public class MobileMemberAction extends WWAction{
 			String region_id = this.region_id;
 			String region = this.region;
 			String address = this.address;
-			
+
 			if(StringUtil.isEmpty(company_name) || StringUtil.isEmpty(person_name) || StringUtil.isEmpty(province_id) ||
 					StringUtil.isEmpty(province) || StringUtil.isEmpty(city_id) || StringUtil.isEmpty(city) ||
 						StringUtil.isEmpty(region_id) || StringUtil.isEmpty(region) || StringUtil.isEmpty(address)){
 				this.renderJson("1", "必填项不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			String path = new String();
 			File image_file = this.file;
 			//String image_fileFileName = this.fileFileName;
 			if(image_file != null){
-			
+
 				FileInputStream ins = new FileInputStream(image_file);
 				if(ins.available() > 1024 * 10240){
 					image_file.delete();
 					this.renderJson("1", "文件不能大于10M", "");
 					return WWAction.APPLICAXTION_JSON;
 				}
-				
+
 				String image_fileFileName = "1.jpg";//暂时默认jpg
 				String allowType = "gif,jpg,bmp,png";
 				if(StringUtil.isEmpty(image_fileFileName)){
@@ -414,9 +414,9 @@ public class MobileMemberAction extends WWAction{
 					}
 				}
 				path = UploadUtil.upload(image_file, image_fileFileName, "shop_image");
-				
+
 			}
-			
+
 			Map<String, Object> memberMap = new HashMap<String, Object>();
 
 			memberMap.put("company_name", company_name);
@@ -431,15 +431,15 @@ public class MobileMemberAction extends WWAction{
 			memberMap.put("address", address);
 			memberMap.put("wx_code", wx_code);
 			memberMap.put("verify_status", "1");
-			
+
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("member_id", member_id);
-			
+
 			this.memberManager.updateMemberForMap(memberMap, map);
-			
+
 			this.renderJson("0", "提交成功", jsonData.toString());
 			return WWAction.APPLICAXTION_JSON;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage();
@@ -450,10 +450,10 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", message, "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * 7、获取会员信息
 	 * @author yexf
@@ -461,25 +461,25 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getMemberDetail(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
-		
+
 		try{
-			
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id");
 			logger.info("member_id:"+member_id);
-			
+
 			Member member = this.memberManager.getMemberByMemberId(member_id);
-			
+
 			if(member != null){
 				jsonData.put("member_id", member.getMember_id());
 				jsonData.put("uname", member.getUname());
@@ -489,7 +489,7 @@ public class MobileMemberAction extends WWAction{
 				jsonData.put("nickname", StringUtil.isNull(member.getNickname()));
 				String wash_time = "0";
 				if(member.getWash_time() == 0){
-					
+
 				}else if(60 > member.getWash_time() && member.getWash_time() > 0){
 					wash_time = "1";
 				}else{
@@ -506,14 +506,14 @@ public class MobileMemberAction extends WWAction{
 				Map map = this.dictionaryManager.getDataMap("transfer_rate");
 				String transfer_rate = StringUtil.isNullRt0(map.get("transfer_rate"));
 				jsonData.put("transfer_rate", transfer_rate);
-				
+
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 			}else{
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_403, ReturnMsg.ErrorMsg.USER_NO_EXISTENT, "2", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -521,9 +521,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 1、验证手机
 	 * @author yexf
@@ -531,11 +531,11 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void login(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
@@ -544,7 +544,7 @@ public class MobileMemberAction extends WWAction{
 		String platform = request.getHeader("p"); // 系统
 		String recomId = request.getParameter("recomId"); // 推荐人id
 		String invite_code = request.getParameter("invite_code"); // 邀请码
-		
+
 		if(StringUtil.isEmpty(uname) || StringUtil.isEmpty(validate_code)){
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.PARAMETER_ERROR, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
@@ -552,13 +552,13 @@ public class MobileMemberAction extends WWAction{
 		}
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			if("18770044175".equals(uname) && "123456".equals(validate_code)){
-				
+
 			}else{
 				if(!StringUtil.isNull(Code.get(uname)).equals(validate_code)){
 					json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.VALIDATE_ERROR, "2", jsonData.toString());
@@ -566,9 +566,9 @@ public class MobileMemberAction extends WWAction{
 					return;
 				}
 			}
-			
+
 			Member member = this.memberManager.cxLogin(uname);
-			
+
 			if(member != null){
 				if(StringUtils.isNotBlank(recomId)){
 					json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, "新注册用户才能领取哦", "2", jsonData.toString());
@@ -581,12 +581,12 @@ public class MobileMemberAction extends WWAction{
 				if(washRecordList != null && washRecordList.size() != 0){
 					wash_record_id = washRecordList.get(0).getWash_record_id();
 				}*/
-				
+
 				jsonData.put("member_id", member.getMember_id());
 				jsonData.put("uname", member.getUname());
 				jsonData.put("token", member.getToken());
 				//jsonData.put("wash_record_id", wash_record_id);//是否有 没有结算或没有支付的洗车记录（没有：0 有：洗车记录id，需要调用获取洗车中信息页面）
-				
+
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 			}else{
@@ -599,10 +599,10 @@ public class MobileMemberAction extends WWAction{
 						return;
 					}
 				}
-				
+
 				//不存在就注册一个
 				Member reg_member = new Member();
-				
+
 				reg_member.setUname(uname);
 				String platform_str = DetailUtil.platform_str(platform);
 				reg_member.setPlatform(platform_str);
@@ -637,25 +637,25 @@ public class MobileMemberAction extends WWAction{
 					advanceLogs.setMemo("注册赠送");
 					advanceLogsManager.add(advanceLogs);
 				}
-				
+
 				Map memberMap = new HashMap<>();
 				memberMap.put("invite_code", DetailUtil.toSerialCode(result_member.getMember_id()));
-				
+
 				Map map = new HashMap<>();
 				map.put("member_id", result_member.getMember_id());
 				this.memberManager.updateMemberForMap(memberMap, map);
-				
+
 				jsonData.put("member_id", result_member.getMember_id());
 				jsonData.put("uname", result_member.getUname());
 				jsonData.put("token", result_member.getToken());
 				jsonData.put("wash_record_id", "0");
-				
+
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 			}
 			Code.remove(uname);
 			return;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -663,7 +663,7 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
 
 	/**
@@ -673,11 +673,11 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void spreadApply(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
@@ -690,7 +690,7 @@ public class MobileMemberAction extends WWAction{
 		String alipay_code = request.getParameter("alipay_code"); // 支付宝号
 		String spread_phone = request.getParameter("spread_phone"); // 推广员手机
 		String validate_code = request.getParameter("validate_code"); // 验证码
-		
+
 		if(StringUtil.isEmpty(name) || StringUtil.isEmpty(card_no) ||
 				StringUtil.isEmpty(bank_id) || StringUtil.isEmpty(bank_no) || StringUtil.isEmpty(bank_name) ||
 					StringUtil.isEmpty(wx_code) || StringUtil.isEmpty(alipay_code) ||
@@ -701,21 +701,21 @@ public class MobileMemberAction extends WWAction{
 		}
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id"); // member_id="83";
-			
+
 			if(!StringUtil.isNull(Code.get(spread_phone)).equals(validate_code)){
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.VALIDATE_ERROR, "2", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 				return;
 			}
-			
+
 			Member member = this.memberManager.getMemberByMemberId(member_id);
-				
+
 			member.setName(name);
 			member.setCard_no(card_no);
 			member.setBank_id(Integer.parseInt(bank_id));
@@ -726,19 +726,19 @@ public class MobileMemberAction extends WWAction{
 			member.setBank_name(bank_name);
 			member.setSpread_status(1);
 			//member.setInvite_code(DetailUtil.toSerialCode(Long.parseLong(member_id)));
-			
+
 			Map<String, Object> map = new HashMap<String,Object>();
 			map.put("member_id", member_id);
-			
+
 			this.memberManager.updateMemberForAttr(member, map);
-			
+
 			Code.remove(spread_phone);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 			return;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -746,9 +746,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 3、推广员信息
 	 * @author yexf
@@ -756,24 +756,24 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void spreadDetail(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id");  //member_id="83";
-			
+
 			Member member = this.memberManager.getMemberByMemberId(member_id);
-			
+
 			Map<String, Object> paramMap = this.memberManager.getSpreadParam(member_id);
 			jsonData.put("spread_status", member.getSpread_status());
 			jsonData.put("name", StringUtil.isEmpty(member.getName()) ? member.getUname() : member.getName());
@@ -783,7 +783,7 @@ public class MobileMemberAction extends WWAction{
 				serial_code = DetailUtil.toSerialCode(Long.parseLong(member_id));
 				Map memberMap = new HashMap<>();
 				memberMap.put("invite_code", serial_code);
-				
+
 				Map map = new HashMap<>();
 				map.put("member_id", member.getMember_id());
 				this.memberManager.updateMemberForMap(memberMap, map);
@@ -792,7 +792,7 @@ public class MobileMemberAction extends WWAction{
 			jsonData.put("spread_num", Integer.parseInt(StringUtil.isNullRt0(paramMap.get("spread_num"))));
 			jsonData.put("recharge_num", Integer.parseInt(StringUtil.isNullRt0(paramMap.get("recharge_num"))));
 			jsonData.put("recharge_amount", StringUtil.getDouble2(Double.parseDouble(StringUtil.isNullRt0(paramMap.get("recharge_amount")))));
-			
+
 			jsonData.put("card_no", StringUtil.isNull(member.getCard_no()));
 			jsonData.put("bank_id", member.getBank_id() == null || member.getBank_id() == 0 ? "" : member.getBank_id());
 			jsonData.put("bank_name", StringUtil.isNull(member.getBank_name()));
@@ -800,17 +800,17 @@ public class MobileMemberAction extends WWAction{
 			jsonData.put("wx_code", StringUtil.isNull(member.getWx_code()));
 			jsonData.put("alipay_code", StringUtil.isNull(member.getAlipay_code()));
 			jsonData.put("spread_phone", StringUtil.isNull(member.getSpread_phone()));
-			
+
 			//this.memberManager.exeSpreadProfit(member, 1d);
 			//Map<String, Object> map = this.memberProfitManager.getMemberRole(4, 0, 0, 0);
 			//this.memberManager.subAwardAmountAddReflect(83, 1d, 1d);
 			//this.memberManager.addAwardAmountAndSpread(83, 1d, 1d);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 			return;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -818,9 +818,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 4、提现接口-新增
 	 * @author yexf
@@ -828,18 +828,18 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void reflectAward(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
-		
+
 		String reflect_price = request.getParameter("reflect_price"); // 提现金额
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
@@ -848,7 +848,7 @@ public class MobileMemberAction extends WWAction{
 				ResponseUtils.renderJson(response, json.toString());
 				return;
 			}
-			
+
 			String member_id = request.getHeader("member_id");
 			Member member = this.memberManager.getMemberByMemberId(member_id);
 			if(Double.parseDouble(reflect_price) > member.getAward_amount()){
@@ -867,9 +867,9 @@ public class MobileMemberAction extends WWAction{
 			this.memberManager.subAwardAmountAddReflect(Integer.parseInt(member_id), Double.parseDouble(reflect_price), Double.parseDouble(reflect_price));
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 			return;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -877,9 +877,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 5、交易记录列表-新增
 	 * @author yexf
@@ -887,29 +887,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void spreadRecordList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "10" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
-			
+
 			Page spreadRecordPage = this.spreadRecordManager.getSpreadRecordPage(member_id, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			@SuppressWarnings("unchecked")
 			List<SpreadRecord> recordList = (List<SpreadRecord>) spreadRecordPage.getResult();
 			if(recordList != null && recordList.size() !=0 ){
@@ -927,7 +927,7 @@ public class MobileMemberAction extends WWAction{
 			}
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -935,9 +935,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 余额转让功能
 	 * 1、余额转让（√）
@@ -946,31 +946,31 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void transferBalance(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String uname = request.getParameter("uname"); // 手机号
 		String price = request.getParameter("price"); // 金额
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			if(StringUtil.isEmpty(uname) || StringUtil.isEmpty(price) ||!StringUtil.isDouble(price)){
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.PARAMETER_ERROR, "2", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 				return;
 			}
-			
+
 			String member_id = request.getHeader("member_id");
-			
+
 			Member toMember = this.memberManager.getMemberByUname(uname);
 			Member member = this.memberManager.getMemberByMemberId(member_id);
 			if(toMember == null || member == null){
@@ -983,12 +983,12 @@ public class MobileMemberAction extends WWAction{
 				ResponseUtils.renderJson(response, json.toString());
 				return;
 			}
-			
+
 			this.transferLogManager.transferBalance(member_id, toMember.getMember_id().toString(), price);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -996,9 +996,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 余额转让功能
 	 * 2、余额转让记录（√）
@@ -1007,29 +1007,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void transferLogList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "10" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
-			
+
 			Page transferLogPage = this.transferLogManager.getTransferLogPage(member_id, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			@SuppressWarnings("unchecked")
 			List<TransferLog> recordList = (List<TransferLog>) transferLogPage.getResult();
 			if(recordList != null && recordList.size() !=0 ){
@@ -1047,7 +1047,7 @@ public class MobileMemberAction extends WWAction{
 			}
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1055,9 +1055,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 10、我的收入
 	 * @author yexf
@@ -1065,22 +1065,22 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getIncomeList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "20" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
@@ -1088,9 +1088,9 @@ public class MobileMemberAction extends WWAction{
 
 			//累计收入
 			Member member = this.memberManager.getMemberByMemberId(member_id);
-			
+
 			Page recordPage = this.washRecordManager.getIncomePage(member, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			/*@SuppressWarnings("unchecked")
 			List<WashRecord> recordList = (List<WashRecord>) recordPage.getResult();
 			if(recordList != null && recordList.size() !=0 ){
@@ -1125,12 +1125,12 @@ public class MobileMemberAction extends WWAction{
 			//昨日收入
 			Double yes_income = this.washRecordManager.getYesterDayIncome(member);
 			jsonData.put("yesterday_income", StringUtil.getDouble2ToStringByDouble(yes_income));
-			
+
 			jsonData.put("total_income", member.getJoin_income() + member.getPartner_amount());
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1138,9 +1138,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 28、我的优惠劵
 	 * @author yexf
@@ -1148,29 +1148,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getMemberCouponsList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "20" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
-			
+
 			List<WashMemberCoupons> wmcList = this.washMemberCouponsManager.getMemberCouponsList(member_id);
-			
+
 			if(wmcList != null && wmcList.size() !=0 ){
 				for(WashMemberCoupons wmc : wmcList){
 					JSONObject wmcJson = new JSONObject();
@@ -1183,10 +1183,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(wmcJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1194,9 +1194,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 11、洗车记录
 	 * @author yexf
@@ -1204,29 +1204,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getWashList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "20" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
-			
+
 			Page recordPage = this.washRecordManager.getWashRecordPage(member_id, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			@SuppressWarnings("unchecked")
 			List<WashRecord> recordList = (List<WashRecord>) recordPage.getResult();
 			if(recordList != null && recordList.size() !=0 ){
@@ -1247,10 +1247,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(wrJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1258,9 +1258,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 洗车
 	 * @author yexf
@@ -1268,26 +1268,26 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getWash(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String table = request.getParameter("table");
 		table = StringUtil.isEmpty(table) ? "es_agent" : table;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			this.memberManager.getWash(table);
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1295,9 +1295,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 12、消费明细
 	 * @author yexf
@@ -1305,29 +1305,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getConsumeList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "20" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
 
 			Page consumePage = this.consumeManager.getConsumePage(member_id, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			@SuppressWarnings("unchecked")
 			List<Consume> consumeList = (List<Consume>) consumePage.getResult();
 			if(consumeList != null && consumeList.size() !=0 ){
@@ -1342,10 +1342,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(cJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1353,9 +1353,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 13、充值明细
 	 * @author yexf
@@ -1363,29 +1363,29 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getRechargeList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String page_no = request.getParameter("page_no");
 		String page_size = request.getParameter("page_size");
-		
+
 		page_no = StringUtil.isEmpty(page_no) ? "1" : page_no;
 		page_size = StringUtil.isEmpty(page_size) ? "20" : page_size;
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
 			String member_id = request.getHeader("member_id");
 
 			Page rechargePage = this.rechargeManager.getRechargePage(member_id, Integer.parseInt(page_no), Integer.parseInt(page_size));
-			
+
 			@SuppressWarnings("unchecked")
 			List<Recharge> rechargeList = (List<Recharge>) rechargePage.getResult();
 			if(rechargeList != null && rechargeList.size() !=0 ){
@@ -1402,10 +1402,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(cJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1413,9 +1413,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 14、会员卡
 	 * @author yexf
@@ -1423,22 +1423,22 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getWashCardList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			List<WashCard> washCardList = this.washCardManager.getWashCardPage();
-			
+
 			if(washCardList != null && washCardList.size() !=0 ){
 				for(WashCard wc : washCardList){
 					JSONObject cJson = new JSONObject();
@@ -1449,10 +1449,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(cJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1460,9 +1460,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 15、会员拥有的会员卡
 	 * @author yexf
@@ -1470,24 +1470,24 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void getMemberCardList(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id");
-			
+
 			List<WashMemberCard> cardList = this.washMemberCardManager.getMemberCardList(member_id);
-			
+
 			if(cardList != null && cardList.size() !=0 ){
 				for(WashMemberCard wmc : cardList){
 					JSONObject cJson = new JSONObject();
@@ -1500,10 +1500,10 @@ public class MobileMemberAction extends WWAction{
 					jsonArray.add(cJson);
 				}
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1511,9 +1511,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 18、提交加盟申请
 	 * @author yexf
@@ -1521,32 +1521,32 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void sendJoinApply(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String name = request.getParameter("name");//客户姓名
 		String phone = request.getParameter("phone");//手机号码
 		String remark = request.getHeader("remark");//备注信息
-		
+
 		if(StringUtil.isEmpty(name) || StringUtil.isEmpty(phone)){
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.PARAMETER_ERROR, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 			return;
 		}
-		
+
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id");
-			
+
 			JoinApply joinApply = new JoinApply();
 			joinApply.setMember_id(Integer.parseInt(member_id));
 			long now_time = System.currentTimeMillis();
@@ -1554,12 +1554,12 @@ public class MobileMemberAction extends WWAction{
 			joinApply.setName(name);
 			joinApply.setPhone(phone);
 			joinApply.setRemark(remark);
-			
+
 			this.joinApplyManager.addJoinApply(joinApply);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonArray.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1567,36 +1567,36 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 16、退出
 	 * @author yexf
 	 * 2017-4-12
 	 */
 	public void logout(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		try{
-		
+
 			/*if(validateLoginUtil.checkLogin(request, response)){
 				return;
 			}*/
-			
+
 			String member_id = request.getHeader("member_id");
-			
+
 			this.memberManager.memberLogout(member_id);
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1604,9 +1604,9 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
-	
+
 	/**
 	 * 注册
 	 * @author yexf
@@ -1614,21 +1614,21 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public String register(){
-		
+
 		//JSONObject json = new JSONObject();
 		//JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		//HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 		//String rh = RequestHeaderUtil.requestHeader(request, response);
-		
+
 		//String member_id = request.getHeader("u");
 		//member_id = request.getParameter("member_id");
 		//String token = request.getHeader("k");
 		String platform = request.getHeader("p");//系统
 		//String version = request.getHeader("v");//版本号
-		
+
 		/*if(rh!=null && rh=="1"){
 			this.renderJson("-99", "用户未登录", "");
 			return WWAction.APPLICAXTION_JSON;
@@ -1642,75 +1642,75 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", "请升级到最新版本", "");
 			return WWAction.APPLICAXTION_JSON;
 		}*/
-		
+
 		try{
 
 			String uname = request.getParameter("uname");
 			String password = request.getParameter("password");
 			String validate_code = request.getParameter("validate_code");
-			
+
 			if(StringUtil.isEmpty(uname)){
 				this.renderJson("1", "手机号不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-	
+
 			boolean uname_isphone = StringUtil.isMobileNO(uname);
 			if(!uname_isphone){
 				this.renderJson("1", "手机号码格式不对", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(StringUtil.isEmpty(password)){
 				this.renderJson("1", "密码不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(password.length() < 6 || password.length() > 12){
 				this.renderJson("1", "密码长度为6-12位", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(StringUtil.isEmpty(validate_code)){
 				this.renderJson("1", "验证码不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(Code.get(uname) == null){
 				this.renderJson("1", "请发送验证码", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(!StringUtil.isNull(Code.get(uname)).equals(validate_code)){
 				this.renderJson("1", "验证码错误", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			int i = memberManager.checkname(uname);
 			if (i > 0) {
 				Code.remove(uname);
 				this.renderJson("1", "用户已存在", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			Member member = new Member();
-			
+
 			member.setUname(uname);
 			member.setPassword(StringUtil.md5(password));
 			String platform_str = DetailUtil.platform_str(platform);
 			member.setPlatform(platform_str);
 			String registerip = request.getRemoteAddr();
 			member.setRegisterip(registerip);
-			
+
 			int result = memberManager.appRegister(member);
 			if(result == 1){
 				this.renderJson("0", "注册成功", "");
 			}else{
 				this.renderJson("1", "未知错误", "");
 			}
-			
+
 			Code.remove(uname);
 			return WWAction.APPLICAXTION_JSON;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage();
@@ -1721,9 +1721,9 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", message, "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 	}
-	
+
 	/**
 	 * 忘记密码
 	 * @author yexf
@@ -1731,22 +1731,22 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public String forgetPassword(){
-		
+
 		//JSONObject json = new JSONObject();
 		//JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		//HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		//String rh = RequestHeaderUtil.requestHeader(request, response);
-		
+
 		//String member_id = request.getHeader("u");
 		//member_id = request.getParameter("member_id");
 		//String token = request.getHeader("k");
 		//String platform = request.getHeader("p");//系统
 		//String version = request.getHeader("v");//版本号
-		
+
 		/*if(rh!=null && rh=="1"){
 			this.renderJson("-99", "用户未登录", "");
 			return WWAction.APPLICAXTION_JSON;
@@ -1760,73 +1760,73 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", "请升级到最新版本", "");
 			return WWAction.APPLICAXTION_JSON;
 		}*/
-		
+
 		try{
 
 			String uname = request.getParameter("uname");
 			String password = request.getParameter("password");
 			String repeat_password = request.getParameter("repeat_password");
 			String validate_code = request.getParameter("validate_code");
-			
+
 			if(StringUtil.isEmpty(uname)){
 				this.renderJson("1", "手机号不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-	
+
 			boolean uname_isphone = StringUtil.isMobileNO(uname);
 			if(!uname_isphone){
 				this.renderJson("1", "手机号码格式不对", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(StringUtil.isEmpty(password)){
 				this.renderJson("1", "密码不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(StringUtil.isEmpty(repeat_password)){
 				this.renderJson("1", "请再次输入密码", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(password.length() < 6 || password.length() > 12){
 				this.renderJson("1", "密码长度为6-12位", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(!password.equals(repeat_password)){
 				this.renderJson("1", "两次输入密码不一致", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(StringUtil.isEmpty(validate_code)){
 				this.renderJson("1", "验证码不能为空", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(Code.get(uname) == null){
 				this.renderJson("1", "请发送验证码", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			if(Code.get(uname).equals(validate_code)){
 				this.renderJson("1", "验证码错误", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			int i = memberManager.checkname(uname);
 			if (i == 0) {
 				this.renderJson("1", "用户不存在", "");
 				return WWAction.APPLICAXTION_JSON;
 			}
-			
+
 			this.memberManager.appUpdatePassword(uname, StringUtil.md5(password));
 			//清除验证码
 			Code.remove(uname);
-			
+
 			this.renderJson("0", "更改密码成功", "");
 			return WWAction.APPLICAXTION_JSON;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage();
@@ -1837,9 +1837,9 @@ public class MobileMemberAction extends WWAction{
 			this.renderJson("1", message, "");
 			return WWAction.APPLICAXTION_JSON;
 		}
-		
+
 	}
-	
+
 	/**
 	 * 发送验证码
 	 * @author yexf
@@ -1847,31 +1847,31 @@ public class MobileMemberAction extends WWAction{
 	 * @return
 	 */
 	public void sendValidateCode(){
-		
+
 		JSONObject json = new JSONObject();
 		JSONObject jsonData = new JSONObject();
 		//JSONArray jsonArray = new JSONArray();
-		
+
 		HttpServletRequest request = ThreadContextHolder.getHttpRequest();
 		HttpServletResponse response = ThreadContextHolder.getHttpResponse();
 
 		String uname = request.getParameter("uname");
-		
+
 		if(StringUtil.isEmpty(uname)){
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.PARAMETER_ERROR, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 			return;
 		}
-		
+
 		try{
-			
+
 			boolean uname_isphone = StringUtil.isMobileNO(uname);
 			if(!uname_isphone){
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.ErrorMsg.PHONE_FORMAT_ERROR, "2", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 				return;
 			}
-			
+
 			//控制60s内同一个手机只能发一次
 			long now = System.currentTimeMillis();
 			String mobile_old = StringUtil.isNull(Code.get(uname));
@@ -1883,14 +1883,14 @@ public class MobileMemberAction extends WWAction{
 					return;
 				}
 			}
-			
+
 			Integer mobileCode = (int)((Math.random()*9+1)*100000);
 			//mobileCode = 123456;
 			System.out.println("validate_code："+uname+" : "+mobileCode);
 		    Code.put(uname, mobileCode);
 		    Code.put(uname+"000", now);
-			
-		    
+
+
 		    /*****************post*****************/
 		    //String post_url = "http://218.244.136.70:8888/sms.aspx";
 		    /*String post_url = "http://115.29.242.32:8888/sms.aspx"; //这个是对的
@@ -1901,7 +1901,7 @@ public class MobileMemberAction extends WWAction{
 			String mobile = uname;
 			String content = "你好，欢迎使用巢享洗车，您此次的验证码为:"+mobileCode+"。【巢享洗车】";
 			String action = "send";
-			
+
 			SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
 	        parameters.put("post_url", post_url);
 	        parameters.put("userid", userid);
@@ -1910,27 +1910,27 @@ public class MobileMemberAction extends WWAction{
 	        parameters.put("mobile", mobile);
 	        parameters.put("content", content);
 	        parameters.put("action", action);*/
-	        
+
 	        //String requestXML = WxpubOAuth.getRequestXml(parameters);
 	        /*String requestXML = HttpClientUtil.map2String(parameters);
 	        System.out.println("requestXML："+requestXML);*/
-	        
+
 	        //测试把发短信的注释了
 	        //String result = UtilCommon.httpRequest(post_url, "POST", requestXML);
-	        
+
 	        //System.out.println("result："+result);
 	        //result = result.substring(50, result.length()-12);
 	        //Map map = XMLUtil.doXMLParse(result);
-	        
+
 		    /**************************************/
-		    
+
 		    //发送短信 cxcar
 		    Element root = SendSms.execute(uname, mobileCode);
-		    
+
 		    String code = root.elementText("code");
 			String msg = root.elementText("msg");
 			String smsid = root.elementText("smsid");
-		    
+
 			System.out.print(code+" ");
 			System.out.print(msg+" ");
 			System.out.print(smsid+" ");
@@ -1938,10 +1938,10 @@ public class MobileMemberAction extends WWAction{
 			if("2".equals(code)){
 				System.out.println("短信提交成功");
 			}
-			
+
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = StringUtil.getExpMessage(e.getMessage());
@@ -1949,10 +1949,10 @@ public class MobileMemberAction extends WWAction{
 			json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_500, message, "2", jsonData.toString());
 			ResponseUtils.renderJson(response, json.toString());
 		}
-		
+
 	}
 
-	
+
 	public File getFile() {
 		return file;
 	}
@@ -2072,7 +2072,7 @@ public class MobileMemberAction extends WWAction{
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}*/
-	
-	
-	
+
+
+
 }
