@@ -1,0 +1,252 @@
+<#include '/admin/header.html' >
+<#-- <script type="text/javascript" src="js/WashRecord.js"></script> -->
+<style>
+.input_text{
+	width: 200px;
+}
+</style>
+<div class="main">
+	<div class="buttonArea">
+		<#-- <a href="javascript:void(0)" class="button blueButton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增数据</a> -->
+		<a href="javascript:void(0)" class="button" data-options="iconCls:'icon-remove',plain:true" onclick="del()">删除</a>
+		<span style="float:right; height:28px;"> 
+			<a href="javascript:void(0)" class="button b_fr" onclick="searchJoinApply()">搜索</a>
+			<span>申请人姓名：</span>
+			<input class="input_text mr5" id="name" type="text" value="${name!}" size="20" placeholder="请输入申请人姓名" name="name">
+			<span>联系电话：</span>
+			<input class="input_text mr5" id="phone" type="text" value="${phone!}" size="20" placeholder="请输入联系电话" name="phone"> 
+			<span>会员手机号：</span>
+			<input class="input_text mr5" id="uname" type="text" value="${uname!}" size="20" placeholder="请输入会员手机号" name="uname">
+		</span>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'joinApply!listJson.do',pageList: [10,15,20,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+			    <thead>
+				    <tr>
+				    	<th data-options="field:'join_apply_id',checkbox:true"></th>
+				    	<th data-options="field:'id',width:70" formatter="formatId">ID</th>
+				    	<th data-options="field:'uname',width:100,sortable:'true'">会员手机号</th>
+				    	<th data-options="field:'name',width:100,sortable:'true'">申请人姓名</th>
+				    	<th data-options="field:'phone',width:100,sortable:'true'">联系电话</th>
+				    	<th data-options="field:'remark',width:200">备注信息</th>
+				    	<th data-options="field:'create_time',width:100" formatter="formatDate">创建时间</th>
+				    	<#-- <th data-options="field:'action',width:100,align:'center'" formatter="formatOperation">操作</th> -->
+				    </tr>
+			    </thead>
+			 </table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+//搜索
+function searchJoinApply(){
+	
+	var sn = $.trim($("#sn").val());
+	var phone = $.trim($("#phone").val());
+	var uname = $.trim($("#uname").val());
+	
+	$('#adcdata').datagrid('load', {
+		 uname:uname,
+		 phone:phone,
+		 sn:sn,
+		 page:1
+    }); 
+}
+
+function append(id){
+	var map = {}; // Map map = new HashMap();
+	if(!id){
+		map["href"] ="washMemberCard!add.do";
+		map["formId"] ="#addForm";
+		map["url"] ="washMemberCard!addSave.do?ajax=yes";
+		map["title"]="添加会员卡";
+		map["loadshow"]="正在添加......";
+	}else{
+		map["href"] ="washMemberCard!edit.do?wash_member_card_id="+id;
+		map["formId"] ="#editForms";
+		map["url"] ="washMemberCard!editSave.do?ajax=yes";
+		map["title"]="修改会员卡";
+		map["loadshow"]="正在修改......";
+	}
+	map["divDialog"]="#divdia";
+	map["gridreload"]="#adcdata";
+	
+	//需要验证的参数
+	map["nameId"]="#name";
+	map["urlId"]="#acwidth";
+	
+	addDialog(map);
+}
+function addDialog(map){
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title: map["title"],
+		width: 900,
+		height: 400,
+		closed: false,
+		cache: false,
+		href: map["href"],
+		modal: true,
+		/* buttons: [{
+			 text:'保存',
+			 iconCls:'icon-ok',
+			 handler:function(){
+				 var savebtn = $(this);
+　　				 var disabled=savebtn.hasClass("l-btn-disabled");
+　　				 if(!disabled){
+					submitForm(map,savebtn);
+					}
+　　				 }
+			 },{
+			 text:'清空',
+			 handler:function(){
+				 clearForm(map);
+			 }
+			 }] */
+		});
+}
+function submitForm(map,saveBtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(formflag){
+		$.Loading.show(map["loadshow"]);
+		saveBtn.linkbutton("disable"); //禁用	
+		var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result){
+					$.Loading.hide();
+					if(result.result==1){
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if(result.result==0){ 
+						$.Loading.error(result.message);
+					}
+					$(saveBtn).linkButton("enable");
+				
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+					$(saveBtn).linkButton("enable");
+				}
+			};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+	saveBtn.linkbutton("enable"); 
+}
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function forMoney(value, row, index) {
+	var val = "￥" + value;
+	return val;
+}
+
+function formatOperation(value,row,index){
+	var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.wash_member_card_id+")' ></a>";
+	return val;
+}
+
+function formatId(value, row, index){
+	var val = row.join_apply_id;
+	return val;
+}
+
+function formatAtype(value,row,index){
+	var val;
+	if(value==0){
+		val="图片";
+	}else if(value==1){
+		val="Flash";
+	}
+	return val;
+}
+
+function formatState(value,row,index){
+	var val;
+	if(value==0){
+		val="未支付";
+	}else if(value==1){
+		val="已支付";
+	}
+	return val;
+}
+
+function formatCard(value,row,index){
+	var val;
+	if(value==1){
+		val="月卡";
+	}else if(value==2){
+		val="季卡";
+	}else if(value==3){
+		val="年卡";
+	}
+	return val;
+}
+
+function formatType(value,row,index){
+	var val;
+	if(value==1){
+		val="支付宝";
+	}else if(value==2){
+		val="微信";
+	}
+	return val;
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value*0.001, "yyyy-MM-dd hh:mm");
+	}
+	
+}
+
+function del(){
+	var rows = $('#adcdata').datagrid("getSelections"); 
+		if(rows.length<1){
+			$.Loading.error("请选择删除加盟申请");
+			return;
+		}
+		if(!confirm("确认删除？")){	
+		return ;
+	}
+		$.Loading.show("正在删除......");
+	 var options = {
+			url : "joinApply!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if(result.result==1){
+					$.Loading.success(result.message);
+					var rows = $('#adcdata').datagrid("getSelections"); 
+					for(var i =0;i<rows.length;i++){      
+			 			var index = $('#adcdata').datagrid('getRowIndex',rows[i]); 
+			 			$('#adcdata').datagrid('deleteRow',index);    
+			 		}
+				}
+				if(result.result==0){
+					$.Loading.error(result.message);
+				}
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+	};
+	$('#adcform').ajaxSubmit(options);
+
+};
+</script>
+<#include '/admin/footer.html' >
+ 

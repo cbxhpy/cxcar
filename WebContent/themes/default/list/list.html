@@ -1,0 +1,77 @@
+<div class="w">
+    
+	<div class="list_m2">        
+    <div class="m2_rows">
+    	<!-- 创建商品分类标签 -->
+		<#assign goodsCatTag= newTag("goodsCatTag")>
+		<!-- 调用商品分类信息 -->
+		<#assign goodsCat = goodsCatTag("'parentid':${mycatid}")!'' >
+    	<div class="rowstiter"><b>相关分类</b></div>
+        <div class="rows_r">
+            <ul>
+            	<#list goodsCat.cat_tree as cat>
+                <li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name }</a></li>
+                </#list>
+            </ul>
+        </div>
+        <div class="clear"></div> 		
+        
+        <div class="rowstiter"><em>${mycatname}</em>&nbsp;&nbsp;共 ${webpage.totalCount}个商品</div>
+    
+        <div class="hzyfilterMod">
+        <div class="hzyfilterMod-bd">
+        <div class="filter-conditional filter-row clearfix">
+        <div class="condition-wrap">  
+           <#if goodsSelector.brand?exists>
+           <div class="clearfix">
+                <div class="fl col01">品牌：</div>
+                <div class="condition-list fl">
+                    <ul class="condition-listContent fl" isbrand="true">
+                    	<#list goodsSelector.brand as selector>
+						<li<#if selector.isSelected> class="all active"</#if>>
+							<a href="${selector.url}">${selector.name}</a>
+						</li>
+						</#list>         
+                    </ul>
+                </div>
+                <div class="clear"></div>              
+           </div>
+           </#if>
+           <#if goodsSelector.prop?exists> 
+           <#assign propSelector=goodsSelector.prop>
+           	<#list propSelector?keys as propname> 
+				<div class="clearfix m2_rows_1">
+                <div class="fl col01">${propname}：</div>
+                <div class="condition-list fl">
+                    <ul class="condition-listContent fl">
+						<#list propSelector[propname] as selector >
+                        <li<#if selector.isSelected> class="all active"</#if>><a href="${selector.url}">${selector.name}</a></li>
+                        </#list>                      
+                    </ul>
+                </div>
+                <div class="clear"></div>                       
+              </div>
+              </#list>
+			</#if>
+			<#if goodsSelector.price?exists> 
+				<div class="clearfix">
+                <div class="fl col01">价格：</div>
+                <div class="condition-list fl">
+                    <ul class="condition-listContent fl">
+						<#list goodsSelector.price as selector>
+                        <li<#if selector.isSelected> class="all active"</#if>><a href="${selector.url}">${selector.name}</a></li>
+                        </#list>                    
+                    </ul>
+                </div>
+                <div class="clear"></div>                         
+              </div>
+			</#if>          
+             </div>        
+          </div>
+          </div>
+          </div>
+    </div>  
+    
+</div>     
+</div>  
+<#include 'goods_list.html' />

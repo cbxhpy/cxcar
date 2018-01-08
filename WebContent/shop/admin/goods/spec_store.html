@@ -1,0 +1,83 @@
+<div class="detail" style="height: 350px; overflow-y: auto;">
+	<form id="specTableForm">
+		<table class="spec_table" cellspacing="0" cellpadding="0" border="0" style="padding: 0px 1px" >
+			<thead>
+				<tr>
+					<#if specNameList?exists >
+						<#list specNameList as specName>
+							<th class="w1">${specName}</th>
+						</#list>
+					</#if>
+					<th class="w2">货号*</th>
+					<th class="w2">销售价*</th>
+					<th class="w3">重量</th>
+					<th class="w3">成本价</th>
+					<th class="w3">库存</th>
+					<th class="w3">简介(中文的；换行)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#if productMap?exists > 
+					<#list productMap as product>
+						<#assign specids=''>
+						<#assign specvids=''>
+						<#assign propid=''>
+						<tr>
+							<#list product.specList as spec>
+								<#if spec_index!=0 >
+									<#assign specids=specids+','>
+									<#assign specvids=specvids+','>
+									<#assign propid=propid+'_'>
+								</#if>
+								<#assign specids=specids+spec.spec_id>
+								<#assign propid=propid+spec.spec_value_id>
+								<#assign specvids=specvids+spec.spec_value_id>
+								<td>
+									${spec.spec_value} <input type="hidden" name="specvalue_${product_index}" value="${spec.spec_value}" />
+								</td>
+							</#list>
+							<td>
+								<input type="text" readonly="readonly" style="width: 100px" class="ipt" name="sns" 
+									prop='sn' propid="${propid}" value="${product.sn}" autocomplete="off" class="input_text"> 
+								<input type="hidden" name="productids" value="${product.product_id}"
+									class="ipt" prop='productid' propid="${propid}" />
+							</td>
+						
+							<td>
+								<input type="hidden" value="${specids}" name="specids">
+								<input type="hidden" value="${specvids}" name="specvids">
+								<!-- 形成price id，用js通过此id反向选择checkobx --> 
+						
+								<input type="text" size="8" style="width: 50px;" name="prices" class='ipt price'
+									value="${(product.price!0)?c}" prop='price' propid="${propid}"
+										autocomplete="off" class="input_text"/>
+						
+							</td>
+							<td>
+								<input type="text" size="10" name="weights"
+									value="${(product.weight!0)?c}" autocomplete="off" class='ipt'
+										prop='weight' propid="${propid}" class="input_text"
+											style="width: 50px" />
+							</td>
+							<td>
+								<input type="text" size="8" name="costs"
+									value="${(product.cost!0)?c}" autocomplete="off" class='ipt'
+										prop='cost' propid="${propid}" class="input_text"
+											style="width: 50px" />
+							</td>
+							<td>
+								<input type="hidden" name="id" value="${product.storeid}" />
+								<input type="hidden" name="productid" value="${product.product_id}" />
+								<input type="input" name="storeNum" size="6" class="input_text" style="width: 60px;" value="${(product.store)!0}" autocomplete="off" />
+								<input type="hidden" name="depotid" value="4" />
+							</td>
+							<td>
+								<textarea rows="3" cols="15" name="introduces" prop="introduce" prodid="${propid}">${product.introduce!}</textarea>
+							</td>
+						</tr>
+					</#list>
+				</#if>
+			</tbody>
+		</table>
+	</form>
+</div>

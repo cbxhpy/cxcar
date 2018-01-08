@@ -1,0 +1,145 @@
+<div class="header_bar" id="header_bar">
+  <div class="nav_wrapper clearfix" id="nav_wrapper">
+    <div class="allcatname"><span class="hd">全部商品分类</span></div>
+    <div class="nav">
+        <a href="./" class="current"> 首页</a>      
+        <a href="#"> 新品上架</a>      
+        <a href="#"> 绿色食品</a>
+        <a href="#"> 服饰鞋包 </a>
+        <a href="#"> 家居用品</a>      
+        <a href="#"> 家用电器 </a>    
+        <a href="#"> 个人护理</a>  
+        <a href="#"> 运动户外</a>      
+        <a href="#">配送网点</a>
+        <a href="#"> 众道文化</a>
+       
+    </div>
+      </div>
+</div>
+<div id="figure-focus">
+    <ul class="banlistindex">
+    <li class="current">1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    
+    </ul>
+<div id="banner">
+   <ul id="banner_list">
+			<!-- 创建广告标签 -->
+			<#assign advListTag= newTag("advListTag")>
+			<!-- 调用广告信息,传递参数acid:1 -->
+			<#assign adv = advListTag("'acid':'1'")!'' >
+			<!-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size==0> 
+				没有上传广告 
+			<#else>
+				<#list advList as adv>
+					<#if adv_index==0>
+					<li style=" position: absolute; display:list-item; "><div><a href="${ctx}${adv.url!''}" target="_blank"><img src="${adv.atturl!''}" /></a></div></li>
+					<#else>
+					<li style=" position: absolute; display:none; "><div><a href="${ctx}${adv.url!''}" target="_blank"><img src="${adv.atturl!''}" /></a></div></li>
+					</#if>
+				</#list>
+			</#if>
+
+
+      </ul>
+</div>
+<script type="text/javascript">
+var showAuto;
++function(){
+	var t, n =0, count;
+	showAuto = function()
+		{
+		n = n >=(count -1) ?0 : ++n;
+		$(".banlistindex li").eq(n).trigger('click');
+		}
+	count=$("#banner_list li").length;
+	$("#banner_list li:first-child").show();
+		$(".banlistindex li").click(function(){
+		var i = $(this).text() -1;
+		n = i;
+		if (i >= count) return;
+		$("#banner_list li").filter(":visible").fadeOut(500).parent().children().eq(i).fadeIn(1000);
+		document.getElementById("banner").style.background="";
+		$(this).toggleClass("current");
+		$(this).siblings().removeAttr("class");
+	});
+	t = setInterval("showAuto()", 5000);
+	$("#banner").hover(function(){clearInterval(t)}, function(){t = setInterval("showAuto()", 5000);});
+}();
+</script>
+
+</div>
+<div class="wrapper indexwp">
+  <div class="promotionswrapper">
+  	<div id="menu_list" class="index_menu_list">
+  	<div class="catecontainer">
+		<div class="catemenu">
+			<ul class="cate_left">
+						<!-- 创建商品分类标签 -->
+						<#assign goodsCatTag= newTag("goodsCatTag")>
+						<!-- 调用商品分类信息 -->
+						<#assign goodsCat = goodsCatTag()!'' >
+						<#list goodsCat.cat_tree as cat>
+						<#assign mycattid=4+cat_index>
+
+				<li class="menu_bar_grey">       
+					<div class="menu_ct">
+						<h3><a href="${ctx}/search-cat-${cat.cat_id}.html" class="category_titer_1">${cat.name }</a><span></span></h3>
+                        <p>
+						
+						   <#if cat.hasChildren  >
+						   <#assign children2=cat.children />
+						   <#list children2 as cat2>
+						   <#if cat2_index <=4 >
+						
+							<a href="${ctx}/search-cat-${cat2.cat_id}.html">${cat2.name }</a>
+						   </#if>
+						   </#list>
+						   </#if>
+						
+						</p>
+					</div>
+					<div class="popup-box index_cate_list_1" style="display: none; ">
+						<div class="subcatewrapper">
+							<div class="col">   
+
+						   <#if cat.hasChildren  >
+						   <#assign children2=cat.children />
+						   <#list children2 as cat2>
+
+							<dl class="item">
+									<dt><a href="${ctx}/search-cat-${cat2.cat_id}.html">${cat2.name }</a></dt>	
+							  <#if cat2.hasChildren  >
+									
+
+									<dd>
+							  <#assign children3=cat2.children />
+							  <#list children3 as cat3>
+								<a href="${ctx}/search-cat-${cat3.cat_id}.html">${cat3.name }</a>
+							  </#list>
+								   </dd>
+								   </#if>
+								</dl>
+						   </#list>
+						   </#if>
+
+								
+							</div>
+														<!--<div class="ad"><a href="http://www.muyee.com/category-xueyayi/goods-363.html" target="_blank">图片</a></div>-->
+						</div>
+					</div>
+				</li>
+				</#list>
+                   
+ 
+			</ul>
+		</div>
+	</div>
+</div>
+  </div>
+</div>

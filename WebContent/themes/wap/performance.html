@@ -1,0 +1,74 @@
+<#assign  title="我的业绩" />
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css" type="text/css" />
+<!-- 获取会员佣金标签 -->
+<#assign memberPerformanceTag = newTag("memberPerformanceTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberPerformance = memberPerformanceTag()>
+<#assign pList = memberPerformance.pList>
+
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			我的业绩
+		</p>
+	</div>
+<div class="member_commont" id=content_wrapper>
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>我的业绩:</h3>
+				<ol>
+					<li>描写相关细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+
+		<div class="tab">
+			<ul>
+				<li class="selected"><a href="javascript:;"><span>团队业绩</span></a></li>						
+			</ul>
+		</div>
+		<div class="box">				
+			<div class="top"></div>
+			<div class="body">
+				<#if pList?size gt 0 >
+				<table  style="width:100%" cellspacing="0" cellpadding="0">
+					<tr>
+						<th>会员编号</th>
+						<th>会员名称</th>
+						<th>会员等级</th>
+						<th>业绩</th>
+					</tr>
+					<#list pList as performance>
+				        <tr >
+					        <td>${performance.member_id}</td>
+					        <td >${performance.uname}</td>
+					        <td >${performance.level}级</td>
+							<td><span class="status-gain">${(performance.point/100)?string("#.##")!0}</span></span></td>
+					      </tr>
+				    </#list>    
+				</table>
+				<div class="pager_border">
+					<@pager pageno="${memberPerformance.page}" 	pagesize="${memberPerformance.pageSize}" totalcount="${memberPerformance.totalCount}" />
+					<div class="clear"></div>
+				</div>
+				<#else>
+				<div class="empty" >目前还没有业绩记录</div>
+				</#if>
+			</div>
+			<div class="bottom"></div>
+		</div>
+
+</div>
+
+<#include 'common/footer.html'/>

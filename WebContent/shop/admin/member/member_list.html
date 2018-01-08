@@ -1,0 +1,513 @@
+<#include '/admin/header.html' >
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+<style>
+.input_text{
+	width: 95%;
+}
+.tongguo{
+	padding: 0 5px;
+}
+.jujue{
+	padding: 0 5px;
+}
+</style>
+<div id="loading"></div>
+<div class="main">
+	<form id="memberform">
+		<div id="tb" style="height: auto">
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				data-options="plain:true" onclick="newTab('会员添加','${ctx}/shop/admin/member!add_member.do')">添加</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+				data-options="plain:true" onclick="del()">删除</a>
+			<span style="float: right;"> 
+				<span id="simpleSearch">
+					<input type="hidden" name="parent_id" value="${parent_id!''}"/>
+					<input id="searchKeyword" class="input_text" type="text" value="" size="30" style="width: 180px;"
+					placeholder="请输入用户名，姓名，手机号" name="searchKeyWord"> 
+					<a href="javascript:void(0)" class="easyui-linkbutton" 
+					data-options="plain:true" onclick="searchMember()">搜索</a>
+				</span>
+				<a href="javascript:void(0)" class="button" id="aAdvanced" >高级搜索</a>
+			</span>
+		</div>
+		
+		<div style="display: block;" class="searchAdvanced" >
+		<input id="Advanced" name="Advanced" type="hidden" value="0" />
+			<table width="98%" border="0" cellspacing="0" cellpadding="8">
+				<tr>
+					<th width="70" align="right">用户名</th>
+					<td>
+						<input type="text" value="${name!''}" id="uname"  class="input_text">
+					</td>
+					
+					<th width="70" align="right">手机</th>
+					<td>
+						<input type="text" value="${name!''}" id="mobile" class="input_text">
+					</td>
+					
+					<th width="70" align="right">推广员申请</th>
+					<td>
+						<select class="inputSelect valid" id="spread_status" >
+							<option value="-1">--请选择状态--</option>
+							<option value="0" <#if spreadStatus?? && spreadStatus=='0'>selected</#if>>未申请</option>
+							<option value="1" <#if spreadStatus?? && spreadStatus=='1'>selected</#if>>申请中</option>
+							<option value="2" <#if spreadStatus?? && spreadStatus=='2'>selected</#if>>已通过</option>
+							<option value="3" <#if spreadStatus?? && spreadStatus=='3'>selected</#if>>未通过</option>
+						</select>
+					</td>
+					
+					<#-- <th width="70" align="right">会员等级</th>
+					<td>
+						<select name="member.lv_id" class="inputSelect valid" id="lv_id" >
+							<option value="0">--请选择等级--</option>
+							<#if lvlist??>
+								<#list lvlist as lv>
+									<option value="${lv.lv_id }">${lv.name }</option>
+								</#list>
+							</#if>
+						</select>
+					</td> -->
+					
+					<#-- <th width="70" align="right">电子邮件</th>
+					<td width="300px">
+						<input type="text" value="${email!''}" id="email"  class="input_text">
+					</td> -->
+				</tr>
+				<tr>
+					<th width="70" align="right">注册时间</th>
+					<td width="300px">
+						<input class="easyui-datebox" style="width: 90px;height: 28px;" id="start_time" />
+                        <span>&nbsp;~&nbsp;</span>
+                        <input class="easyui-datebox" style="width: 90px;height: 28px;" id="end_time" />
+					</td>
+					<th width="70" align="right">城市</th>
+					<td width="350px">
+						<@regionSelectDirective  province_id="${province_id!''}" city_id="${city_id!''}" region_id="${region_id!''}" />
+					</td>
+					<#-- <th width="70" align="right">性别</th>
+					<td>
+						<select id="sex" class="inputSelect valid" >
+							<option value="2">全部</option>
+							<option value="1">男</option>
+							<option value="0">女</option>
+						</select>
+					</td> -->
+					<th width="70" align="right">会员角色</th>
+					<td>
+						<select name="member.role_id" class="inputSelect valid" id="role_id" >
+							<option value="0">--请选择角色--</option>
+							<#if rolelist??>
+								<#list rolelist as role>
+									<option value="${role.role_id }">${role.name }</option>
+								</#list>
+							</#if>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td width="60" align="right"></td>
+					<td colspan="7" align="center">
+						<a id="searchAdvance" class="button blueButton" onclick="searchMember()" href="javascript:;">搜索</a>&nbsp;&nbsp;&nbsp;
+						<a id="exportAdvance" class="button blueButton" onclick="exportMember()" href="javascript:;">导出</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="clear height10"></div>
+		<div class="shadowBoxWhite tableDiv">
+		<table class="easyui-datagrid"
+			data-options="url:'member!memberlistJson.do?spread_status=${spreadStatus!''}&parent_id=${parent_id!''}&is_admin=${is_admin!'0'}',pageList: [5,10,15,20],pageSize:${pageSize},fitColumns:'true'"
+			pagination="true" id="memberdata" sortName="member_id" sortOrder="desc" >
+			<thead>
+				<tr>
+					<th data-options="field:'member_id',checkbox:true"></th>
+					<th data-options="field:'membernum',width:50" formatter="formatMemberNum">会员id</th>
+					<th data-options="field:'uname',width:80">用户名</th>
+					<th data-options="field:'role_name',width:100">会员角色</th>
+					<#-- <th data-options="field:'mobile',width:100">手机</th> -->
+					<#-- <th data-options="field:'lv_name',sortable:'true',width:50">会员等级</th> -->
+					<th data-options="field:'name',width:50">真实姓名</th>
+					<th data-options="field:'regtime',width:90,sortable:'true'"
+						formatter="formatRegtime">注册时间</th>
+					<th data-options="field:'lastlogin',width:90,sortable:'true'"
+						formatter="formatLastlogin">上次登录日期</th>
+					<#-- <th data-options="field:'logincount',width:80,sortable:'true'">本月登录次数</th> -->
+					<th data-options="field:'balance',width:60,sortable:'true'" formatter="forMoney">余额</th>
+					<th data-options="field:'award_amount',width:60,sortable:'true'" formatter="forMoney">奖励</th>
+					<#-- <th data-options="field:'area',width:100" formatter="formatArea">城市</th> -->
+					<#-- <th data-options="field:'sex',width:50,sortable:'true',align:'center'" formatter="formatSex">性别</th> -->
+					<th data-options="field:'spread_status',width:100,sortable:'true',align:'center'" formatter="formatStatus">推广员申请</th>
+					<th data-options="field:'is_join',width:50,sortable:'true',align:'center'" formatter="formatJoin">是否加盟</th>
+					<!-- <th data-options="field:'login',width:100,align:'center'"
+						formatter="formatLogin">登录</th>
+						 -->
+					<th data-options="field:'action',width:30,align:'center'"
+						formatter="formatOperation">操作</th>
+					<th data-options="field:'action1',width:30,align:'center'"
+						formatter="formatRecharge">充值</th>
+					<th data-options="field:'action2',width:30,align:'center'"
+						formatter="formatConsume">消费</th>
+					<th data-options="field:'action3',width:30,align:'center'"
+						formatter="formatWash">洗车</th>
+				</tr>
+			</thead>
+		</table>
+		</div>
+	</form>
+	<div id="divdia" style="display: none;"></div>
+
+</div>
+<script type="text/javascript">
+
+	function forMoney(value, row, index) {
+		var val = "￥" + value;
+		return val;
+	}
+
+	function append(id) {
+		var map = {}; // Map map = new HashMap();
+		if (!id) {
+			map["href"] = "member!add_member.do";
+			map["formId"] = "#addForm";
+			map["url"] = "member!saveMember.do?ajax=yes";
+			map["title"] = "添加会员";
+			map["loadshow"] = "正在添加......";
+		} else {
+			map["href"] = "member!edit_member.do?memberId=" + id;
+			map["formId"] = "#editForm";
+			map["url"] = "member!saveEditMember.do?ajax=yes";
+			map["title"] = "修改会员";
+			map["loadshow"] = "正在修改......";
+		}
+		map["divDialog"] = "#divdia";
+		map["gridreload"] = "#memberdata";
+
+		//需要验证的参数
+		map["nameId"] = "#name";
+		map["urlId"] = "#url";
+
+		addDialog(map);
+	}
+	
+	function addDialog(map) {
+		$(map["divDialog"]).show();
+		$(map["divDialog"]).dialog({
+			title : map["title"],
+			width : 600,
+			height : 400,
+			closed : false,
+			cache : false,
+			href : map["href"],
+			modal : true,
+			buttons : [ {
+				text : '保存',
+				iconCls : 'icon-ok',
+				handler : function() {
+					submitForm(map);
+				}
+			}, {
+				text : '清空',
+				handler : function() {
+					clearForm(map);
+				}
+			} ]
+		});
+	}
+	
+	function submitForm(map) {
+		var formflag = $(map["formId"]).form().form('validate');
+		if (formflag) {
+			$.Loading.show(map["loadshow"]);
+			var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+					if (result.result == 1) {
+						$.Loading.show(result.message);
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+					}
+					if (result.result == 0) {
+						$.Loading.error(result.message);
+					}
+					$.Loading.hide();
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+				}
+			};
+			$(map["formId"]).ajaxSubmit(options);
+		}
+	}
+
+	function clearForm(map) {
+		$(map["formId"]).form('clear');
+	}
+	
+	function formatMemberNum(value, row, index) {
+		
+		return row.member_id;
+	}
+
+	function formatOperation(value, row, index) {
+		var val = "<a class='edit' title='修改' href='javascript:void(0);' onclick='newTab(\""
+			+ row.uname
+			+ "-信息修改\",\"${ctx}/shop/admin/member!detail.do?memberId="
+			+ row.member_id + "\")' ></a>";
+			//+ "&nbsp<a class='edit' title='分销' href='javascript:void(0);' onclick='newTab(\""
+			//+ row.uname + "-分销管理\""
+			//+ ",\"${ctx}/shop/admin/fenxiao!detail.do?member_id="
+			//+ row.member_id + "\")' ></a>"
+			
+		return val;
+	}
+	
+	function formatRecharge(value, row, index) {
+		var val = "<a class='edit' title='充值记录' href='javascript:void(0);' onclick='newTab(\""
+			+ row.uname
+			+ "-充值记录\",\"${ctx}/shop/admin/recharge!list.do?uname_="
+			+ row.uname + "\")' ></a>";
+		return val;
+	}
+
+	function formatConsume(value, row, index) {
+		var val = "<a class='edit' title='消费记录' href='javascript:void(0);' onclick='newTab(\""
+			+ row.uname
+			+ "-消费记录\",\"${ctx}/shop/admin/consume!list.do?uname_="
+			+ row.uname + "\")' ></a>";
+		return val;
+	}
+
+	function formatWash(value, row, index) {
+		var val = "<a class='edit' title='洗车记录' href='javascript:void(0);' onclick='newTab(\""
+			+ row.uname
+			+ "-洗车记录\",\"${ctx}/shop/admin/washRecord!list.do?uname_="
+			+ row.uname + "\")' ></a>";
+		return val;
+	}
+
+	function formatRegtime(value, row, index) {
+		return getFormatDateByLong(value, "yyyy-MM-dd hh:mm");
+	}
+
+	function formatLastlogin(value, row, index) {
+		return getFormatDateByLong(value, "yyyy-MM-dd hh:mm");
+	}
+
+	function formatArea(value, row, index) {
+		var val = "";
+		if(row.province!=null && row.province!="请选择" ){
+			val=val+row.province;
+		}
+		if(row.city!=null && row.city!="请选择"){
+			val=val+"-"+row.city;
+		}
+		if(row.region!=null && row.region!="请选择"){
+			val=val+"-"+row.region;
+		}
+		if(val==""){
+			val="未选择城市";
+		}
+		return val;
+	}
+
+	function formatSex(value, row, index) {
+		var val;
+		if (value == 0) {
+			val = "女";
+		} else {
+			val = "男";
+		}
+		return val;
+	}
+	
+	$(function(){
+		//alert(233);
+		$(".tongguo").on("click", function(){
+			//alert(23);
+			var member_id = $(this).attr("member_id");
+			shengQing(member_id, 2, "已通过");
+		});
+		$(".jujue").on("click", function(){
+			//alert(54);
+			var member_id = $(this).attr("member_id");
+			shengQing(member_id, 3, "已拒绝");
+		});
+	});
+	
+	function shengQing(member_id, status, str){
+		var self = $(this); 
+		$.ajax({
+			url : "member!memberApply.do?ajax=yes&member_Id="+member_id+"&spreadStatus="+status,
+			dataType:"json",
+			success:function(result){//prev()
+				if(result.result==1){
+					console.log($("span[member="+member_id+"]").html());
+					$("span[member_id="+member_id+"]").html(str);
+				}
+				$.Loading.success(result.message);
+			},
+			error:function(){
+				$.Loading.error("服务器出错");
+			}
+		});
+	}
+	
+	function formatStatus(value, row, index) {
+		var val;
+		if (value == 0) {
+			val = "未申请";
+		}else if(value == 1){
+			val = "<span member_id='"+row.member_id+"'>申请中</span><a class='button tongguo' onClick='shengQing("+row.member_id+", 2, \"已通过\")' >通过</a><a class='button jujue' onClick='shengQing("+row.member_id+", 3, \"已拒绝\")'>拒绝</a>";
+		}else if(value == 2){
+			val = "<span member_id='"+row.member_id+"'>已通过</span><a class='button tongguo' onClick='shengQing("+row.member_id+", 2, \"已通过\")' >通过</a><a class='button jujue' onClick='shengQing("+row.member_id+", 3, \"已拒绝\")'>拒绝</a>";
+		}else if(value == 3){
+			val = "<span member_id='"+row.member_id+"'>已拒绝</span><a class='button tongguo' onClick='shengQing("+row.member_id+", 2, \"已通过\")' >通过</a><a class='button jujue' onClick='shengQing("+row.member_id+", 3, \"已拒绝\")'>拒绝</a>";
+		}else{
+			val = "未知";
+		}
+		return val;
+	}
+	
+	function formatJoin(value, row, index) {
+		var val;
+		if (value == 0) {
+			val = "否";
+		}else if(value == 1){
+			val = "是";
+		}
+		return val;
+	}
+	
+	function formatLogin(value, row, index) {
+		//暂时不能登录
+		//var val = '<a href="member!sysLogin.do?name='
+		//		+ row.uname
+		//		+ '" target="_blank"><img class="modify" src="images/transparent.gif" >登录</a>';
+		//return val;
+	}
+	
+	function del() {
+		var rows = $('#memberdata').datagrid("getSelections");
+		if (rows.length < 1) {
+			$.Loading.error("请选择要删除的会员");
+			return;
+		}
+		if (!confirm("确认要将删除会员吗？")) {
+			return;
+		}
+		var options = {
+			url : "member!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				$.Loading.success(result.message);
+				if (result.result == 1) {
+					var rows = $('#memberdata').datagrid("getSelections");
+					for ( var i = 0; i < rows.length; i++) {
+						var index = $('#memberdata').datagrid('getRowIndex',
+								rows[i]);
+						$('#memberdata').datagrid('deleteRow', index);
+					}
+				}
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+		};
+		$('#memberform').ajaxSubmit(options);
+	}
+	
+	$(function(){
+		$(".searchAdvanced").hide();
+		//高级查询按钮
+	    $("#aAdvanced").click(function () {
+	        if ($("#Advanced").val() == "0") {
+	            $("#Advanced").val(1);
+	            $("#simpleSearch").hide();
+	            //$("#aAdvanced").text("简单搜索")
+	            $("#aAdvanced").addClass("searchAdvancedS");
+	        } else {
+	            $("#Advanced").val(0);
+	            $("#simpleSearch").show();
+	            //$("#aAdvanced").text("高级搜索");
+	            $("#aAdvanced").removeClass("searchAdvancedS");
+	        }
+	        $(".searchAdvanced").slideToggle("slow");
+	    });
+	});
+	
+	function searchMember(){
+		
+		var searchtype = $("#Advanced").val();
+		var keyword = $("#searchKeyword").val();
+
+		var start_time = $('#start_time').datebox('getValue');
+		var end_time = $('#end_time').datebox('getValue');  
+		var uname = $("#uname").val();
+		var mobile = $("#mobile").val();
+		var lv_id = $("#lv_id").val();
+		var email = $("#email").val();
+		var sex = $("#sex").val();
+		var province_id = $("#province_id").val();
+		var city_id = $("#city_id").val();
+		var region_id = $("#region_id").val();
+		var role_id = $("#role_id").val();
+		var spread_status = $("#spread_status").val();
+
+		$("#memberdata").datagrid('load', {
+			 stype:searchtype,
+			 keyword:keyword,
+			 
+			 start_time:start_time,
+			 end_time:end_time,
+			 uname:uname,
+			 mobile:mobile,
+			 lvId:lv_id,
+			 roleId:role_id,
+			 email:email,
+			 sex:sex,
+			 province_id:province_id,
+			 city_id:city_id,
+			 region_id:region_id,
+			 page : 1,
+			 spreadStatus : spread_status
+	    });
+	}
+
+	function exportMember(){
+		/* var start_time = $('#start_time').datebox('getValue');
+		var end_time = $('#end_time').datebox('getValue');  
+		location.href="order!exportMember.do?start_time="+start_time+"&end_time="+end_time+"&ajax=yes"; */
+		
+		var start_time = $('#start_time').datebox('getValue');
+		var end_time = $('#end_time').datebox('getValue');  
+		var parent_id = $('input[name=parent_id]').val();
+		
+		if(start_time=="" || end_time==""){
+			$.Loading.error("请选择要导出会员的日期范围");
+			return;
+		}
+		$.ajax({
+			url:"member!exportExcel.do?ajax=yes"+"&start_time="+start_time+"&end_time="+end_time+"&parent_id="+parent_id,
+			type:"get",
+			//data:$("form#gridform").serialize(),
+			dataType:"json",
+			success:function(json){
+				$.Loading.hide();
+				if(json.result == 1){
+					location.href = json.message;
+				}else{
+					alert(json.message);
+				}
+			},
+			error:function(){
+				$.Loading.hide();
+				alert("网络连接异常，请重试！");
+			}
+		});
+	}
+	
+</script>
+<#include '/admin/footer.html' >

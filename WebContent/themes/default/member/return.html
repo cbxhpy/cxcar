@@ -1,0 +1,122 @@
+<#assign  title="退换货申请" /><#include 'member_header.html' />
+<div class="data">
+	<h2>申请退换货</h2>
+</div>
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" alt="我的订单提示信息感叹号"/>
+		<div>
+			<h2>温馨提示</h2>
+			<p>1、这里将显示您的退换货信息</p>
+			<p>2、您还可以查看申请列表、申请退换货等操作。</p>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="tab">
+	<ul >
+		<li class="curr"><a href="return.html?action=apply"><span>申请退换货</span></a></li>
+		<li class="selected"><a href="return_list.html?action=list"><span>申请列表</span></a></li>
+	</ul>
+</div>
+<div class="form_wrap white_box">
+<div class="box" >
+	<div class="top"></div>
+	<div class="body">	
+	<form action="" method=""  enctype="multipart/form-data"  class="validate" id="add">
+		<table cellspacing="0" cellpadding="0" width="100%" id="apply_for">
+			<tr>
+				<th >类型：</th>
+				<td>
+					<label><input value="1" name="rerurntype" type="radio" checked="checked"/><span>退货</span></label>
+					<label><input value="2" name="rerurntype" type="radio" /><span>换货</span></label>
+				</td>
+			</tr>
+			<tr>
+				<th >所属订单：</th>
+				<td>
+					<input type="text" isrequired="true" name="ordersn" class="input_text" />
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<span class="prompt">一次只能输入一个订单号</span>
+				</td>
+			</tr>
+			<tr>
+				<th >商品货号：</th>
+				<td>
+					<input type="text" isrequired="true" name="goodsns" class="input_text" />
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<span class="prompt">可输入多个，请用英文逗号,分开</span>
+				</td>
+			</tr>
+			<tr>
+				<th  >申请理由：</th>
+				<td>
+					<textarea name="applyreason" isrequired="true" cols="50" rows="5"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<th>上传照片：</th>
+				<td>
+					<div class="upfileWrapper">
+					<input type="file" name="file" size="40" class="input_text" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<span class="prompt">[ 上传图片可以让我们客服更好的了解您的申请情况，以便后续操作（图片不得大于300K） ]</span>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" class="last">
+					<div class="btn"><input type="button" name="button" value="提交申请"  class="yellow_btn" id="demowhj"/></div>
+				</td>
+			</tr>
+		</table>
+	</form>
+	</div>
+	<div class="bottom"></div>
+
+</div>
+</div>
+<div class="helper">
+	<h2>小贴士</h2>
+	<ul>
+		<li><a href="help-23-14.html" target="_blank">我怎么进行退换货？</a></li>
+	</ul>
+</div>
+	<div class="rr_bottom"></div></div>
+		<!--会员中心首页右侧结束-->
+	</div>
+	<script>
+		$(function(){
+			$("#demowhj").click(function(){
+				$("#add").ajaxSubmit({
+					url:"/api/shop/returnorder!returnAdd.do",
+					type : "post",
+					dataType:"json",
+					success:function(data){
+						if(data.result==1){
+							location.href="/return_list.html?action=list"
+						}
+						else{
+							alert(data.message)
+						}
+					}
+				})
+			})
+		})
+	</script>
+		<#include '../common/footer.html'/>

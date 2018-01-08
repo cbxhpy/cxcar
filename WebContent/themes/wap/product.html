@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<meta name="viewport" content="width=100%, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>无标题文档</title>
+<link href="style/style.css" rel="stylesheet" type="text/css">
+<link href="style/fwslider.css" rel="stylesheet" type="text/css">
+<link href="style/skeleton.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="js/jquery.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src="js/fwslider.js"></script>
+<script src="js/iscroll.js"></script>
+
+<script type="text/javascript">
+
+	var myScroll;
+
+	function loaded() {
+
+		myScroll = new iScroll('wrapper', {
+
+			snap: true,
+
+			momentum: false,
+
+			hScrollbar: false,
+
+			onScrollEnd: function () {
+
+				document.querySelector('#indicator > li.active').className = '';
+
+				document.querySelector('#indicator > li:nth-child(' + (this.currPageX+1) + ')').className = 'active';
+
+			}
+
+		});
+
+	}
+
+	document.addEventListener('DOMContentLoaded', loaded, false);
+
+</script>
+
+
+
+
+
+</head>
+
+<body>
+<header id="header">
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <a class="logo-img" href="452"><img src="images/logo.png" alt="Tabulate" /></a>
+            </div>
+             
+             <div class="search clearfix mt1">
+                        <input type="text" class="searchInput">
+                      <a href="#" class="searchBtn"></a>
+            </div>
+           
+           
+        </div>
+	</div>	
+</header>
+
+	
+<div id="top" style="height:28px;position:absolute;right:0%;top:5px; z-index:1212">
+		<div class="menu-little" style="background: url(./images/menu-btn.png) no-repeat 0 0; background-size:65%; width:45px;height:40px;display:none; float:right;"></div>
+		 <ul id="menu-little" style='display:none; list-style: none; padding-left: 0px;background-color:#444444;width:100%;float:right; z-index:2'>
+			<li><a href="index.html">首页</a></li>
+			<li class='youraboutus'><a href="about.html">绿色食品<em><img src="images/icon.png"> </em>
+			  </a>
+			  <ul id="menu_na2">
+				  <li><a href="about.html">零食</a></li>
+				  <li><a href="about.html">饮料</a></li>
+				  <li><a href="about.html">酒水</a></li>
+				</ul>
+			</li>
+			<li class='youraboutus'><a href="product.html">服饰鞋包</a><em><img src="images/icon.png"> </em>
+            
+            <ul id="menu_na2">
+				  <li><a href="about.html">精品男装</a></li>
+				  <li><a href="about.html">连衣裙</a></li>
+	
+				</ul>
+            </li>
+			<li class='youraboutus'><a href="product.html">家居用品</a><em><img src="images/icon.png"> </em>
+            <ul id="menu_na2">
+				  <li><a href="about.html">床品套件</a></li>
+				  <li><a href="about.html">布艺软饰</a></li>
+
+				</ul>
+            </li>
+			<li class='youraboutus'><a href="product.html">家电用品</a><em><img src="images/icon.png"> </em>
+            
+            <ul id="menu_na2">
+				  <li><a href="about.html">大家电</a></li>
+				  <li><a href="about.html">厨房生活</a></li>
+				 
+				</ul>
+            </li>
+			<li class='youraboutus'><a href="product.html">个人护理</a><em><img src="images/icon.png"> </em>
+            
+            <ul id="menu_na2">
+				  <li><a href="about.html">化妆品</a></li>
+				  <li><a href="about.html">彩妆</a></li>
+				  <li><a href="about.html">个人护理 </a></li>
+				</ul>
+            </li>
+            <li class='youraboutus'><a href="product.html">家具建材</a><em><img src="images/icon.png"> </em>
+            
+            <ul id="menu_na2">
+				  <li><a href="about.html">住宅家具</a></li>
+				  <li><a href="about.html">建材灯饰</a></li>
+		
+				</ul>
+            </li>
+		</ul>
+</div>
+<div class="menu" style="display:block">
+	<ul id="menu" >
+		<li><a href="index.html">首页</a></li>
+			<li class='myaboutus' style="position: relative;"><a href="about.html">绿色食品
+			  </a>
+			  <ul id="menu_na1">
+				  <li><a href="about.html">零食</a></li>
+				  <li><a href="about.html">饮料</a></li>
+				  <li><a href="about.html">酒水</a></li>
+				</ul>
+			</li>
+			<li class='myaboutus' style="position: relative;"><a href="product.html">服饰鞋包</a>
+            
+            <ul id="menu_na1">
+				  <li><a href="about.html">精品男装</a></li>
+				  <li><a href="about.html">连衣裙</a></li>
+	
+				</ul>
+            </li>
+			<li class='myaboutus' style="position: relative;"><a href="product.html">家居用品</a><em>
+            <ul id="menu_na1">
+				  <li><a href="about.html">床品套件</a></li>
+				  <li><a href="about.html">布艺软饰</a></li>
+
+				</ul>
+            </li>
+			<li class='myaboutus' style="position: relative;"><a href="product.html">家电用品</a><em>
+            
+            <ul id="menu_na1">
+				  <li><a href="about.html">大家电</a></li>
+				  <li><a href="about.html">厨房生活</a></li>
+				 
+				</ul>
+            </li>
+			<li class='myaboutus' style="position: relative;"><a href="product.html">个人护理</a><em>
+            
+            <ul id="menu_na1">
+				  <li><a href="about.html">化妆品</a></li>
+				  <li><a href="about.html">彩妆</a></li>
+				  <li><a href="about.html">个人护理 </a></li>
+				</ul>
+            </li>
+            <li class='myaboutus' style="position: relative;"><a href="product.html">家具建材</a><em>
+            
+            <ul id="menu_na1">
+				  <li><a href="about.html">住宅家具</a></li>
+				  <li><a href="about.html">建材灯饰</a></li>
+		
+				</ul>
+            </li>
+            
+            
+            
+	</ul>
+</div>
+<div class="homeslider"></div>
+
+<nav class="clearfix goods-title-nav">
+		<ul class="switch-goods-title clearfix">
+			<li class="way ">
+				<a href="#" class="price_asc" title="价格"><span>价格</span><i></i></a>
+			</li>
+			<li class="way ">
+				<a href="#" class="grade_asc" title="评价"><span>评价</span><i></i></a>
+			</li>
+			<li class="way ">
+				<a href="#" class="sales_asc" title="销量"><span>销量</span><i></i></a>
+			</li>
+			<li class="way last ">
+				<a href="#" class="time_asc" title="上架时间"><span>上架时间</span><i></i></a>
+			</li>
+		</ul>
+	</nav>
+
+<section class="prd">
+<nav id="goods-list1" class="clearfix">
+	<ul>
+		<li>
+		
+			<a href="#">
+				<img src="images/455.jpg">
+			</a>
+			<h2><a href="#" > 时尚运动男童全方位迷彩</a></h2>
+			<div>
+				<h3><span>￥199.00</span><em>PV:10</em></h3>
+			</div>
+		</li>
+        	<li>
+		
+			<a href="#">
+				<img src="images/4555.jpg">
+			</a>
+			<h2><a href="#" > 时尚运动男童全童全方方位迷彩</a></h2>
+			<div>
+				<h3><span>￥199.00</span><em>PV:10</em></h3>
+			</div>
+		</li>
+          <li>
+			
+			<a href="#">
+				<img src="images/45.jpg">
+			</a>
+			<h2><a href="#" > 时尚运动男童全方位迷彩</a></h2>
+			<div>
+				<h3><span>￥199.00</span><em>PV:10</em></h3>
+			</div>
+		</li>
+            <li>
+		
+			<a href="#">
+				<img src="images/201510201424019981_thumbnail.jpg">
+			</a>
+			<h2><a href="#" > 时尚运动男童全方位迷彩</a></h2>
+			<div>
+				<h3><span>￥199.00</span><em>PV:10</em></h3>
+			</div>
+		</li>
+	</ul>
+</nav>
+<nav id="page" class="goods-page clearfix">
+<div class="page"><span class="info">共4条</span>
+<span class="info">1/4</span>
+<ul><li><a class="selected">1</a></li>
+<li><a class="unselected" href="#">2</a></li>
+<li><a class="unselected" href="#">3</a></li>
+<li><a class="unselected" href="#">4</a></li>
+<li><a class="unselected" href="#">&gt;&gt;</a></li>
+<li><a class="unselected" href="#">&gt;|</a></li>
+</ul></div></nav>
+</section>
+
+<div class="index_ad_wrapper"><img src="images/zz.jpg" /></div>
+
+<div class="mt10"></div>
+<ul class="index_navigation_fixed clearfix">
+    <li>
+        <a href="index.html">
+            <img src="images/index_n_1.png" alt="">
+            <p>首页</p>
+        </a>
+    </li>
+    <li>
+        <a class="selected"  href="product.html">
+            <img src="images/index_n_2.png" alt="">
+            <p>商品</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <img src="images/index_n_3.png" alt="">
+            <p>购物车</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <img src="images/index_n_4.png" alt="">
+            <p>我的嘻嘻</p>
+        </a>
+    </li>
+</ul>
+
+<script type="text/javascript" src="js/js-yhy.js"></script>
+</body>
+</html>

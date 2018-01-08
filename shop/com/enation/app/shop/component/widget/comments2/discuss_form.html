@@ -1,0 +1,73 @@
+<form method="post" class="addcomment" id="discussForm">
+<input type="hidden" name="goods_id" value="${goodsid}" />
+<input type="hidden" name="commenttype" value="1" />
+<h4>商品评论</h4>
+<div class="division">
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="forform">
+	<tbody>
+	
+		<tr>
+			<th>给商品打分：</th>
+			<td>
+				<span class="grade" >
+		    	<span><a href="javascript:;"  class="selected">1</a></span>
+				<span><a href="javascript:;"  class="selected">2</a></span>
+				<span><a href="javascript:;"  class="selected">3</a></span>
+				<span><a href="javascript:;"  class="selected">4</a></span>
+				<span><a href="javascript:;"  class="selected">5</a></span>
+				<input type="hidden" name="grade" id="grade_input" value="5">
+				</span>
+				
+				<span   class="value_wrapper">您的评分：<span style="font-weight:bold; font-size:14px; color:#a90000;" id="gradevalue">5</span>分</span>
+			</td>
+		</tr>
+			
+		<tr>
+			<th><em>*</em>为该商品评论：</th>
+			<td>
+				<textarea name="content" id="discuss_content" style="width:685px; height:100px;" ></textarea>
+			</td>
+		</tr>
+ 
+		<tr>
+			<td></td>
+			<td><input type="button" id="discussBtn" value="  提交    " id="" class="btnx"></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</form>
+
+<script type="text/javascript">
+$(function(){	
+	$("#discussBtn").click(function(){
+		<#if !isLogin >
+		alert("请您先登录，然后再进行评论！");
+		return;
+		<#else>
+			<#if !isBuy>
+			alert("您只有购买该商品后才能进行评论！");
+			return;
+			<#else>
+			<#if isCommented>
+			alert("对不起，您已经评论过此商品！");
+			return;
+			<#else>
+			var cval = $('#discuss_content').val();
+			if(cval == ''){
+				alert("请输入您的评论内容！");
+				return;
+			}
+			else if(cval.length>1000){
+				alert("请您输入1000字以内的评论");
+				return;
+			}
+			CommentForm.formSubmit($(this),$("#discussForm"));
+			</#if>
+			</#if>
+		</#if>
+		
+	});
+});
+</script>

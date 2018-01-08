@@ -1,0 +1,27 @@
+<#assign title="帮助" />
+<#assign showback='showback' />
+<#if show??>
+	<#include "common/header_title.html" />
+<#else>
+	<#include 'common/header_css_js.html' />	
+</#if>
+<div style="overflow: hidden;" class="web-help">
+
+<!-- 创建公告标签 -->
+<#assign noticeListWblTag= newTag("noticeListWblTag")>
+<!-- 调用广告信息,传递参数文档name -->
+<#assign notices = noticeListWblTag("'name':'${name!''}';'notice_id':'${notice_id!''}'")!'' >
+<!-- 获取广告列表 -->
+<#assign noticeList = notices.noticeList />
+
+<#if !noticeList?exists || noticeList?size==0> 
+			
+<#else>
+	<#list noticeList as notice>
+		<#if notice_index == 0>
+			${notice.notice_content!''}
+		</#if>
+	</#list>
+</#if>
+</div>
+<#-- <#include 'common/footer.html'/> -->

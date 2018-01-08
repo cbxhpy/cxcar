@@ -1,0 +1,84 @@
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="addForm" method="post" class="validate">
+			<table>
+				<tr>
+					<th>名称：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+						name="seller.seller_name" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>管理员</th>
+					<td>
+						<select name="seller.user_id">
+							<option value="">-请选择-</option>
+							<#list adminList as ad>
+								<option value="${ad.userid}">${ad.username!}</option>
+							</#list>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>分类</th>
+					<td><input class="easyui-combotree combo" name="seller.cat_id"
+						data-options="url:'cat!addlistJson.do',method:'get',required:false,height:28"
+						style="width: 100px;">
+					</td>
+				</tr>
+				<tr>
+					<th>地址：</th>
+					<td><input class="easyui-validatebox input_text" type="text"
+						name="seller.address" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>评分：</th>
+					<td><input class="easyui-validatebox input_text" type="number"
+						name="seller.score" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>联系电话：</th>
+					<td><input class="easyui-validatebox input_text" type="text"
+						name="seller.phone" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>县/区：</th>
+					<td><input class="easyui-validatebox input_text" type="text"
+						name="seller.region" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>商家说明：</th>
+					<td><input class="easyui-validatebox input_text" type="text"
+						name="seller.explain1" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>经纬度：</th>
+					<td>
+						<input class="input_text easyui-validatebox" type="text" name="lng_lat" data-options="required:true"/>
+					</td>
+					<th>选取经纬度</th>
+					<td>
+						<a href="http://lbs.qq.com/tool/getpoint/index.html" target="_blank">点击跳转</a>
+					</td>
+				</tr>
+				<tr>
+					<th>图片log：</th>
+					<td>
+						<input type="file" name="log">
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<input type="file" name="pic">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

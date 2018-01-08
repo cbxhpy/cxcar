@@ -1,0 +1,36 @@
+<#assign  title="订单" />
+<#include 'common/header.html' />
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			取消订单
+		</p>
+	</div>
+<div class="order_no">
+	<h1>请输入取消原因</h1>
+	<textarea class="order_reason" line-height: 15px;" name="reason" type="text"></textarea>
+	<input class="orderno" value="取消订单">
+</div>	
+	
+<script>
+	$(function(){
+		$(".orderno").click(function(){
+			var order_no = $(".order_reason").val();
+			$.ajax({
+				url:"api/shop/order!cancel.do?sn="+${sn}+"&reason="+order_no,
+				dataType:"json",
+				success : function(data) {	
+					if(data.result==1){		
+						alert("取消订单成功");
+						location.href="orderlist.html"
+					}
+					else{							
+						alert(data.message)
+					}
+				}
+			})
+		})
+	})
+</script>
+<#include 'common/footer.html'/>

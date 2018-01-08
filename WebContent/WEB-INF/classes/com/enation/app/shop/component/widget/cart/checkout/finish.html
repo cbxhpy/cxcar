@@ -1,0 +1,38 @@
+<div id="log" class="CartWrap">
+	<div class="CartNav clearfix">
+		<div class="floatLeft"><img alt="购物流程--查看购物车" src="${ctx}/resource/com/enation/app/shop/widget/cart/images/cartnav-step4.gif"></div>
+		<div class="floatRight"><img src="${ctx}/resource/com/enation/app/shop/widget/cart/images/cartnav-cart.gif"></div>
+	</div>		
+ 
+	<div style="background: none repeat scroll 0% 0% rgb(245, 244, 236); border: 1px solid rgb(229, 221, 199);"
+		class="FormWrap ">
+		<table cellspacing="0" cellpadding="0" border="0" width="100%"
+			class="liststyle data">
+			<colgroup class="span-auto ColColorBlue"></colgroup>
+			<colgroup class="span-8 ColColorGray"></colgroup>
+			<tbody>
+				<tr>
+					<td width="50%"><strong>订单编号：${order.sn}</strong><br>
+					<a href="orderdetail_${order.sn}.html">查看详细</a></td>
+					<td>
+					<div style="padding: 3px 6px;">共需支付</div>
+					<h1
+						style="font-size: 30px; color: rgb(255, 0, 0); margin: 0pt 0pt 15px;"><span
+						id="span_amount" class="hueorange">${order.order_amount?string("currency")}</span></h1>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+
+
+<#if order.payment_type=='offline'>
+	<#include 'offline_pay.html' />
+<#else>
+	<#include 'online_pay.html' />
+</#if>
+
+	
+ </div>

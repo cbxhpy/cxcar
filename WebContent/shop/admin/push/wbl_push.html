@@ -1,0 +1,145 @@
+<#include '/admin/header.html' >
+
+<style>
+.form-table th {
+	width: 150px;
+	text-align: right;
+}
+</style>
+
+<div class="main" style="background-color: white;">
+	<div class="input">
+		<form class="validate" method="post" name="jpushForm" id="jpushForm" enctype="multipart/form-data">
+			<table cellspacing="1" cellpadding="3" width="100%"
+				class="form-table">
+				<tr>
+					<th><label class="text">通知消息：</label></th>
+					<td>
+						<input type="radio" name="notification" value="0" checked />通知&nbsp;&nbsp;
+						<#-- <input type="radio" name="notification" value="1" disabled />消息 -->
+					</td>
+				</tr>
+				<tr>
+					<th><label class="text">设备类型：</label></th>
+					<td>
+						<input type="radio" name="audience" value="1" checked />android&ios&nbsp;&nbsp;
+						<#-- <input type="radio" name="audience" value="2" />android&nbsp;&nbsp;
+						<input type="radio" name="audience" value="3" />ios&nbsp;&nbsp;
+						<input type="radio" name="audience" value="4" disabled />winphone -->
+					</td>
+				</tr>
+				<tr>
+					<th><label class="text">alias或tags：</label></th>
+					<td>
+						<#-- <input type="radio" name="alias_tags_broadcast" value="0" disabled />alias&nbsp;&nbsp;
+						<input type="radio" name="alias_tags_broadcast" value="1" disabled />tags&nbsp;&nbsp; -->
+						<input type="radio" name="alias_tags_broadcast" value="2" checked />广播
+					</td>
+				</tr>
+
+				<#-- <tr>
+					<th><label class="text">用户号码或tags：</label></th>
+					<td>
+						<textarea rows="10" cols="40" name="jpush_names" disabled></textarea>（alias、tags需要填写,广播不用填写）
+					</td>
+				</tr> -->
+				<tr>
+					<th><label>标题：</label></th>
+					<td><textarea name="pushMsg.title" rows="1" cols="40"></textarea>（输入小于20个字）</td>
+				<tr>
+					<th><label>内容：</label></th>
+					<td><textarea name="pushMsg.content" rows="4" cols="40"></textarea>（输入小于60个字）</td>
+				</tr>
+				<tr>
+					<th>跳转方式：</th>
+					<td>
+						<input type="radio" name="pushMsg.skip_type" value="0" checked="checked"/> 不跳转&nbsp;&nbsp;
+						<input type="radio" name="pushMsg.skip_type" value="1"/> 商品&nbsp;&nbsp;
+						<input type="radio" name="pushMsg.skip_type" value="2"/> 外部链接					
+					</td>
+				</tr>
+				<tr>
+					<th>商品sn：</th>
+					<td>
+						<input class="input_text" type="text" name="pushMsg.goods_sn" value=""></input>
+					</td>
+				</tr>
+				<tr>
+					<th>外部链接：</th>
+					<td>
+						<input class="input_text" type="input" name="pushMsg.html_url" value=""></input>
+					</td>
+				</tr>
+				<tr>
+					<th><label>图片：</label></th>
+					<td><input type="file" name="pic" ></input></td>
+				</tr>
+			</table>
+			</br>
+			<div class="submitlist buttonWrap" align="center">
+				<a href="javascript:;" id="jpushs" class="easyui-linkbutton">
+					<span class="l-btn-text">推送</span>
+				</a>
+			</div>
+		</form>
+
+	</div>
+</div>
+<script type="text/javascript">
+
+$(function(){
+	//时间选择 
+	//$('#datetimepicker').datetimepicker();
+	 
+	//点击发送按钮触发事件
+	$("#jpushs").click(function(){
+	  	//var notification = $("input[name='message_notification']:checked").val();
+	  	//var audience = $("input[name='audience']:checked").val();
+	  	//var alias_tags_broadcast = $("input[name='alias_tags_broadcast']:checked").val();
+	  	//var jpush_names = $("textarea[name='jpush_names']").val();
+	  	//var title = $("textarea[name='title']").val();
+	  	//var content = $("textarea[name='content']").val();
+	  	//var enabletiming =$("input[name='enabletiming']:checked").val();
+	  	//var time = $("#datetimepicker").val();
+	  	/* if(enabletiming == 1){
+	  		  time = 0;
+	  	} */
+	  	
+	  	var title = $("textarea[name='pushMsg.title']").val();
+	  	var content = $("textarea[name='pushMsg.content']").val();
+	  	if(title == "" || content == ""){
+	  		alert("标题或内容不能为空");
+	  		return;
+	  	}
+	  	
+	  	var formData = new FormData($("#jpushForm")[0]); 
+		$.ajax({
+			//url:"member!jpush.do?ajax=yes&message_notification="+notification+"&audience="+audience+"&alias_tags_broadcast="+alias_tags_broadcast+"&jpush_names="+jpush_names,
+			url : "pushMsg!jpush.do?ajax=yes",
+			dataType : "json",
+	  		type : "post",
+	  		data : formData,
+	  		// 告诉jQuery不要去处理发送的数据
+			processData : false, 
+			// 告诉jQuery不要去设置Content-Type请求头
+			contentType : false,
+	  		//data:{'message_notification':notification,'audience':audience,'alias_tags_broadcast':alias_tags_broadcast,'content':content,'jpush_names':jpush_names,'time':time,'title':title},
+	  		success : function(json_message){
+				if(json_message.result==1){
+	  				alert(json_message.message);
+	  			}else{
+	  				alert(json_message.message);
+	  			}
+	  		},
+	  		error : function(json_message){
+	  			if(json_message.result==0){
+	  				alert(json_message.message);
+	  			}
+	  		}
+		}); 
+	});
+});
+
+</script>
+
+<#include '/admin/footer.html' >

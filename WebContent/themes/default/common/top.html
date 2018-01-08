@@ -1,0 +1,299 @@
+<div id="indexcut-2015">
+    <div class="w">
+    <div class="fl">
+		<ul>
+			<li>嗨，欢迎来到厦门众道生活电子商务有限公司  </li>
+	      	<li class="fore1" id="ttbar-login">
+				<#if member??>
+					<!-- 获取member信息 -->
+					<script type="text/javascript">var isLogin= true;</script>
+					您好：${member.name!}
+					<a href="${ctx}/member/member.html">[会员中心]</a>
+					<a href="#" id="logout">[退出]</a>
+				<#else>
+					<script type="text/javascript">var isLogin= false;</script>
+	                <a href="login.html" class="link-login style-red">请登录</a>&nbsp;&nbsp;
+	                <a href="register.html" class="link-regist style-red">免费注册</a>
+				</#if>
+	
+			</li>
+	            
+		</ul>
+	</div>
+	<ul class="fr">
+		<li class="fore3 dorpdown" id="ttbar-myjd">
+			<div class="dt cw-icon">
+				<i class="ci-right">
+					<s>
+						◇
+					</s>
+				</i>
+				<a href="javascript:;">
+					我的账户
+				</a>
+			</div>
+			<div class="dd dorpdown-layer">
+				<div class="dd-spacer">
+				</div>
+				<div class="userinfo">
+					<#if member?? >
+						<div class="u-pic">
+	                		<a href="${ctx}/member/member.html">
+	                    		<#if member.face?exists && member.face != ''>
+	        						<img src="<@imgurl pic='${member.face}'/>" width="100" height="100"/>
+	        					<#else>
+		        					<@image src="images/default_face.jpg" width="120" height="120" />
+		        				</#if>
+		        				</a>
+	                        </div>
+	                        <div class="u-name u-login">
+	                            <a href="javascript:login();" class="link-login">
+	                                您好，${member.name!}
+	                            </a>
+	                        </div>
+                    	<#else>
+                    		<div class="u-pic">
+	                            
+	                        </div>
+	                        <div class="u-name u-login">
+	                            <a href="javascript:login();" class="link-login">
+	                                您好，<a href="login.html" class="link-login style-red">请登录</a>
+	                            </a>
+	                        </div>
+                    	</#if>
+                        
+                        <div class="u-extra">
+                            <a href="${ctx}/member/point.html">
+                                红包
+                                <span id="num-ticket">
+                                </span>
+                            </a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="${ctx}/member/fenxiao.html">
+                                积分
+                                <span id="num-tip">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="otherlist">
+                        <div class="fore1">
+                            <div class="item">
+                                <a href="${ctx}/member/order.html?status=0" clstag="">
+                                    待处理订单
+                                    <span id="num-unfinishedorder">
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="${ctx}/member/ask.html" clstag="">
+                                    咨询回复
+                                    <span id="num-consultation">
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="${ctx}/member/gnotify.html" clstag="">
+                                    缺货登记
+                                    <span id="num-reduction">
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="fore2">
+                            <div class="item">
+                                <a href="${ctx}/member/favorite.html" clstag="">
+                                    商品收藏
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="${ctx}/member/performance.html" clstag="">
+                                    我的业绩
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a href="${ctx}/member/address.html" clstag="">
+                                    我的地址
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="spacer">
+            </li>
+            <li class="fore8 dorpdown" id="ttbar-serv" >
+                <div class="dt cw-icon"> <i class="ci-right"><s> ◇</s></i> 帮助中心</div>
+                <div class="dd dorpdown-layer">
+                    <div class="dd-spacer">
+                    </div>
+                    <#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":17}') />
+					<#list webPage.result as article>
+						<div class="item">
+	                        <a href="${ctx}/help.html?articleid=${article.id}">
+	                            ${article.title!''}
+	                        </a>
+	                    </div>
+					</#list>
+                </div>
+            </li>
+            
+            <li class="spacer">
+            </li>
+            <li class="fore6 dorpdown" id="ttbar-apps">
+                <div class="dt cw-icon">
+                    <i class="ci-right">
+                        <s>
+                            ◇
+                        </s>
+                    </i>
+                    <a href="javascript:;">
+                       收藏本站
+                    </a>
+                </div>
+                <div class="dd dorpdown-layer">
+                    <div class="dd-spacer">
+                    </div>
+                    <div class="dd-inner" id="ttbar-apps-main" >
+                        <a href="javascript:;" onclick="AddFavorite('嘻嘻网',location.href)" >
+                           收藏本站
+                        </a>                     
+                    </div>
+                </div>
+            </li>
+           
+        </ul>
+        <span class="clr"></span>
+    </div>
+</div>
+
+<div class="w">
+    <div id="logo-2015"><a href="${ctx}/index.html"><@image src="${site.logofile!''}" title="logo"/></a></div>
+  <div id="search-2015">
+        <ul id="shelper" class="hide" style="display: none; ">
+        </ul>
+        <div class="form">
+            <input  type="text" onkeydown="" autocomplete="off" id="keyword" accesskey="s" class="text" value="请输入产品关键字"  title="请输入产品关键字">
+            <button  onclick="" name="s_seek" id="searchBtn" class="button cw-icon">
+                <i>
+                </i>
+                搜索
+            </button>
+        </div>
+    </div>
+   <div id="settleup-2015" class="dorpdown">
+        <div class="cw-icon">
+            <i class="ci-left">
+            </i>
+            <i class="ci-right">
+                &gt;
+            </i>
+            <i class="ci-count num" id="shopping-amount">
+                0
+            </i>
+            <a href="${ctx}/cart.html">
+                我的购物车
+            </a>
+        </div>
+        <div class="dorpdown-layer cart_list">
+            <@image class="loading" src='images/ajax-loader.gif'/>
+        </div>
+    </div>
+    <div id="hotwords-2015">
+    	<!-- 获取CMS数据搜索标签， -->
+		<#assign dataSearchTag=newTag("dataSearchTag") />
+	  	<!-- 调用CMS数据搜索标签，并传递所在模型ID参数(es_hot_keyword表.)“3”表示出现三个关键词。 -->
+		<#assign webPage = dataSearchTag('{"modelid":1,"pageSize":3}')  />
+			<#list webPage.result as data>
+				<a <#if data_index==0>style="color:red"</#if> href="${ctx}/search-keyword-${data.keyword}.html" >${data.keyword}</a>
+			</#list>
+    </div>
+    <span class="clr">
+    </span>
+</div>
+<script type="text/javascript">
+var searchTipText = "请输入产品关键字";
+function search(){
+	var keyword = $.trim( $("#keyword").val());
+	if(keyword == searchTipText){
+		keyword = '';
+	}
+	if(keyword.indexOf('\\')!=-1){
+		alert("请输入正确的关键词");
+		return false;
+	}
+	if(keyword==''){
+		alert("请输入关键字");
+	}else{
+		keyword = keyword.replace(/\//g,"-xie-")
+		var url =  encodeURIComponent("search-keyword-"+keyword+".html");
+		location.href="${ctx}/"+url;
+	}
+}
+
+function AddFavorite(title, url) {
+  try {
+      window.external.addFavorite(url, title);
+  }
+catch (e) {
+     try {
+       window.sidebar.addPanel(title, url, "");
+    }
+     catch (e) {
+         alert("您可以使用Ctrl+D进行收藏");
+     }
+  }
+}
+
+$(function(){	
+	$("#keyword").keypress(function(event){
+	//	$("#keyword").attr("class","seek");
+		if(event.keyCode=="13" ){
+			search();
+		}
+	});
+	$("#keyword").click(function(){
+		if($(this).val() == searchTipText){
+			$(this).val("");
+		}
+	});
+	$("#keyword").blur(function(){
+		if($(this).val() == ''){
+			$(this).val(searchTipText);
+		}
+	});
+	
+	$("#searchBtn").click(function(){
+		search();
+	});
+});
+</script>
+
+<script>
+$(function(){
+	$("#logout").click(function(){
+		$.ajax({
+			url:"${ctx}/api/shop/member!logout.do?ajax=yes",
+			dataType:"json",
+			cache: false,             //清楚缓存，暂时测试，如果产生冲突，请优先考虑是否是这条语句。
+			success:function(result){
+				if(result.result==1){
+					$.alert(result.message);
+					location.href="${ctx}/index.html";
+					
+				}else{
+					$.alert(result.message);
+				}	
+				$.Loading.hide();
+			},
+			error:function(){
+				$.Loading.hide();
+				$.alert("出错了:(");
+			}
+		});
+		return false;
+	})	
+})
+</script>

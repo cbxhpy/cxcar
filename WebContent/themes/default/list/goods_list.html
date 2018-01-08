@@ -1,0 +1,28 @@
+<!--商品列表-->
+<div class="w">
+
+	<div class="goods-list-bd">
+		<ul class="clearfix">
+			<#list webpage.result as goods>
+			<li>
+				<div class="p-img">
+					<a href="goods-${goods.goods_id}.html"> <img alt="${goods.name}" src="${goods.thumbnail!''}" /></a>
+				</div>
+				<div class="p-name fl">
+					<a href="goods-${goods.goods_id}.html" title="${goods.name}">${goods.name}</a>
+				</div>
+				<div class="cleafix">
+					<div class="p-price">
+						<span class="fl">${goods.price?string.currency}</span>
+						<em class="fr">嘻嘻值:${goods.point}</em>
+					</div>
+				</div>
+			</li>
+			</#list>
+		</ul>
+	</div>
+	<div class="proodtl-paging">
+		<@pager pageno="${webpage.currentPageNo}" pagesize="${webpage.pageSize}" totalcount="${webpage.totalCount}" />
+	</div>
+</div>
+<!--商品列表结束-->

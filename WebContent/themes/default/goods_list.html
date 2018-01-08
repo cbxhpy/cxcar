@@ -1,0 +1,44 @@
+<#include 'common/header.html' />
+<link rel="stylesheet" href="${ctx}/themes/default/css/goods_list.css" type="text/css" />
+<#-- 创建商品搜索标签 -->
+<#assign goodsSearchTag= newTag("goodsSearchTag") >
+<#-- 创建选择器标签 -->
+<#assign searchSelectorTag= newTag("searchSelectorTag") >
+
+<#-- 获取搜索结果 -->
+<#assign webpage = goodsSearchTag('{"pageSize":32}') >
+<#-- 获取选择器 -->
+<#assign goodsSelector = searchSelectorTag() >
+<#-- 创建广告标签 -->
+<#assign advListTag= newTag("advListTag")>
+<script>
+var pageCount= ${webpage.totalPageCount}
+</script>
+
+<#-- 创建当前位置标签 -->
+<#assign searchNav= newTag("searchNavTag")>
+<#-- 获取当前位置结果 -->
+<#assign nav = searchNav()!'' >		
+<#if !nav.isSearch>
+	<#assign cat = nav.cat!'' >	
+	<#assign mycatid = cat.cat_id >	
+	<#assign mycatname = cat.name >
+<#else>
+	<#assign mycatid = 0>	
+	<#assign mycatname = '搜索商品'>
+</#if>
+
+<!-- 集合结束 -->
+<div class="w prdtiter"><h2>您的当前位置</h2> 
+	<#assign nav = searchNav()!''> &gt;	
+	<a href="index.html">首页</a> &gt; 
+	<#if !nav.isSearch>
+		<#assign cat = nav.cat!'' >	
+		<a href="search-cat-${cat.cat_id}.html">${mycatname}</a>
+	<#else>
+		商品搜索
+	</#if>
+</div> 
+<#include 'list/list.html' />
+
+<#include 'common/footer.html'/>

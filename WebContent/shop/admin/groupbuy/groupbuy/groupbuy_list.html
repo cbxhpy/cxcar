@@ -1,0 +1,225 @@
+<#include '/admin/header.html' > 
+<script type="text/javascript" src="${ctx}/editor/ckeditor362/ckeditor.js"></script>
+<script type="text/javascript" src="${ctx}/editor/ckeditor362/adapters/jquery.js"></script>
+<#assign dateFormat="com.enation.framework.directive.DateformateDirective"?new()>
+<#assign permssion = "com.enation.app.base.core.directive.PermssionDirective"?new()>
+<div class="main">
+	<div class='buttonArea'>
+	 	    <span id="searchbtn" style="float:left;display:block">	
+		<@permssion actid="goods,super_admin">	
+			<a href="javascript:void(0)" class="button blueButton"  onclick="append()">添加</a>	
+			<a href="javascript:void(0)" class="button"  onclick="del()">删除</a>
+		</@permssion>
+		</span>
+		<span style="float: right;height:28px;"> 
+			<a href="javascript:void(0)" class="button b_fr" id="searchBtn">搜索</a>
+		    <select name="gb_status"  id="gb_status" >
+		    	<option value="">全部</option>
+		    	<option value="0">无效</option>
+		    	<option value="1">有效</option>
+		    </select>
+		</span>
+	</div>
+	 
+
+		<div class="shadowBoxWhite tableDiv">
+			<form id="gridform">
+				<table class="easyui-datagrid"
+					data-options="url:'${ctx}/shop/admin/groupBuy!listJson.do',pageList: [5,10,15,20],pageSize:${pageSize},fitColumns:'true'" pagination="true" width="width" id="gbdata">
+					<thead>
+						<tr>
+							<th data-options="field:'group_id',checkbox:true,width:100" ></th>
+					   	 	<th  data-options="field:'goods_name',width:100">商品名称</th>
+					   	 	<th  data-options="field:'group_price',width:100">团购价</th>
+					   	 	<th  data-options="field:'start_time',width:100" formatter="formatTime">开始时间</th>
+					   	 	<th  data-options="field:'end_time',width:100"  formatter="formatTime">结束时间</th> 
+					   	 	<th  data-options="field:'group_stat',width:100" formatter="formatStatus">团购状态</th>
+					   	 	<th  data-options="field:'action',width:100"  formatter="formatAction">操作</th>
+						</tr>
+					</thead>
+				</table>
+			</form>	
+			<div id="divdia" style="display: none;"></div>
+		</div>
+</div>
+
+<script type="text/javascript">
+var app_path = "${ctx}";
+function getGoods(goods) {
+	$("#product_name").html(goods["name"]);		
+	$("#price").html("￥"+goods["price"]);
+	$("#store").html(goods["store"]);
+	$("#goods_name").val(goods["name"]);
+	$("#goods_id").val(goods["goods_id"]);
+	$("#product_id").val(goods["product_id"]);
+	$("#mktprice").val(goods["mktprice"]);
+}
+
+function append(id) {
+	var map = {}; // Map map = new HashMap();
+	if (!id) {
+		map["href"] = "groupBuy!add.do";
+		map["formId"] = "#addForm";
+		map["url"] = "groupBuy!saveAdd.do?ajax=yes";
+		map["title"] = "添加团购";
+		map["loadshow"] = "正在添加......";
+	} else {
+		map["href"] = "groupBuy!edit.do?gbid=" + id;
+		map["formId"] = "#editForm";
+		map["url"] = "groupBuy!saveEdit.do?ajax=yes";
+		map["title"] = "修改团购";
+		map["loadshow"] = "正在修改......";
+	}
+	map["divDialog"] = "#divdia";
+	map["gridreload"] = "#gbdata";
+
+	//需要验证的参数
+	//map["nameId"]="#name";
+
+	addDialog(map);
+}
+function addDialog(map) {
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title : map["title"],
+		width : 800,
+		height : 400,
+		closed : false,
+		cache : false,
+		href : map["href"],
+		modal : true,
+		onLoad : function() {
+			var instance = CKEDITOR.instances['remarks'];
+			if (instance) {
+				CKEDITOR.remove(instance);
+			}
+			$('#remarks').ckeditor();
+		},
+		buttons : [ {
+			text : '保存',
+			iconCls : 'icon-ok',
+			handler : function() {
+				var savebtn = $(this);
+　　				var disabled=savebtn.hasClass("l-btn-disabled");
+　　				if(!disabled){
+					submitForm(map,savebtn);
+				}
+			}
+		}, {
+			text : '清空',
+			handler : function() {
+				clearForm(map);
+			}
+		} ]
+	});
+}
+function submitForm(map,savebtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(map["formId"]=="#addForm" && $("input[name='image']").val()==""){
+		$.Loading.error('请选择团购图片');
+		return false;
+	}
+	if (formflag) {
+		$.Loading.show(map["loadshow"]);
+		savebtn.linkbutton("disable");
+		var options = {
+			url : map["url"],
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if (result.result == 1) {
+					$(map["divDialog"]).dialog('close');
+					$(map["gridreload"]).datagrid('reload');
+					$.Loading.success(result.message);
+				}
+				if (result.result == 0) {
+					$.Loading.error(result.message);
+				}
+				savebtn.linkbutton("enable");
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+				savebtn.linkbutton("enable");
+			}
+		};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+}
+
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function formatAction (value,row,index){
+	var val = "<a class='edit' title='修改' href='javascript:void(0);' onclick='append("
+		+ row.group_id + ")' ></a>";
+
+	return val;
+}
+
+function del(){ 
+	var rows = $('#gbdata').datagrid("getSelections"); 
+	if(rows.length<1){
+		$.Loading.error("请选择删除商品");
+		return;
+	}
+	if(!confirm("确认要将这些团购删除吗？")){	
+		return ;
+	}
+	$.Loading.show("正在删除......");
+ 	var options = {
+			url : "groupBuy!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if(result.result==1){
+					$.Loading.success(result.message);
+		 			$('#gbdata').datagrid("reload");      
+				}
+				if(result.result==0){
+					$.Loading.error(result.message);
+				}
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+		};
+		$('#gridform').ajaxSubmit(options);	
+}
+
+
+function formatTime(value,row,index){
+	return getFormatDateByLong(value, "yyyy-MM-dd hh:mm:ss");
+	return val;   		
+}
+
+function formatStatus(value,row,index){
+		
+	var val = "无效";
+	if(value==0){
+		val = "无效";
+	}
+	if(value==1){
+		val = "有效";
+	}
+	return val;   		
+}
+
+//alert( getFormatDateByLong (1329895874, "yyyy-MM-dd") )
+
+$(function(){
+	
+	$("#searchBtn").click(function(){
+		var gb_status= $("#gb_status").val();
+		alert(gb_status);
+		$('#gbdata').datagrid('load', {
+			status:gb_status,
+			 page:1
+	   }); 
+	});
+	
+});
+
+ 
+</script>
+<#include '/admin/footer.html' >

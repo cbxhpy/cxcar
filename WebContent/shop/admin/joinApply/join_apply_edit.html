@@ -1,0 +1,73 @@
+<#assign dateformat="com.enation.framework.directive.DateformateDirective"?new()>
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="editForms" method="post" class="validate">
+			<table>
+				<tr>
+					<th>卡号：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" value="${washMemberCard.sn!}" 
+						name="washMemberCard.sn" data-options="required:true" disabled></input></td>
+					<th>手机号：</th>
+					<td><input class="easyui-validatebox input_text" type="text" value="${washMemberCard.uname!}"
+						name="washMemberCard.uname" data-options="required:true" disabled></input>
+					</td>
+				</tr>
+				<tr>
+					<th>价格：</th>
+					<td><input class="easyui-validatebox input_text" type="number" value="${washMemberCard.price?string('0.00')}"
+						name="washMemberCard.price" data-options="required:true" disabled></input>
+					</td>
+					<th>卡类型：</th>
+					<td>
+						<select class="easyui-validatebox" name="washMemberCard.card_type" disabled>
+							<option value="1" <#if washMemberCard.card_type==1>selected</#if>>&nbsp;月卡&nbsp;</option>
+							<option value="2" <#if washMemberCard.card_type==2>selected</#if>>&nbsp;季卡&nbsp;</option>
+							<option value="3" <#if washMemberCard.card_type==3>selected</#if>>&nbsp;年卡&nbsp;</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>天数：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" id="keyword" value="${washMemberCard.wash_day!}"
+						name="washMemberCard.wash_day" data-options="required:true" disabled></input>
+					</td>
+					<th>支付状态：</th>
+					<td>
+						<select class="easyui-validatebox" name="washMemberCard.pay_status" disabled>
+							<option value="0" <#if washMemberCard.pay_status==0>selected</#if>>&nbsp;未支付&nbsp;</option>
+							<option value="1" <#if washMemberCard.pay_status==1>selected</#if>>&nbsp;已支付&nbsp;</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>支付类型：</th>
+					<td>
+						<select class="easyui-validatebox" name="washMemberCard.pay_type" disabled>
+							<option value="1" <#if washMemberCard.pay_type==1>selected</#if>>&nbsp;支付宝&nbsp;</option>
+							<option value="2" <#if washMemberCard.pay_type==2>selected</#if>>&nbsp;微信&nbsp;</option>
+						</select>
+					</td>
+					<th>支付时间：</th>
+					<td>
+						<input class="easyui-datebox input_text" type="text" name="washMemberCard.pay_time"
+							style="height: 28px;"
+							value="<@dateformat time='${washMemberCard.pay_time?c}' pattern='yyyy-MM-dd HH:mm:ss'/>"
+							data-options="required:true" disabled></input>
+					</td>
+				</tr>
+				<tr>
+					<th>结束时间：</th>
+					<td>
+						<input class="easyui-datebox input_text" type="text" name="washMemberCard.end_time"
+							style="height: 28px;"
+							value="<@dateformat time='${washMemberCard.end_time?c}' pattern='yyyy-MM-dd HH:mm:ss'/>"
+							data-options="required:true" disabled></input>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="washMemberCard.wash_member_card_id" value="${washMemberCard.wash_member_card_id}">
+		</form>
+	</div>
+</div>

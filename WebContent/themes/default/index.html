@@ -1,0 +1,905 @@
+<#assign title="商城首页" />
+ <#include 'common/header2.html'/>
+<div class="limitedBuy_mode w" id="limitedBuy">
+	<ul class="tab_hd">
+		<li class="currents"><a href="javascript:void(0)">热卖推荐</a><i></i></li>
+	</ul>
+
+	<div class="pro_list">
+		<div class="list" id="index_pro_list_scroll">
+			<div class="Cont" id="ISL_Cont">
+				<div class="ScrCont" onmouseover="ISL_Stop();"
+					onmouseout="ISL_Start();">
+					<div id="scroll_list_1" class="sales_list clearfix">
+						<!-- 获取商品列表标签 -->
+						<#assign goodsListTag = newTag("goodsListTag")>
+						<!-- 调用商品列表标签，并传递商品列表所在catid及循环次数 -->
+						<#assign goodsList=goodsListTag("'tagid':'4','goodsnum':'10'")>
+						<ul>
+							<#list goodsList as goods>
+							<li>
+								<div>
+									<a class="pic" href="${ctx}/goods-${goods.goods_id}.html"
+										target="_blank"><img src="${goods.thumbnail!''}"></a>
+									<h4 class="title">
+										<a name="__AD_x-1-0" target="_blank"
+											href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+									</h4>
+									<div class="show-time"></div>
+									<div class="price">
+										<span class="act_price">￥<span class="">${goods.price}</span></span>
+									</div>
+
+								</div>
+							</li> </#list>
+						</ul>
+					</div>
+					<div id="scroll_list_2" class="sales_list clearfix">
+						<!-- 获取商品列表标签 -->
+						<#assign goodsListTag = newTag("goodsListTag")>
+						<!-- 调用商品列表标签，并传递商品列表所在catid及循环次数 -->
+						<#assign goodsList=goodsListTag("'tagid':'6','goodsnum':'5'")>
+						<ul>
+							<#list goodsList as goods>
+							<li>
+								<div>
+									<a class="pic" href="${ctx}/goods-${goods.goods_id}.html"
+										target="_blank"><img src="${goods.thumbnail!''}"></a>
+									<h4 class="title">
+										<a name="__AD_x-1-0" target="_blank"
+											href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+									</h4>
+									<div class="show-time"></div>
+									<div class="price">
+										<span class="act_price">￥<span class="num">${goods.price}</span></span>
+									</div>
+
+								</div>
+							</li> </#list>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script language="javascript"
+			src="${ctx}/themes/default/js/xxw_scroll.js"></script>
+	</div>
+</div>
+
+<#--楼层1：绿色食品-->
+<#assign catid_1 = 1 >
+<#-- 栏目2  标签商品id -->
+<#assign tagid_1 = 6 >
+<#-- 栏目2  banner广告id -->
+<#assign acid_1 = 20 >
+<#-- 栏目2  广告商品id大 -->
+<#assign acid_1_2 = 21 >
+<#-- 栏目2  横幅广告id -->
+<#assign bg_acid_1 = 22 >
+<div class="floor_mode w F1">
+	<div class="hd t1">
+		<div class="floor_subCol">
+			<div class="hd_title">
+				<h2>
+					<img src="${ctx}/themes/default/images/1f.png" /> 1F 绿色食品
+				</h2>
+			</div>
+			<#-- 调用广告信息,传递参数acid_1_2 -->
+			<#assign adv = advListTag("'acid':'${acid_1_2}'")!'' >
+			<#-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size gt 0> 
+				<#-- 获取广告图片宽度 -->
+				<#assign width = adv.adDetails.width />
+				<#-- 获取广告图片高度 -->
+				<#assign height = adv.adDetails.height />
+					<#list advList as adv>
+						<#if adv_index==0>
+							<div class="floor_subColpic">
+								<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+							</div>				
+						</#if>
+					</#list>
+			</#if>
+			<ul class="s_incategory">
+				<#assign goodsCatListTag= newTag("goodsCatListTag")>
+				<#assign goodsCat = goodsCatListTag("'catid':${catid_1}")!'' >
+				<#list goodsCat as cat>
+				<#if cat_index gt 0 >
+				<li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name
+						}</a></li> 
+				</#if>
+				</#list>
+			</ul>
+		</div>
+
+		<div class="bd clearfix">
+			<div class="floor_main">
+				<ul attr="1" id="con_dzt_1" class="floor_picList"
+					style="display: block;">
+					<li class="col_00">
+						<div class="mainnewsleftflash">
+							<div style="margin: auto; width: 392px;">
+								<div class="FocusPic">
+									<div class="FP_arr_left" id="FS_arr_left_01"></div>
+									<div class="FP_arr_right" id="FS_arr_right_01"></div>
+									<div class="FP_cont" id="FS_Cont_01"
+										style="width: 392px; overflow-x: hidden; overflow-y: hidden;">
+										<div style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+											<div
+												style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+												<div
+													style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+													<div
+														style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+														<!-- 创建广告标签 -->
+														<#assign advListTag= newTag("advListTag")> <#assign adv =
+														advListTag("'acid':'${acid_1}'")!'' > <#assign advList =
+														adv.advList /> <#if !advList?exists || advList?size==0>
+														没有上传广告 <#else> <#list advList as adv>
+														<div class="FP_pic">
+															<div>
+																<a href="${ctx}${adv.url!''}" target="_blank"><img
+																	src="${adv.atturl!''}" width="394" height="267"
+																	galleryimg="no"></a>
+															</div>
+															<div class="FP_tit_bg"></div>
+															<div class="FP_tit_txt">
+																<a href="${ctx}${adv.url!''}" target="_blank">${adv.aname!''}</a>
+															</div>
+															<div class="FP_tit_ico"></div>
+														</div>
+														</#list> </#if>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</li> <#assign goodsListTag = newTag("goodsListTag")> <#assign
+					goodsList=goodsListTag("'tagid':'${tagid_1}','goodsnum':'8'")> <#list
+					goodsList as goods>
+					<li class="<#if goods_index < 3>col_02<#else>col_03</#if>">
+						<dl>
+							<dt>
+								<div class="fzi_4">
+									<a href="${ctx}/goods-${goods.goods_id}.html">领跑</a>
+								</div>
+								<div class="fzi_5">
+									<a href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+								</div>
+								<div class="fzi_6">
+									<i>￥${goods.price}</i>
+								</div>
+							</dt>
+							<dd>
+								<a href="${ctx}/goods-${goods.goods_id}.html"><img
+									src="${goods.thumbnail!''}"></a>
+							</dd>
+						</dl>
+					</li> </#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<#-- 调用广告信息,传递参数bg_acid_1 -->
+<#assign adv = advListTag("'acid':'${bg_acid_1}'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+		<#list advList as adv>
+			<#if adv_index==0>
+				<div class="wb">
+					<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+				</div>				
+			</#if>
+		</#list>
+</#if>
+
+<#--楼层2：服饰鞋包-->
+<#assign catid_2 = 4 >
+<#-- 栏目2  标签商品id -->
+<#assign tagid_2 = 10 >
+<#-- 栏目2  banner广告id -->
+<#assign acid_2 = 23 >
+<#-- 栏目2  广告商品id大 -->
+<#assign acid_2_2 = 24 >
+<#-- 栏目2  横幅广告id -->
+<#assign bg_acid_2 = 25 >
+<div class="floor_mode w F2">
+	<div class="hd t1">
+		<div class="floor_subCol">
+			<div class="hd_title">
+				<h2>
+					<img src="${ctx}/themes/default/images/2f.png" /> 2F 服饰鞋包
+				</h2>
+			</div>
+			<#-- 调用广告信息,传递参数acid_1_2 -->
+			<#assign adv = advListTag("'acid':'${acid_2_2}'")!'' >
+			<#-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size gt 0> 
+				<#-- 获取广告图片宽度 -->
+				<#assign width = adv.adDetails.width />
+				<#-- 获取广告图片高度 -->
+				<#assign height = adv.adDetails.height />
+					<#list advList as adv>
+						<#if adv_index==0>
+							<div class="floor_subColpic">
+								<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+							</div>				
+						</#if>
+					</#list>
+			</#if>
+			<ul class="s_incategory">
+				<#assign goodsCatListTag= newTag("goodsCatListTag")>
+				<#assign goodsCat = goodsCatListTag("'catid':${catid_2}")!'' >
+				<#list goodsCat as cat>
+				<#if cat_index gt 0 >
+				<li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name}</a></li> 
+				</#if>
+				</#list>
+			</ul>
+		</div>
+
+		<div class="bd clearfix">
+			<div class="floor_main">
+				<ul attr="1" id="con_dzt_1" class="floor_picList"
+					style="display: block;">
+					<li class="col_00">
+						<div class="mainnewsleftflash">
+							<div style="margin: auto; width: 392px;">
+								<div class="FocusPic">
+									<div class="FP_arr_left" id="FS_arr_left_02"></div>
+									<div class="FP_arr_right" id="FS_arr_right_02"></div>
+									<div class="FP_cont" id="FS_Cont_02"
+										style="width: 392px; overflow-x: hidden; overflow-y: hidden;">
+										<div style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+											<div
+												style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+												<div
+													style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+													<div
+														style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+														<!-- 创建广告标签 -->
+														<#assign advListTag= newTag("advListTag")> <#assign adv =
+														advListTag("'acid':'${acid_2}'")!'' > <#assign advList =
+														adv.advList /> <#if !advList?exists || advList?size==0>
+														没有上传广告 <#else> <#list advList as adv>
+														<div class="FP_pic">
+															<div>
+																<a href="${ctx}${adv.url!''}" target="_blank"><img
+																	src="${adv.atturl!''}" width="394" height="267"
+																	galleryimg="no"></a>
+															</div>
+															<div class="FP_tit_bg"></div>
+															<div class="FP_tit_txt">
+																<a href="${ctx}${adv.url!''}" target="_blank">${adv.aname!''}</a>
+															</div>
+															<div class="FP_tit_ico"></div>
+														</div>
+														</#list> </#if>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</li> <#assign goodsListTag = newTag("goodsListTag")> <#assign
+					goodsList=goodsListTag("'tagid':'${tagid_2}','goodsnum':'8'")> <#list
+					goodsList as goods>
+					<li class="<#if goods_index < 3>col_02<#else>col_03</#if>">
+						<dl>
+							<dt>
+								<div class="fzi_4">
+									<a href="${ctx}/goods-${goods.goods_id}.html">领跑</a>
+								</div>
+								<div class="fzi_5">
+									<a href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+								</div>
+								<div class="fzi_6">
+									<i>￥${goods.price}</i>
+								</div>
+							</dt>
+							<dd>
+								<a href="${ctx}/goods-${goods.goods_id}.html"><img
+									src="${goods.thumbnail!''}"></a>
+							</dd>
+						</dl>
+					</li> </#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<#-- 调用广告信息,传递参数bg_acid_1 -->
+<#assign adv = advListTag("'acid':'${bg_acid_2}'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+		<#list advList as adv>
+			<#if adv_index==0>
+				<div class="wb">
+					<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+				</div>				
+			</#if>
+		</#list>
+</#if>
+
+<#--楼层3：家居用品-->
+<#assign catid_3 = 38 >
+<#-- 栏目2  标签商品id -->
+<#assign tagid_3 = 12 >
+<#-- 栏目2  banner广告id -->
+<#assign acid_3 = 26 >
+<#-- 栏目2  广告商品id大 -->
+<#assign acid_3_2 = 27 >
+<#-- 栏目2  横幅广告id -->
+<#assign bg_acid_3 = 28 >
+<div class="floor_mode w F3">
+	<div class="hd t1">
+		<div class="floor_subCol">
+			<div class="hd_title">
+				<h2>
+					<img src="${ctx}/themes/default/images/3f.png" /> 3F 家居用品
+				</h2>
+			</div>
+			<#-- 调用广告信息,传递参数acid_1_2 -->
+			<#assign adv = advListTag("'acid':'${acid_3_2}'")!'' >
+			<#-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size gt 0> 
+				<#-- 获取广告图片宽度 -->
+				<#assign width = adv.adDetails.width />
+				<#-- 获取广告图片高度 -->
+				<#assign height = adv.adDetails.height />
+					<#list advList as adv>
+						<#if adv_index==0>
+							<div class="floor_subColpic">
+								<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+							</div>				
+						</#if>
+					</#list>
+			</#if>
+			<ul class="s_incategory">
+				<#assign goodsCatListTag= newTag("goodsCatListTag")>
+				<#assign goodsCat = goodsCatListTag("'catid':${catid_3}")!'' >
+				<#list goodsCat as cat>
+				<#if cat_index gt 0 >
+				<li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name
+						}</a></li> 
+				</#if>
+				</#list>
+			</ul>
+		</div>
+
+		<div class="bd clearfix">
+			<div class="floor_main">
+				<ul attr="1" id="con_dzt_1" class="floor_picList"
+					style="display: block;">
+					<li class="col_00">
+						<div class="mainnewsleftflash">
+							<div style="margin: auto; width: 392px;">
+								<div class="FocusPic">
+									<div class="FP_arr_left" id="FS_arr_left_03"></div>
+									<div class="FP_arr_right" id="FS_arr_right_03"></div>
+									<div class="FP_cont" id="FS_Cont_03"
+										style="width: 392px; overflow-x: hidden; overflow-y: hidden;">
+										<div style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+											<div
+												style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+												<div
+													style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+													<div
+														style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+														<!-- 创建广告标签 -->
+														<#assign advListTag= newTag("advListTag")> <#assign adv =
+														advListTag("'acid':'${acid_3}'")!'' > <#assign advList =
+														adv.advList /> <#if !advList?exists || advList?size==0>
+														没有上传广告 <#else> <#list advList as adv>
+														<div class="FP_pic">
+															<div>
+																<a href="${ctx}${adv.url!''}" target="_blank"><img
+																	src="${adv.atturl!''}" width="394" height="267"
+																	galleryimg="no"></a>
+															</div>
+															<div class="FP_tit_bg"></div>
+															<div class="FP_tit_txt">
+																<a href="${ctx}${adv.url!''}" target="_blank">${adv.aname!''}</a>
+															</div>
+															<div class="FP_tit_ico"></div>
+														</div>
+														</#list> </#if>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</li> <#assign goodsListTag = newTag("goodsListTag")> <#assign
+					goodsList=goodsListTag("'tagid':'${tagid_3}','goodsnum':'8'")> <#list
+					goodsList as goods>
+					<li class="<#if goods_index < 3>col_02<#else>col_03</#if>">
+						<dl>
+							<dt>
+								<div class="fzi_4">
+									<a href="${ctx}/goods-${goods.goods_id}.html">领跑</a>
+								</div>
+								<div class="fzi_5">
+									<a href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+								</div>
+								<div class="fzi_6">
+									<i>￥${goods.price}</i>
+								</div>
+							</dt>
+							<dd>
+								<a href="${ctx}/goods-${goods.goods_id}.html"><img
+									src="${goods.thumbnail!''}"></a>
+							</dd>
+						</dl>
+					</li> </#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<#-- 调用广告信息,传递参数bg_acid_1 -->
+<#assign adv = advListTag("'acid':'${bg_acid_3}'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+		<#list advList as adv>
+			<#if adv_index==0>
+				<div class="wb">
+					<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+				</div>				
+			</#if>
+		</#list>
+</#if>
+
+<#--楼层4：家用电器-->
+<#assign catid_4 = 56 >
+<#-- 栏目2  标签商品id -->
+<#assign tagid_4 = 15 >
+<#-- 栏目2  banner广告id -->
+<#assign acid_4 = 29 >
+<#-- 栏目2  广告商品id大 -->
+<#assign acid_4_2 = 30 >
+<#-- 栏目2  横幅广告id -->
+<#assign bg_acid_4 = 31 >
+<div class="floor_mode w F4">
+	<div class="hd t1">
+		<div class="floor_subCol">
+			<div class="hd_title">
+				<h2>
+					<img src="${ctx}/themes/default/images/4f.png" /> 4F 家用电器
+				</h2>
+			</div>
+			<#-- 调用广告信息,传递参数acid_1_2 -->
+			<#assign adv = advListTag("'acid':'${acid_4_2}'")!'' >
+			<#-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size gt 0> 
+				<#-- 获取广告图片宽度 -->
+				<#assign width = adv.adDetails.width />
+				<#-- 获取广告图片高度 -->
+				<#assign height = adv.adDetails.height />
+					<#list advList as adv>
+						<#if adv_index==0>
+							<div class="floor_subColpic">
+								<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+							</div>				
+						</#if>
+					</#list>
+			</#if>
+			<ul class="s_incategory">
+				<#assign goodsCatListTag= newTag("goodsCatListTag")>
+				<#assign goodsCat = goodsCatListTag("'catid':${catid_4}")!'' >
+				<#list goodsCat as cat>
+				<#if cat_index gt 0 >
+				<li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name
+						}</a></li> 
+				</#if>
+				</#list>
+			</ul>
+		</div>
+
+		<div class="bd clearfix">
+			<div class="floor_main">
+				<ul attr="1" id="con_dzt_1" class="floor_picList"
+					style="display: block;">
+					<li class="col_00">
+						<div class="mainnewsleftflash">
+							<div style="margin: auto; width: 392px;">
+								<div class="FocusPic">
+									<div class="FP_arr_left" id="FS_arr_left_04"></div>
+									<div class="FP_arr_right" id="FS_arr_right_04"></div>
+									<div class="FP_cont" id="FS_Cont_04"
+										style="width: 392px; overflow-x: hidden; overflow-y: hidden;">
+										<div style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+											<div
+												style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+												<div
+													style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+													<div
+														style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+														<!-- 创建广告标签 -->
+														<#assign advListTag= newTag("advListTag")> <#assign adv =
+														advListTag("'acid':'${acid_4}'")!'' > <#assign advList =
+														adv.advList /> <#if !advList?exists || advList?size==0>
+														没有上传广告 <#else> <#list advList as adv>
+														<div class="FP_pic">
+															<div>
+																<a href="${ctx}${adv.url!''}" target="_blank"><img
+																	src="${adv.atturl!''}" width="394" height="267"
+																	galleryimg="no"></a>
+															</div>
+															<div class="FP_tit_bg"></div>
+															<div class="FP_tit_txt">
+																<a href="${ctx}${adv.url!''}" target="_blank">${adv.aname!''}</a>
+															</div>
+															<div class="FP_tit_ico"></div>
+														</div>
+														</#list> </#if>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</li> <#assign goodsListTag = newTag("goodsListTag")> <#assign
+					goodsList=goodsListTag("'tagid':'${tagid_4}','goodsnum':'8'")> <#list
+					goodsList as goods>
+					<li class="<#if goods_index < 3>col_02<#else>col_03</#if>">
+						<dl>
+							<dt>
+								<div class="fzi_4">
+									<a href="${ctx}/goods-${goods.goods_id}.html">领跑</a>
+								</div>
+								<div class="fzi_5">
+									<a href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+								</div>
+								<div class="fzi_6">
+									<i>￥${goods.price}</i>
+								</div>
+							</dt>
+							<dd>
+								<a href="${ctx}/goods-${goods.goods_id}.html"><img
+									src="${goods.thumbnail!''}"></a>
+							</dd>
+						</dl>
+					</li> </#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<#-- 调用广告信息,传递参数bg_acid_1 -->
+<#assign adv = advListTag("'acid':'${bg_acid_4}'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+		<#list advList as adv>
+			<#if adv_index==0>
+				<div class="wb">
+					<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+				</div>				
+			</#if>
+		</#list>
+</#if>
+
+<#--楼层5：个人护理-->
+<#assign catid_5 = 35 >
+<#-- 栏目2  标签商品id -->
+<#assign tagid_5 = 18 >
+<#-- 栏目2  banner广告id -->
+<#assign acid_5 = 32 >
+<#-- 栏目2  广告商品id大 -->
+<#assign acid_5_2 = 33 >
+<#-- 栏目2  横幅广告id -->
+<#assign bg_acid_5 = 34 >
+<div class="floor_mode w F5">
+	<div class="hd t1">
+		<div class="floor_subCol">
+			<div class="hd_title">
+				<h2>
+					<img src="${ctx}/themes/default/images/5f.png" /> 5F 个人护理
+				</h2>
+			</div>
+			<#-- 调用广告信息,传递参数acid_1_2 -->
+			<#assign adv = advListTag("'acid':'${acid_5_2}'")!'' >
+			<#-- 获取广告列表 -->
+			<#assign advList = adv.advList />
+			<#if !advList?exists || advList?size gt 0> 
+				<#-- 获取广告图片宽度 -->
+				<#assign width = adv.adDetails.width />
+				<#-- 获取广告图片高度 -->
+				<#assign height = adv.adDetails.height />
+					<#list advList as adv>
+						<#if adv_index==0>
+							<div class="floor_subColpic">
+								<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+							</div>				
+						</#if>
+					</#list>
+			</#if>
+			<ul class="s_incategory">
+				<#assign goodsCatListTag= newTag("goodsCatListTag")>
+				<#assign goodsCat = goodsCatListTag("'catid':${catid_5}")!'' >
+				<#list goodsCat as cat>
+				<#if cat_index gt 0 >
+				<li><a href="${ctx}/search-cat-${cat.cat_id}.html">${cat.name
+						}</a></li> 
+				</#if>
+				</#list>
+			</ul>
+		</div>
+
+		<div class="bd clearfix">
+			<div class="floor_main">
+				<ul attr="1" id="con_dzt_1" class="floor_picList"
+					style="display: block;">
+					<li class="col_00">
+						<div class="mainnewsleftflash">
+							<div style="margin: auto; width: 392px;">
+								<div class="FocusPic">
+									<div class="FP_arr_left" id="FS_arr_left_05"></div>
+									<div class="FP_arr_right" id="FS_arr_right_05"></div>
+									<div class="FP_cont" id="FS_Cont_05"
+										style="width: 392px; overflow-x: hidden; overflow-y: hidden;">
+										<div style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+											<div
+												style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+												<div
+													style="overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+													<div
+														style="float: left; overflow-x: hidden; overflow-y: hidden; zoom: 1;">
+														<!-- 创建广告标签 -->
+														<#assign advListTag= newTag("advListTag")> <#assign adv =
+														advListTag("'acid':'${acid_5}'")!'' > <#assign advList =
+														adv.advList /> <#if !advList?exists || advList?size==0>
+														没有上传广告 <#else> <#list advList as adv>
+														<div class="FP_pic">
+															<div>
+																<a href="${ctx}${adv.url!''}" target="_blank"><img
+																	src="${adv.atturl!''}" width="394" height="267"
+																	galleryimg="no"></a>
+															</div>
+															<div class="FP_tit_bg"></div>
+															<div class="FP_tit_txt">
+																<a href="${ctx}${adv.url!''}" target="_blank">${adv.aname!''}</a>
+															</div>
+															<div class="FP_tit_ico"></div>
+														</div>
+														</#list> </#if>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</li> <#assign goodsListTag = newTag("goodsListTag")> <#assign
+					goodsList=goodsListTag("'tagid':'${tagid_5}','goodsnum':'8'")> <#list
+					goodsList as goods>
+					<li class="<#if goods_index < 3>col_02<#else>col_03</#if>">
+						<dl>
+							<dt>
+								<div class="fzi_4">
+									<a href="${ctx}/goods-${goods.goods_id}.html">领跑</a>
+								</div>
+								<div class="fzi_5">
+									<a href="${ctx}/goods-${goods.goods_id}.html">${goods.name}</a>
+								</div>
+								<div class="fzi_6">
+									<i>￥${goods.price}</i>
+								</div>
+							</dt>
+							<dd>
+								<a href="${ctx}/goods-${goods.goods_id}.html"><img
+									src="${goods.thumbnail!''}"></a>
+							</dd>
+						</dl>
+					</li> </#list>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<#-- 调用广告信息,传递参数bg_acid_1 -->
+<#assign adv = advListTag("'acid':'${bg_acid_5}'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+		<#list advList as adv>
+			<#if adv_index==0>
+				<div class="wb">
+					<a href="${ctx}${adv.url!''}" style="width:${width};height:${height};" target="_blank"><@image src="${adv.atturl!''}" width="${width}" height="${height}"/></a>
+				</div>				
+			</#if>
+		</#list>
+</#if>
+
+<script>
+	function hide_cart_info() {
+		$("#cart_goods_info_side").css({
+			"display" : "none"
+		});
+	}
+	function show_cart_info_event() {
+		var obj = document.getElementById("cart_goods_info_side");
+		if (obj.innerHTML) {
+			$("#cart_goods_info_side").css({
+				"display" : "block"
+			});
+		} else {
+			$("#cart_goods_info_side").css({
+				"display" : "none"
+			});
+		}
+	}
+</script>
+
+
+<script type="text/javascript"
+	src="${ctx}/themes/default/js/navigation.js"></script>
+
+
+
+<script>
+	$(function() {
+
+		$(".tab_hd li").mouseover(
+				function() {
+					$(this).addClass("currents").siblings("li").removeClass();
+					$("div .saledsList_items:eq(" + $(this).index() + ")")
+							.show().siblings(".saledsList_items").hide();
+				});
+
+	});
+
+</script>
+
+<script language="javascript" type="text/javascript">
+	var focusScroll_01 = new ScrollPic();
+	focusScroll_01.scrollContId = "FS_Cont_01"; //内容容器ID
+	focusScroll_01.arrLeftId = "FS_arr_left_01";//左箭头ID
+	focusScroll_01.arrRightId = "FS_arr_right_01"; //右箭头ID
+	focusScroll_01.dotListId = "FS_numList_01";//点列表ID
+	focusScroll_01.dotClassName = "";//点className
+	focusScroll_01.dotOnClassName = "selected";//当前点className
+	focusScroll_01.listType = "number";//列表类型(number:数字，其它为空
+	focusScroll_01.listEvent = "onmouseover"; //切换事件
+	focusScroll_01.frameWidth = 392;//显示框宽度
+	focusScroll_01.pageWidth = 392; //翻页宽度
+	focusScroll_01.upright = false; //垂直滚动
+	focusScroll_01.speed = 10; //移动速度(单位毫秒，越小越快)
+	focusScroll_01.space = 30; //每次移动像素(单位px，越大越快)
+	focusScroll_01.autoPlay = true; //自动播放
+	focusScroll_01.autoPlayTime = 5; //自动播放间隔时间(秒
+	focusScroll_01.initialize(); //初始化
+</script>
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+	var focusScroll_03 = new ScrollPic();
+	focusScroll_03.scrollContId = "FS_Cont_02"; //内容容器ID
+	focusScroll_03.arrLeftId = "FS_arr_left_02";//左箭头ID
+	focusScroll_03.arrRightId = "FS_arr_right_02"; //右箭头ID
+	focusScroll_03.dotListId = "FS_numList_01";//点列表ID
+	focusScroll_03.dotClassName = "";//点className
+	focusScroll_03.dotOnClassName = "selected";//当前点className
+	focusScroll_03.listType = "number";//列表类型(number:数字，其它为空
+	focusScroll_03.listEvent = "onmouseover"; //切换事件
+	focusScroll_03.frameWidth = 392;//显示框宽度
+	focusScroll_03.pageWidth = 392; //翻页宽度
+	focusScroll_03.upright = false; //垂直滚动
+	focusScroll_03.speed = 10; //移动速度(单位毫秒，越小越快)
+	focusScroll_03.space = 30; //每次移动像素(单位px，越大越快)
+	focusScroll_03.autoPlay = true; //自动播放
+	focusScroll_03.autoPlayTime = 5; //自动播放间隔时间(秒
+	focusScroll_03.initialize(); //初始化
+</script>
+<script language="javascript" type="text/javascript">
+	var focusScroll_03 = new ScrollPic();
+	focusScroll_03.scrollContId = "FS_Cont_03"; //内容容器ID
+	focusScroll_03.arrLeftId = "FS_arr_left_03";//左箭头ID
+	focusScroll_03.arrRightId = "FS_arr_right_03"; //右箭头ID
+	focusScroll_03.dotListId = "FS_numList_01";//点列表ID
+	focusScroll_03.dotClassName = "";//点className
+	focusScroll_03.dotOnClassName = "selected";//当前点className
+	focusScroll_03.listType = "number";//列表类型(number:数字，其它为空
+	focusScroll_03.listEvent = "onmouseover"; //切换事件
+	focusScroll_03.frameWidth = 392;//显示框宽度
+	focusScroll_03.pageWidth = 392; //翻页宽度
+	focusScroll_03.upright = false; //垂直滚动
+	focusScroll_03.speed = 10; //移动速度(单位毫秒，越小越快)
+	focusScroll_03.space = 30; //每次移动像素(单位px，越大越快)
+	focusScroll_03.autoPlay = true; //自动播放
+	focusScroll_03.autoPlayTime = 5; //自动播放间隔时间(秒
+	focusScroll_03.initialize(); //初始化
+</script>
+<script>
+	var focusScroll_02 = new ScrollPic();
+	focusScroll_02.scrollContId = "FS_Cont_04"; //内容容器ID
+	focusScroll_02.arrLeftId = "FS_arr_left_04";//左箭头ID
+	focusScroll_02.arrRightId = "FS_arr_right_04"; //右箭头ID
+	focusScroll_02.dotListId = "FS_numList_01";//点列表ID
+	focusScroll_02.dotClassName = "";//点className
+	focusScroll_02.dotOnClassName = "selected";//当前点className
+	focusScroll_02.listType = "number";//列表类型(number:数字，其它为空
+	focusScroll_02.listEvent = "onmouseover"; //切换事件
+	focusScroll_02.frameWidth = 392;//显示框宽度
+	focusScroll_02.pageWidth = 392; //翻页宽度
+	focusScroll_02.upright = false; //垂直滚动
+	focusScroll_02.speed = 10; //移动速度(单位毫秒，越小越快)
+	focusScroll_02.space = 30; //每次移动像素(单位px，越大越快)
+	focusScroll_02.autoPlay = true; //自动播放
+	focusScroll_02.autoPlayTime = 5; //自动播放间隔时间(秒
+	focusScroll_02.initialize(); //初始化
+</script>
+<script>
+	var focusScroll_02 = new ScrollPic();
+	focusScroll_02.scrollContId = "FS_Cont_05"; //内容容器ID
+	focusScroll_02.arrLeftId = "FS_arr_left_05";//左箭头ID
+	focusScroll_02.arrRightId = "FS_arr_right_05"; //右箭头ID
+	focusScroll_02.dotListId = "FS_numList_01";//点列表ID
+	focusScroll_02.dotClassName = "";//点className
+	focusScroll_02.dotOnClassName = "selected";//当前点className
+	focusScroll_02.listType = "number";//列表类型(number:数字，其它为空
+	focusScroll_02.listEvent = "onmouseover"; //切换事件
+	focusScroll_02.frameWidth = 392;//显示框宽度
+	focusScroll_02.pageWidth = 392; //翻页宽度
+	focusScroll_02.upright = false; //垂直滚动
+	focusScroll_02.speed = 10; //移动速度(单位毫秒，越小越快)
+	focusScroll_02.space = 30; //每次移动像素(单位px，越大越快)
+	focusScroll_02.autoPlay = true; //自动播放
+	focusScroll_02.autoPlayTime = 5; //自动播放间隔时间(秒
+	focusScroll_02.initialize(); //初始化
+</script>
+
+<#include 'common/footer.html'/>

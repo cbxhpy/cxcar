@@ -1,0 +1,12 @@
+<#assign orderstatus= "com.enation.app.shop.core.taglib.OrderStatusDirectiveModel"?new()>
+<#assign dateformat="com.enation.framework.directive.DateformateDirective"?new()>
+<#list ordersList as orders>
+		<tr>
+			<td><a href="member_orderdetail_${orders.sn}.html">${orders.sn!'' }</a></td>
+			<td><@dateformat time="${orders.create_time?c}" pattern="yyyy-MM-dd HH:mm"/></td>
+			<td class="textright">${orders.order_amount?string.currency}</td>
+			<td>
+				<@orderstatus status="${orders.status}" type="order" />
+			</td>
+		</tr>
+</#list>

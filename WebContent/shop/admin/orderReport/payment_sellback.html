@@ -1,0 +1,185 @@
+<#include '/admin/header.html' > <#assign dateformat=
+"com.enation.framework.directive.DateformateDirective"?new()> <#assign
+permssion=
+"com.enation.app.base.core.directive.PermssionDirective"?new()>
+
+<div class="main">
+	<form  method="post" id="theForm">
+		<div class="shadowBoxWhite  whiteBox">
+			<table>
+				<tr>
+					<th class="title" colspan="8">退货结算</th>
+				</tr>
+				<tr>
+					<th align="right" style="width: 100px;">退货单号：</th>
+					<td>${sellBackList.tradeno}</td>
+
+					<th>状态：</th>
+					<td><#if sellBackList.tradestatus==0>新建</#if> <#if
+						sellBackList.tradestatus==1>待入库</#if> <#if
+						sellBackList.tradestatus==2>已入库</#if> <#if
+						sellBackList.tradestatus==3>已完成</#if> <#if
+						sellBackList.tradestatus==4>已取消</#if></td>
+				</tr>
+				<tr>
+					<th align="right">关联订单号：</th>
+					<td>${sellBackList.ordersn}</td>
+					<th>订单使用：</th>
+					<td>已支付：￥${orderinfo.paymoney}</td>
+				</tr>
+				<tr>
+					<th align="right">退货人：</th>
+					<td>${sellBackList.sndto}</td>
+					<th style="width: 80px">物流公司：</th>
+					<td>${ sellBackList.logi_name} &nbsp;&nbsp; 物流单号：
+						${sellBackList.logi_no!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">退款金额：</th>
+					<td width="300">${sellBackList.alltotal_pay } 元</td>
+					<th>退款运费：</th>
+					<td><#if sellBackList.fare??&&sellBackList.fare!=''>
+						${sellBackList.fare} <#else> 0 </#if>元 &nbsp;&nbsp; 合计： <#if
+						sellBackList.total??> ${sellBackList.total } <#else> 0 </#if></td>
+				</tr>
+				<tr>
+					<th align="right">是否全部退货：</th>
+					<td >
+						<#if sellBackList.isall==1>
+							全部退货
+						</#if>
+						<#if sellBackList.isall==0>
+							部分退货
+						</#if>
+					</td>
+						
+					<th >退货仓库：</th>
+					<td >
+						<#if sellBackList.depotid==1>海淀仓库</#if>
+						<#if sellBackList.depotid==2>朝阳仓库</#if>
+						<#if sellBackList.depotid==3>昌平仓库</#if>
+					</td>
+				</tr>
+				<tr>
+					<th align="right" valign="top">退款方式：</th>
+					<td colspan="3"><#if sellBackList.refund_way??> <#if
+						sellBackList.refund_way==0> <span id="way_0">银行退款</span> <#elseif
+						sellBackList.refund_way==1> <span id="pay">
+							余额：${sellBackList.surplus }<input type="hidden"
+							value="${sellBackList.integral }" name="sellBackList.integral" />&nbsp;&nbsp;
+							积分：${sellBackList.integral }<input type="hidden"
+							value="${sellBackList.surplus }" name="sellBackList.surplus" />
+					</span> </#if> </#if></td>
+				</tr>
+				<tr>
+					<th align="right">退款备注：</th>
+					<td colspan="3">${sellBackList.remark!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">客服操作备注：</th>
+					<td colspan="3">${sellBackList.seller_remark!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">操作备注：</th>
+					<td colspan="3"><textarea rows="3" id="seller_remark"
+							name="sellBackList.warehouse_remark">${sellBackList.warehouse_remark!'' }</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<br>
+
+		<div class="shadowBoxWhite  whiteBox detail">
+			<table width="100%" cellspacing="0" cellpadding="0" border="0" >
+				<tr>
+					<th class="title" colspan="8">退货的商品</th>
+				</tr>
+				<tr>
+					<th width="300px">商品名称</th>
+					<th width="100px">金额</th>
+					<th width="100px">购买数量</th>
+					<th width="100px">退货数量</th>
+					<th width="100px">入库数量</th>
+				</tr>
+				<#list goodsList as data>
+				<tr>
+					<td>${data.name }</td>
+					<td>${data.price }</td>
+					<td>${data.ship_num }</td>
+					<td>${data.return_num }</td>
+					<td>${data.storage_num!''}</td>
+				</tr>
+				</#list>
+				<tr>
+					<td colspan="8" style="text-align: center;">
+						<input type="hidden" value="${sellBackList.id }" name="id" /> 
+						<input type="hidden" value="${sellBackList.member_id!'' }" name="sellBackList.member_id" />
+						<#if sellBackList.tradestatus==2> 
+							<a href="javascript:void(0)" class="easyui-linkbutton saveBtn" id="submit" status="3">确认结算</a>
+						</#if>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<br>
+		<div class="shadowBoxWhite  whiteBox detail">
+			<table width="100%" cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<th colspan="3" class="title">操作日志</th>
+				</tr>
+				<tr>
+					<th>操作人员</th>
+					<th>操作详情</th>
+					<th>操作时间</th>
+				</tr>
+				<#list logList as log>
+				<tr>
+					<td>${log.operator }</td>
+					<td>${log.logdetail }</td>
+					<td><@dateformat time='${log.logtime}' pattern='yyyy-MM-dd'/></td>
+				</tr>
+				</#list>
+				<tr id="cancelRemark" style="display: none;">
+					<td colspan="4" align="center">取消原因：<input type="text"
+						class="input" value="" name="cancelRemark"
+						style="width: 150px; height: 26px; line-height: 26px;" /></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+
+<script type="text/javascript">
+	$('.saveBtn').click(function() {
+		var status = 3; //由于ie的bug，直接写死，不用读
+		$(".savebtn").linkbutton("disable");
+		var options = {
+			url : "sellBack!savePayment.do",
+			data : {
+				"ajax" : "yes",
+				"status" : status
+			},
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if (result.result == 1) {
+					$.Loading.success(result.message);
+					parent.CloseTabByTitle("退货结算");
+					parent.reloadTabGrid("退货单");
+					window.location.href = "${ctx}/shop/admin/sellBack!payment.do?id=${id}";
+				}
+				if (result.result == 0) {
+					$.Loading.error(result.message);
+					$(".savebtn").linkbutton("enable");
+				}
+			},
+			error : function(e) {
+				alert("出现错误 ，请重试");
+				$(".savebtn").linkbutton("enable");
+			}
+		};
+		$('#theForm').ajaxSubmit(options);
+	});
+</script>
+
+<#include '/admin/footer.html' >

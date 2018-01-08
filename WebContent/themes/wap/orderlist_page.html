@@ -1,0 +1,55 @@
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#assign memberOrderListTag = newTag("memberOrderListWblTag")>
+<#assign memberOrderList = memberOrderListTag("{'keyword':'${keyword!''}';'status':'${status!''}';'page':'${page!''}'}")>
+<#assign order = memberOrderList.ordersList>
+<#assign orderStautsTag = newTag("orderStautsTag")>
+<#assign orderState = orderStautsTag()>
+<#assign orderstatus = "com.enation.app.shop.core.taglib.OrderStatusDirectiveModel"?new()>
+<#if order?exists && order?size gt 0>
+	<#list order as orders>
+		<li class="order-cell">
+			<div class="m-order-list">
+				<a href="###"><p>订单流水号：${orders.sn}</p>
+				<p class="order-tipe"><span class="color-red"><@orderstatus status="${orders.status}" type="order_wbl" /></span>下单时间：<@dateformat time="${orders.create_time?c}" pattern="yyyy-MM-dd HH:mm"/></p></a>
+			</div>
+			<!-- 订单详细 -->
+			<!--创建“订单货物列表”标签-->
+			<#assign orderItemListTag = newTag("orderItemListTag")>
+			<!--调用“订单货物列表”标签，并传递参数-->
+			<#assign orderItemList = orderItemListTag("{'orderid':${orders.order_id}}")>
+			<ul class="order-detailist">
+				<#list orderItemList as item>
+					<li class="common-box">
+						<p class="inner">
+							<@image src="${item.image!}" />
+						</p>
+						<div>
+						    <p class="hideinfo">${item.name}</p>
+						    <p style="font-size: 0.24rem; color: #3e3a39;">
+								${item.other!}
+							</p>
+							<p class="size-prise"><span>${item.price?string.currency}</span>数量：${item.num}</p>
+						</div>
+					</li>
+				</#list> 
+			</ul>
+			<div class="m-all-prise">
+				<#if orders.status == 0>
+					<a href="${ctx}/api/shop/payment.do?orderid=${orders.order_id}" class="btn btn-green" style="margin-left: 10px;">立即付款</a>
+					<a href="###" class="btn js-delete" order_id="${orders.order_id}">取消订单</a>
+				<#elseif orders.status == 2 >
+					<a href="javascript:;" class="btn">已确认支付</a>
+				<#elseif orders.status == 5 >
+					<a href="${orders.logi_str!'javascript:function a(){InitShowMessage(\'暂无物流信息\');} a();'}"class="btn" style="margin-left: 10px;" orderid="${orders.order_id}">查看物流</a>
+					<a href="javascript:;"class="btn rogBtn btn-green" orderid="${orders.order_id}">确认订单</a>
+				<#elseif orders.status == 7 >
+					<a href="javascript:;" class="btn delete_order" order_id="${orders.order_id}">删除订单</a>
+				<#elseif orders.status == 8 >
+					<a href="javascript:;" class="btn">已取消</a>
+				</#if>
+				总价：<label>${orders.order_amount?string.currency}</label>
+			</div>
+		</li>
+	</#list>
+</#if>

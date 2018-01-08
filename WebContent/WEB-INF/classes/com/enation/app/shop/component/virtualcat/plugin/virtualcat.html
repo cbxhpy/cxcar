@@ -1,0 +1,17 @@
+<script type="text/javascript">
+var ext='${ext}';
+</script>
+<#assign children=vcatList />
+<#assign level=1 />
+<#include 'children.html' />
+<script type="text/javascript">
+ 
+$( function() {
+	<#if seller_cids?exists >
+	<#list 	seller_cids as sc>
+		$("#catid_${sc}").attr("checked",true);
+	</#list>
+	</#if> 
+});
+
+</script>

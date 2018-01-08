@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dbsolution>
+	<action>
+		<command>create</command>
+		<table>group_buy</table>
+		<field><name>group_id</name><type>int</type><size>11</size><option>11</option></field>
+		<field><name>start_time</name><type>long</type><size>8</size><option>00</option></field>
+		<field><name>end_time</name><type>long</type><size>8</size><option>00</option></field>
+		<field><name>group_pic_url</name><type>varchar</type><size>255</size><option>00</option></field>
+		<field><name>goods_id</name><type>int</type><size>11</size><option>00</option></field>
+		<field><name>goods_name</name><type>varchar</type><size>255</size><option>00</option></field>
+		<field><name>mktprice</name><type>decimal</type><size>20,2</size><option>00</option></field>
+		<field><name>group_price</name><type>decimal</type><size>20,2</size><option>00</option></field>
+		<field><name>group_summary</name><type>varchar</type><size>500</size><option>00</option></field>
+		<field><name>group_stat</name><type>int</type><size>11</size><option>00</option></field>
+		<field><name>create_time</name><type>long</type><size>8</size><option>00</option></field>
+	</action>
+</dbsolution>

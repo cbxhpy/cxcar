@@ -1,0 +1,186 @@
+<#include '/admin/header.html' >
+<script type="text/javascript" src="js/AppVersion.js"></script>
+<div class="main">
+	<div class="buttonArea">
+		<a href="javascript:void(0)" class="button blueButton"
+			onclick="append()">添加</a> <a href="javascript:void(0)" class="button"
+			onclick="del()">删除</a>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id="advform">
+			<table class="easyui-datagrid"
+				data-options="url:'appVersion!listJson.do',pageList: [10,15,19,30],pageSize:10,fitColumns:'true',onLoadSuccess:inits"
+				pagination="true" id="versiondata">
+				<thead>
+					<tr>
+						<th data-options="field:'app_version_id',checkbox:true"></th>
+						<!-- <th data-options="field:'app_version_id',width:70">ID</th> -->
+						<th data-options="field:'name',width:200">版本名称</th>
+						<th data-options="field:'platform',width:200" formatter="formatPlatform">所属系统</th>
+						<th data-options="field:'update_type',width:300" formatter="formatUpdatetype">升级类型</th>
+						<th data-options="field:'version_num',width:200" >版本号</th>
+						<th data-options="field:'num',width:200" >版本序号</th>
+						<th data-options="field:'file_size',width:200" >项目大小</th>
+						<th data-options="field:'create_time',width:200" formatter="formatCreatetime">创建时间</th>
+						<th data-options="field:'action',width:100,align:'center'"
+							formatter="formatOperation">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	function append(id) {
+		var map = {}; // Map map = new HashMap();
+		if (!id) {
+			map["href"] = "appVersion!add.do";
+			map["formId"] = "#addForm";
+			map["url"] = "appVersion!addSave.do?ajax=yes";
+			map["title"] = "添加版本";
+			map["loadshow"] = "正在添加......";
+		} else {
+			map["href"] = "appVersion!edit.do?version_id=" + id;
+			map["formId"] = "#editForm";
+			map["url"] = "appVersion!editSave.do?ajax=yes";
+			map["title"] = "修改版本";
+			map["loadshow"] = "正在修改......";
+		}
+		map["divDialog"] = "#divdia";
+		map["gridreload"] = "#versiondata";
+
+		//需要验证的参数
+		//map["nameId"]="#name";
+
+		addDialog(map);
+	}
+	function addDialog(map) {
+		$(map["divDialog"]).show();
+		$(map["divDialog"]).dialog({
+			title : map["title"],
+			width : 800,
+			height : 400,
+			closed : false,
+			cache : false,
+			href : map["href"],
+			modal : true,
+			buttons : [ {
+				text : '保存',
+				iconCls : 'icon-ok',
+				handler : function() {
+					var savebtn = $(this);
+	　　				var disabled=savebtn.hasClass("l-btn-disabled");
+	　　				if(!disabled){
+						submitForm(map,savebtn);
+					}
+				}
+			}, {
+				text : '清空',
+				handler : function() {
+					clearForm(map);
+				}
+			} ]
+		});
+	}
+	function submitForm(map,savebtn) {
+		var formflag = $(map["formId"]).form().form('validate');
+		if (formflag) {
+			$.Loading.show(map["loadshow"]);
+			savebtn.linkbutton("disable");
+			var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+					if (result.result == 1) {
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if (result.result == 0) {
+						$.Loading.error(result.message);
+					}
+					savebtn.linkbutton("enable");
+				},
+				error : function(e) {
+					$.Loading.error("出现错误 ，请重试");
+					savebtn.linkbutton("enable");
+				}
+			};
+			$(map["formId"]).ajaxSubmit(options);
+		}
+	}
+
+	function clearForm(map) {
+		$(map["formId"]).form('clear');
+	}
+	function formatOperation(value, row, index) {
+		var val = "<a class='edit' title='修改' href='javascript:void(0);' onclick='append("
+				+ row.app_version_id + ")' ></a>";
+
+		return val;
+	}
+
+	function formatPlatform(value, row, index) {
+		var val;
+		if (value == 1) {
+			val = 'android';
+		} else if (value == 2) {
+			val = 'ios';
+		}
+		return val;
+	}
+	
+	function formatUpdatetype(value, row, index) {
+		var val;
+		if(value == 0){
+			val = '不升级';
+		}else if (value == 1){
+			val = '建议升级';
+		}else if (value == 2) {
+			val = '强制升级';
+		}
+		return val;
+	}
+
+	function formatCreatetime(value, row, index) {
+		return getFormatDateByLong(value, "yyyy-MM-dd hh:mm");
+	}
+	function del() {
+		var rows = $('#versiondata').datagrid("getSelections");
+		if (rows.length < 1) {
+			$.Loading.error("请选择删除版本");
+			return;
+		}
+		if (!confirm("确认要删除版本吗？")) {
+			return;
+		}
+		$.Loading.show("正在删除......");
+		var options = {
+			url : "appVersion!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if (result.result == 1) {
+					$.Loading.success(result.message);
+				}
+				if (result.result == 0) {
+					$.Loading.error(result.message);
+				}
+				$("#versiondata").datagrid('reload');
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+		};
+		$('#advform').ajaxSubmit(options);
+	}
+	
+	function inits(){
+		AppVersion.init();
+	}
+	
+</script>
+<#include '/admin/footer.html' >

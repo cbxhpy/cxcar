@@ -1,0 +1,22 @@
+<#if cat_id?? && cat_id != ''>
+	<!-- 创建商品列表标签 -->
+	<#assign goodsNameTag = newTag("goodsNameListTag") >
+	<!-- 调用商品列表标签 -->
+	<#assign goodsName = goodsNameTag("'cat_id':${cat_id}")!'' >
+	<!-- 列表列表 -->
+	<#if goodsName.goodsNameList ??>
+		<#list goodsName.goodsNameList as goodslist>
+			<span goods_id="${goodslist.goods_id!''}" spec_type="${goodslist.have_spec}" price="${goodslist.price}" store="${goodslist.enable_store}">${goodslist.name!''}</span>
+		</#list>
+	<#else>
+		<script type="text/javascript">
+			$(function(){
+				InitShowMessage("该分类商品已售罄");
+			});
+		</script>
+	</#if>
+	
+<#else>
+	
+</#if>
+

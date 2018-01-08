@@ -1,0 +1,94 @@
+<#assign  title="提现申请" />
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css" type="text/css" />
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			提现申请
+		</p>
+	</div>
+<!-- 获取会员等待评论商品标签 -->
+<#assign memberWaitCommontListTag = newTag("memberWaitCommontListTag")>
+<!-- 调用会员等待评论商品标签 -->
+<#assign memberWaitCommontList = memberWaitCommontListTag()>
+<div class="member_commont" id=content_wrapper>
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>关于提现:</h3>
+				<ol>
+					<li>描写相关细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="point_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+			<div class="pointsSumm">
+				<h4>可用积分</h4>
+				<div class="overview">
+					<p class="layerCol">可用积分：<strong>${memberYongjin.yongjin!0}</strong></p>
+				</div>		
+				<div class="overview">
+					<p class="layerCol">
+						提现金额：<input type="text" name="yongjin" id="yongjin" style="width:150px;"/> &nbsp; <a href="javascript:;" id="btnSubmit">提交</a>
+					</p>
+				</div>			
+			</div>
+		</div>
+		<div class="bottom"></div>
+	</div>
+</div>
+</div>
+<script>
+var canUse = ${memberYongjin.yongjin!0};
+$(function(){
+	$("#btnSubmit").click(function(){
+		var yongjin = $("#yongjin").val();
+		
+		if(yongjin==""){
+			alert("请输入提现金额");
+			return ;
+		}
+		if(isNaN(yongjin)!==false){
+			alert("积分必须为纯数字");
+			return ;
+		}
+		if(yongjin>canUse){
+			alert("您输入的数额大于可用积分");
+			return ;
+		}
+		$.ajax({
+			url:"${ctx}/api/shop/fenxiao!withdrawAdd.do?yongjin="+yongjin,
+			dataType:"json",
+			success:function(res){
+				if(res.result==1){
+					alert(res.message);
+					location.href = "${ctx}/member/levelorder.html?status=2";
+				}else{
+					alert(res.message);
+				}
+			},
+			error:function(){
+				alert("出现错误 ，请重试");
+			}
+		});
+	});
+});	
+</script>
+<#include 'common/footer.html'/>

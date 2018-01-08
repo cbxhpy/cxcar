@@ -1,0 +1,84 @@
+<#assign  title="消息中心" />
+<#assign showback='showback' />
+<#include 'common/header_title.html' />
+
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<!-- 特卖特惠商品列表标签 --> 
+<#assign pushMsgListTag = newTag("pushMsgListTag")>
+<!-- 特卖特惠商品列表 -->
+<#assign pushMsgList = pushMsgListTag()>
+<#assign pushMsgList = pushMsgList.pushMsgList>
+
+<style>
+	i{
+		display:block;
+		background:#f00;
+		border-radius:50%;
+	  	width: 8px;
+    	height: 8px;
+    	top: 0px;
+    	right: 0px;
+	  	position:absolute;
+	}
+</style>
+
+<section class="orderlist-wrap">
+	<div class="order-cont">
+		<ul class="on" id="o_list_0">
+			<li class="order-cell">
+				<ul class="order-detailist">
+					<#list pushMsgList as pm>
+						<#if pm.skip_type = "1">
+							<a class="push_href" push_msg_id="${pm.push_msg_id}" href="goods_detail_wbl.html?goods_id=${pm.goods_id!''}">
+						<#elseif pm.skip_type = "2">
+							<a class="push_href" push_msg_id="${pm.push_msg_id}" href="${pm.html_url!}">
+						<#else>
+							<a push_msg_id="${pm.push_msg_id}" href="javascript:;">
+						</#if>
+							<li class="common-box" >
+								<p class="inner" style="position:relative;padding: 1px 1px;">
+									<#if pm.is_see = "0">
+										<i></i>
+									</#if>
+									<@image src="${pm.image!}" style="border-radius: 10px;"/>
+								</p>
+								<div>
+									<p class="size-prise" style="margin-top: 0rem;">
+										<span style="font-size: 0.30rem;color:#4B4C4C"><@dateformat pattern="MM月dd日" time="${pm.create_time!}"/></span>
+										<p style="height: 0.8rem;">
+											<span style="font-size: 0.36rem;color:#1D1B1B;">${pm.title!}</span>
+											<span style="color: red; font-size: 0.34rem;"></span>
+										</p>
+									</p>
+								    <p class="hideinfo" style="font-size: 0.30rem;height: 0.36rem;">${pm.content!}</p>
+									
+								</div>
+							</li>
+						</a>
+					</#list> 
+				</ul>
+			</li>
+		</ul>
+	</div>
+</section>
+
+<script type="text/javascript">
+$(function(){
+	$(".push_href").click(function(){
+		var push_msg_id = $(this).attr("push_msg_id");
+		$.ajax({
+			url:"api/shop/member!seePushMsg.do",
+			type:"post",
+			data:"push_msg_id="+push_msg_id,
+			dataType:"json",
+			success:function(res){
+			},error:function(){
+			}
+		});
+	});
+});
+</script>
+
+<#-- <#include 'common/footer.html'/> -->

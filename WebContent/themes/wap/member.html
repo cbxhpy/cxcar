@@ -1,0 +1,135 @@
+<#assign title="我的" />
+<#-- <#assign showback='showback' /> -->
+<#include "common/header_title.html" />
+
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<!-- 获取会员收藏列表标签 -->
+<#assign collectTag = newTag("collectTag")>
+<!-- 调用会员收藏列表标签 -->
+<#assign collect = collectTag()!''>
+<!-- 获取会员订单列表标签 -->
+<#assign memberOrderList = newTag("memberOrderListTag")>
+<!-- 调用会员订单列表标签 -->
+<#assign ordersLists = memberOrderList()>
+<!-- 获得会员订单列表 -->
+<#assign order = ordersLists.ordersList>
+<#assign orderStautsTag = newTag("orderStautsTag")>
+<!-- 调用订单状态标签 -->
+<#assign orderState = orderStautsTag()>
+<!-- 会员头像 -->
+<style type="text/css">
+	body{background: #f6f6f6;}
+</style>
+	<a href="memberDetail.html" class="member_intro common-box">
+		<p class="head_portrait">
+			<#if member.face?exists && member.face != ''>
+    			<img src="<@imgurl pic='${member.face}'/>" />
+    		<#else>
+     			<@image src="${ctx}/themes/default/images/default_face.jpg"  />
+     		</#if>
+		</p>
+		<div class="m_account">
+			<p class="member_name">${member.uname!''}<!-- <span class="member_lv">V<label>3</label> </span> --></p>
+			<p class="member_integral">积分：${member.mp!''} <!-- ${member.lvname!''} --></p>
+			<i class="icon-arrow"></i>
+		</div> 
+	</a>
+	<p class="bg-line"></p>
+	<!-- 菜单列表 -->
+	<ul class="member-list">
+		<li>
+			<a href="pushMsgList.html">
+				消息中心
+			</a>
+		</li>
+		<li>
+			<a href="addresslist.html?back=1">
+				我的收货地址
+			</a>
+		</li>
+		<li>
+			<a href="wblHelp.html?name=wblHelp&show=1&showback=showback">
+				帮助
+			</a>
+		</li>
+		<li>
+			<a href="wblAbout.html">
+				关于
+			</a>
+		</li>
+		
+	</ul>
+	<p class="bg-line" style="height: 0.4rem;"></p>
+<!-- 注销会员 -->
+<div class="sign_out">
+	注销
+</div>
+
+<!-- 图片导航 -->
+<!-- <div class="m_imglist">
+	<ul>
+		<li>
+			<a href="orderlist.html?status=0">
+				<img src="themes/wap/images/hy1.jpg"/>
+				<p>待支付</p>
+			</a>
+		</li>
+		<li>
+			<a href="orderlist.html?status=2">
+				<img src="themes/wap/images/hy2.jpg"/>
+				<p>待发货</p>
+			</a>	
+		</li>
+		<li>
+			<a href="orderlist.html?status=5">
+				<img src="themes/wap/images/hy3.jpg"/>
+				<p>待收货</p>
+			</a>
+		</li>
+		<li>
+			<a href="waitcommont.html">
+				<img src="themes/wap/images/hy4.jpg"/>
+				<p>待评价</p>
+			</a>
+		</li>
+	</ul>
+</div> -->
+<!-- 订单 -->
+<!-- <div class="all_order">
+	<a href="orderlist.html">全部订单</a>
+</div>
+
+<div class="member_tools">
+	<ul>
+		<li><a href="fenxiao.html" class="member_collec">我的分销</a></li>
+		<li><a href="levelmember.html?level_type=1" class="member_collec">我的会员</a></li>
+		<li><a href="levelorder.html?status=1" class="member_collec">我的嘻币</a></li>
+		<li><a href="point.html" class="member_collec">我的红包</a></li>
+		<li><a href="performance.html" class="member_collec">我的业绩</a></li>
+		<li><a href="withdraw.html" class="member_collec">提现申请</a></li>
+		<li><a href="agentlevel.html" class="member_collec">月月分红</a></li>
+		<li><a href="collect.html" class="member_collec">我的收藏</a></li>
+		<li><a href="addresslist.html?back=1" class="member_address">我的地址</a></li>
+	</ul>
+</div> -->
+
+<script>
+	$(function(){
+		$(".sign_out").click(function(){
+			$.ajax({
+				url:"api/shop/member!logout.do",
+				dataType:"json",
+				success : function(data) {	
+					if(data.result==1){	
+						InitShowMessage("退出成功");
+						location.href="index.html"
+					}else{
+						InitShowMessage(data.message);
+					}
+				}
+			})
+		})
+	})
+</script>
+<#include 'common/footer.html'/>

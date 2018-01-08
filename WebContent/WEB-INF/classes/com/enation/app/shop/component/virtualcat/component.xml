@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="虚拟分类组件"  version="1.0" javashop_version="3.0.0" author="Javashop">
+	<plugins>
+		<plugin id="virtualCatAdminPlugin" name="商品自定义分类插件">
+			<bundle id="goodsPluginBundle"></bundle>
+		</plugin>
+		<plugin name="自定义分类搜索过滤器" id="virtualCatSearchFilter">
+			<bundle id="goodsSearchPluginBundle"></bundle>
+		</plugin>
+		<plugin name="自定义分类数据导出插件" id="virtualCatDataExportPlugin">
+			<bundle id="dataExportPluginBundle"></bundle>
+		</plugin>
+	</plugins>
+	
+</component>

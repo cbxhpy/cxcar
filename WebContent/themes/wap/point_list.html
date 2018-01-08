@@ -1,0 +1,85 @@
+<#assign  title="我的红包" />
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css" type="text/css" />
+<#assign memberPointTag = newTag("memberPointTag")>
+<!-- 调用会员积分标签 -->
+<#assign memberPoint = memberPointTag()>
+<!-- 当action=list后，获取会员积分"pointHistoryList"MAP集合 -->
+<#assign pointList = memberPoint.pointHistoryList>
+
+
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			我的红包
+		</p>
+	</div>
+<div class="member_commont" id=content_wrapper>
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>我的红包:</h3>
+				<ol>
+					<li>描写相关细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+
+<div class="tab">
+	<ul>
+		<li>
+		<a href="point.html"><span>我的红包</span> </a>
+		
+		</li>
+		<li class="selected"><a
+			href="point_list.html?action=list"><span>红包明细</span> </a>
+		</li>
+		<li><a
+			href="point_freeze.html?action=freeze"><span>冻结明细</span> </a>
+		</li>
+	</ul>
+</div>
+<div class="box">
+	<div class="top"></div>
+	<div class="body">
+	<#if pointList?size gt 0 >
+	<table  style="width:100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<th>时间</th>
+			<th>明细</th>
+			<th>消费红包</th>
+		</tr>
+		<#list pointList as pointHistory>
+	        <tr >
+		        <td><@dateformat time="${pointHistory.time?c}" pattern="yyyy-MM-dd HH:mm"/></td>
+		        <td >
+		      	 	${pointHistory.reason!''}
+		        </td>
+				<td><span class="status-gain">${(pointHistory.mp/10)?string("#.##")!0}</span></span></td>
+		      </tr>
+	    </#list>    
+	</table>
+	<div class="pager_border">
+		<@pager pageno="${memberPoint .pageNo}" 	pagesize="${memberPoint .pageSize}" totalcount="${memberPoint.totalCount}" />
+		<div class="clear"></div>
+	</div>
+	<#else>
+	<div class="empty" >您目前还没有红包记录</div>
+	</#if>
+	</div>
+	<div class="bottom"></div>
+</div>
+
+
+</div>
+
+<#include 'common/footer.html'/>

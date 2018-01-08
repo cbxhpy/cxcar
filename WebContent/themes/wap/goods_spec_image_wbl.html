@@ -1,0 +1,20 @@
+<!-- 创建商品规格标签 -->
+<#assign goodsSpecImageWblTag = newTag("goodsSpecImageWblTag") >
+<!-- 调用商品规格标签 -->
+<#assign goodsSpecImage = goodsSpecImageWblTag("'goods_id':${goods_id!''};'spec_value_id':${spec_value_id!''}")!'' >
+<!-- 规格列表 -->
+<#if goodsSpecImage.imageList??>
+	<#list goodsSpecImage.imageList as image>
+		<figure>
+			<div>
+				<a href="${image.image!''}" data-size="220x196">
+					<img style="width:100%;" src="${image.image!''}" alt="">
+				</a>
+			</div>
+			<figcaption style="display:none;"></figcaption>
+		</figure>
+	</#list>
+	
+<#else>
+</#if>
+

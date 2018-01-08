@@ -1,0 +1,29 @@
+<#assign pager = "com.enation.framework.pager.AjaxPagerDirectiveModel"?new()>
+<#if page.totalCount != 0 >
+<#list page.result as comment>  
+<div class="division boxBrown">
+<strong>
+<span class="author fontcolorOrange">
+    <#if comment.member_id != 0>
+    	${comment.uname!''}
+    <#else>
+    	匿名
+    </#if>
+</span>说：
+</strong>
+<span class="timpstamp font10px fontcolorGray replies prepend-1"><@dateFormat date="${comment.dateline?c}" pattern="yyyy-MM-dd HH:mm"/>&nbsp;&nbsp;</span>
+<div class="boxBlue" style="margin: 10px 0pt;">${comment.content!''}</div>
+<div>
+ <#if comment.replystatus==1>
+	<div style="border-bottom: 1px dotted rgb(174, 195, 207);">
+		<span class="author fontcolorOrange" style="color: rgb(0, 51, 153);">回复：</span>
+		<div>${comment.reply}</div>
+	</div>
+ </#if>
+</div>
+</div>
+</#list>
+<@pager pageno="${pageNo}" pagesize="${pageSize}" totalcount="${page.totalCount}" />
+<#else>
+暂无咨询
+</#if>

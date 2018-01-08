@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="华资源分销组件"  version="1.0" javashop_version="3.0.0" author="javashop">
+ 
+	<plugins>
+	 	<plugin name="分销订单插件" id="fenXiaoPlugin">
+	 		<bundle id="memberPluginBundle"></bundle>
+	 		<bundle id="orderPluginBundle"></bundle>
+	 		<bundle id="jobExecutePluginsBundle"></bundle>
+	 	</plugin>
+	 	<plugin name="红包佣金订单抵扣插件" id="bonusFenXiaoPlugin">
+			<bundle id="cartPluginBundle"></bundle>
+			<bundle id="orderPluginBundle"></bundle>
+		</plugin>	 	
+	 	<plugin name="分销后台相关功能插件" id="fenXiaoSettingPlugin">
+			<bundle id="settingPluginBundle"></bundle>
+		</plugin>
+		<plugin name="分销代理设置插件" id="fenXiaoAgentSettingPlugin">
+			<bundle id="settingPluginBundle"></bundle>
+		</plugin>		
+		<plugin name="团队成员分销插件" id="fenXiaoMemberLevelListPlugin">
+			<bundle id="fenXiaoMemberPluginBundle"></bundle>
+		</plugin>
+		<plugin name="消费红包分销插件" id="fenXiaoMemberMpListPlugin">
+			<bundle id="fenXiaoMemberPluginBundle"></bundle>
+		</plugin>	
+		
+		<plugin name="消费积分分销插件" id="fenXiaoMemberYongjinListPlugin">
+			<bundle id="fenXiaoMemberPluginBundle"></bundle>
+		</plugin>	
+		<plugin name="团队业绩分销插件" id="fenXiaoMemberPerformancePlugin">
+			<bundle id="fenXiaoMemberPluginBundle"></bundle>
+		</plugin> 	
+	</plugins>
+</component>

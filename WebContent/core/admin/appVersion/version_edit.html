@@ -1,0 +1,78 @@
+<#assign dateformat=
+"com.enation.framework.directive.DateformateDirective"?new()>
+<style>
+.input_text {
+	width: 200px;
+}
+</style>
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel">
+		<form id="editForm" method="post" class="validate">
+			<table width="100%">
+				<tr>
+					<th>版本名称：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+							id="versionname" name="appVersion.name" value="${appVersion.name}" data-options="required:true">
+						</input>
+					</td>
+					<th>应用大小：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+							id="file_size" name="appVersion.file_size" value="${appVersion.file_size!}" data-options="required:true">
+						</input>
+					</td>
+				</tr>
+				<tr>
+					<th>版本序号：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+							id="num" name="appVersion.num" value="${appVersion.num}" data-options="required:true">
+						</input>例：3
+					</td>
+					
+					<th>版本号：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+							id="version_num" name="appVersion.version_num" value="${appVersion.version_num}" data-options="required:true">
+						</input>例：1.0
+					</td>
+				</tr>
+				<tr>
+					<th>升级类型：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="radio" 
+							style="width: 10px;" name="appVersion.update_type" value="1" 
+							<#if appVersion.update_type==1>checked</#if> />建议&nbsp;&nbsp;
+						<input type="radio" name="appVersion.update_type" value="2" 
+							<#if appVersion.update_type==2>checked</#if> />强制
+					</td>
+					<th>所属系统：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="radio" 
+							style="width: 10px;" name="appVersion.platform" value="1" 
+							<#if appVersion.platform==1>checked</#if> />android&nbsp;&nbsp;
+						<input type="radio" name="appVersion.platform" value="2"
+							<#if appVersion.platform==2>checked</#if> />ios
+					</td>
+					
+				</tr>
+				<tr>
+					<th>下载地址：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" style="width: 80%"
+							id="updata_url" name="appVersion.updata_url" value="${appVersion.updata_url}" data-options="required:true">
+						</input>
+					</td>
+				</tr>
+				<tr>
+					<th>版本说明：</th>
+					<td colspan="3">
+						<textarea rows="8" cols="50" name="appVersion.content">${appVersion.content}</textarea>ps：每行以中文；隔开
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="appVersion.app_version_id" value="${appVersion.app_version_id}">
+		</form>
+	</div>
+</div>

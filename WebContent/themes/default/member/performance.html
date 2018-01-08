@@ -1,0 +1,110 @@
+<#assign  title="我的业绩" />
+<#include 'member_header.html' />
+<!-- 获取会员佣金标签 -->
+<#assign memberPerformanceTag = newTag("memberPerformanceTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberPerformance = memberPerformanceTag()>
+<#assign pList = memberPerformance.pList>
+
+<div class="data">
+	<h2>我的业绩</h2>
+</div>	
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>我的业绩:</h3>
+				<ol>
+					<li>描写相关业绩细节</li>
+					<li>描写相关业绩细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="point_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+			<div class="pointsSumm">
+				<h4>查询</h4>
+				<div class="overview">
+					<input class="Wdate" type="text" name="start_time" id="start_time" onClick="WdatePicker()" />
+            <span>&nbsp;~&nbsp;</span>
+            <input class="Wdate" type="text" name="end_time" id="end_time" onClick="WdatePicker()" />
+			&nbsp;&nbsp;<input class="searOrderBtn" id="btnSearch" type="button" value="搜索"/>
+				</div>
+				<h4>我的业绩</h4>
+				<div class="overview">
+					<p class="layerCol">团队累计：<strong>${memberPerformance.totalPerformance!0}</strong></p>
+					
+				</div>				
+			</div>
+		</div>
+		<div class="bottom"></div>
+		<div class="tab">
+			<ul>
+				<li class="selected"><a href="javascript:;"><span>团队业绩</span></a></li>						
+			</ul>
+		</div>
+		<div class="box">				
+			<div class="top"></div>
+			<div class="body">
+				<#if pList?size gt 0 >
+				<table  style="width:100%" cellspacing="0" cellpadding="0">
+					<tr>
+						<th>会员编号</th>
+						<th>会员名称</th>
+						<th>会员等级</th>
+						<th>业绩</th>
+					</tr>
+					<#list pList as performance>
+				        <tr >
+					        <td>${performance.member_id}</td>
+					        <td >${performance.uname}</td>
+					        <td >${performance.level}级</td>
+							<td><span class="status-gain">${(performance.point/100)?string("#.##")!0}</span></span></td>
+					      </tr>
+				    </#list>    
+				</table>
+				<div class="pager_border">
+					<@pager pageno="${memberPerformance.page}" 	pagesize="${memberPerformance.pageSize}" totalcount="${memberPerformance.totalCount}" />
+					<div class="clear"></div>
+				</div>
+				<#else>
+				<div class="empty" >目前还没有业绩记录</div>
+				</#if>
+			</div>
+			<div class="bottom"></div>
+		</div>
+	</div>
+</div>
+<div class="clear"></div>
+
+	<!--会员中心首页右侧结束-->
+</div>
+
+	<div class="rr_bottom"></div>
+
+</div>
+</div>
+<script>
+
+
+function search(){
+	var start_time = $("#start_time").val();
+	var end_time = $("#end_time").val();
+	if(start_time=='' && end_time==''){
+		alert("请输入起始时间或者结束时间！");
+	}else{
+		location.href="performance.html?start_time=" + start_time +"&end_time="+end_time;
+	}
+}
+$("#btnSearch").click(function(){
+	search();
+});
+</script>
+<#include '../common/footer.html'/>

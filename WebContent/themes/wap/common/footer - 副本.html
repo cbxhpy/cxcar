@@ -1,0 +1,45 @@
+<!-- 页脚 -->
+	<div class="foot_blank"></div>
+	<div class="foot">
+		<div class="foot_about">
+			<ul>
+				<li><a href="classify.html">产品分类</a></li>
+				<li><a href="member.html">会员中心</a></li>
+				<li class="last"><a href="#">联系我们</a></li>
+			</ul>
+			<a href="index.html">华资源版权所有</a>
+		</div>
+		<div class="foot_tools">
+			<ul>
+				<li class="foot_index"><a href="index.html"><img src="themes/wap/images/f1.jpg" style="width:30px;height:30px;"/><p>首页</p></a></li>
+				<li class="foot_cart"><a href="cart.html"><img src="themes/wap/images/f2.jpg" style="width:30px;height:30px;"/><p>购物车</p></a></li>
+				<li class="foot_member"><a href="member.html"><img src="themes/wap/images/f3.jpg" style="width:30px;height:30px;"/><p>会员中心</p></a></li>
+				<li class="foot_product"><a href="classify.html"><img src="themes/wap/images/f4.jpg" style="width:30px;height:30px;"/><p>分类</p></a></li>
+				<li class="foot_collect">
+					<a href="javascript:;" class="go_mycollect"><#if member?? ><script type="text/javascript">var isLogin= "1";</script><#else><script type="text/javascript">var isLogin= "0";</script></#if>
+						<img src="themes/wap/images/f5.jpg" style="width:30px;height:30px;"/>
+						<p>收藏</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			//回到上一页
+			$(".go_back").click(function(){
+				self.location=document.referrer;
+			})
+			
+			$(".go_mycollect").click(function(){
+				if(isLogin == 0){
+					alert("会员未登录");
+				}
+				else{
+					location.href="collect.html";
+				}
+			})
+		})
+	</script>
+</body>
+</html>

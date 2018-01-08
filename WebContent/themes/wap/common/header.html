@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<#assign headerTag = newTag("headerTag") />
+<#assign header = headerTag() />
+<meta charset="UTF-8">
+<#assign headerTag = newTag("headerTag") />
+<#assign header = headerTag() />
+<#if title??>
+<title>${title}-${header.title}</title>
+<#else>
+<title>${header.title}</title>
+</#if>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="shortcut icon" href=" ../favicon.ico" /> 
+<link type="image/x-icon" href="${site.icofile!''}" rel="bookmark" />
+
+<link rel="stylesheet" type="text/css" href="themes/wap/css/common.css?v=4" />
+<script src="themes/wap/js/jquery.js" ></script>
+<script src="statics/js/common/jquery-form-2.33.js" type="text/javascript"></script>
+<script src="themes/wap/js/show.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="themes/wap/css/showLoading.css" />
+
+<link href="themes/wap/style/style.css?v=4" rel="stylesheet" type="text/css">
+<link href="themes/wap/style/fwslider.css" rel="stylesheet" type="text/css">
+<link href="themes/wap/style/skeleton.css" rel="stylesheet" type="text/css">
+<script src="themes/wap/js/jquery-ui.js"></script>
+<script src="themes/wap/js/fwslider.js"></script>
+<!-- <script src="themes/wap/js/iscroll.js"></script> -->
+<script src="themes/wap/js/spec.js"></script>
+<script src="themes/wap/js/Checkout.js"></script>
+<script src="themes/wap/js/base.js"></script>
+
+
+<script>
+	var ctx="${ctx}";
+</script>
+</head>
+<body>
+<section class="m-header common-box">
+	<div>
+		<div class="bg">
+			<em></em><input type="text" class="searchInput" id="keyword1" placeholder="请输入花卉名称">
+		</div>
+	</div>
+	<a href="###" id="searchBtn1">搜索</a>
+</section>
+<div class="m-tip"></div>
+<script type="text/javascript">
+var searchTipText = "请输入花卉名称";
+function search(){
+
+	var keyword1 = $.trim( $("#keyword1").val());
+	if(keyword1 == searchTipText){
+		keyword1 = '';
+	}
+	/* if(keyword1.indexOf('\\')!=-1){
+		alert("请输入正确的关键词");
+		return false;
+	} */
+	if(keyword1==''){
+		InitShowMessage(searchTipText);
+	}else{
+		keyword1 = keyword1.replace(/\//g,"-xie-")
+		var url =  encodeURIComponent("search-keyword-"+keyword1+".html");
+		location.href="${ctx}/"+url;
+	}
+}
+function InitShowMessage(i){
+	var _val = i;
+	$(".m-tip").text(_val).show(100,function(){
+			setTimeout("$('.m-tip').hide(100)",1500);
+		});
+}
+$(function(){	
+	$("#keyword1").keypress(function(event){
+	//	$("#keyword1").attr("class","seek");
+		if(event.keyCode=="13" ){
+			search();
+		}
+	});
+	$("#keyword1").click(function(){
+		if($(this).val() == searchTipText){
+			$(this).val("");
+		}
+	});
+	$("#keyword1").blur(function(){
+		if($(this).val() == ''){
+			$(this).val(searchTipText);
+		}
+	});
+	
+	$("#searchBtn1").click(function(){
+		search();
+	});
+	
+	
+	//input获得失去焦点时间
+	$(".search_waord").focus(function(){
+		$(this).val("");
+	})
+	
+	$(".searchInput").focus(function(){
+		$(this).val("");
+	})
+	
+});
+</script>

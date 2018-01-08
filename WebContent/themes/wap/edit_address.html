@@ -1,0 +1,156 @@
+<#assign title="编辑地址" />
+<#assign showback='showback' />
+<#include "common/header_title.html" />
+
+<#assign consigneeDetailTag = newTag("consigneeDetailTag")>
+<!--调用“收货人详细”标签-->
+<#assign consigneeDetail = consigneeDetailTag('{"addressid":"${addressid}"}')>
+<#assign regionSelect = "com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+<link rel="stylesheet" type="text/css" href="themes/wap/css/easyui.css" />
+<script src="themes/wap/js/jquery.easyui.min.js" ></script>
+
+<div class="add_adress">
+<form id="member_addr"  class="validate"   action="" method="post">
+	<div class="newadress">
+		<ul>
+			<li class="common-box">
+				<p>收货人</p>
+				<div>
+				 	<input type="text" name="name" class="membername same" value="${consigneeDetail.name!''}"></input>
+				</div>
+			</li>
+			<li class="common-box">
+				<p>联系电话</p>
+				<div>
+					<input type="text" name="mobile" class="membermobile same" value="${consigneeDetail.mobile!''}"></input>
+				</div>
+			</li>
+			<li class="common-box">
+				<p>省/市/区</p>
+				<div class="select-div">
+					 <@regionSelect province_id="${ consigneeDetail.province_id }" city_id="${ consigneeDetail.city_id }" region_id="${ consigneeDetail.region_id }" />
+				</div>
+			</li>
+			<li class="common-box">
+				<p>详细地址</p>
+				<div>
+					<input type="text" name="addr" class="adrintro same" value="${consigneeDetail.addr!''}"></input>
+				</div>
+			</li>
+			<!-- <li>
+				
+					<input type="text" name="zip" class="memberezip same" value="${consigneeDetail.zip!''}"></input>
+					<span class="a_border"></span>
+			</li> -->
+		</ul>
+	</div>	
+	<div class="a_outside">
+			<h2>是否默认：</h2>
+			<div class="is_default">
+				<label><input type="radio"  <#if consigneeDetail.def_addr == 0>checked</#if> value="0" name="def_addr"  class="address_default" ><p>否</p><span class="is_no edit_no"></span></label> 
+				<label><input type="radio"  <#if consigneeDetail.def_addr == 1>checked</#if> value="1"  name="def_addr" class="address_default" ><p>是</p><span class="is_no edit_yes"></span></label>
+			</div>
+		</div>			
+	<div class="save_address address_button" rel="${consigneeDetail.addr_id}">
+		保存
+	</div>
+</form>
+</div>
+
+<script>
+$(function(){
+	//根据参数名称获得参数值（地址函数）
+	function getUrlParam(strname) {  
+	    var hrefstr, pos, parastr, para, tempstr;  
+	    hrefstr = window.location.href;  
+	    pos = hrefstr.indexOf("?");  
+	    parastr = hrefstr.substring(pos + 1);  
+	    para = parastr.split("&");  
+	    tempstr = "";  
+	    for (i = 0; i < para.length; i++) {  
+	        tempstr = para[i];  
+	        pos = tempstr.indexOf("=");  
+	        if (tempstr.substring(0, pos) == strname) {  
+	            return tempstr.substring(pos + 1).replace("#", "");  
+	        }  
+	    }  
+	    return null;  
+	} 
+	$(".save_address").click(function(){
+		var editid = $(this).attr("rel");
+		$(".validate").ajaxSubmit({
+			url : "${ctx}/api/shop/memberAddress!edit.do?addr_id="+editid,
+			dataType : 'json',
+			success : function(data) {	
+				alert(data.message)
+				if(data.result==1){
+					//调用地址函数,如果地址参数back是1，那么说明是在会员中心下的地址列表中进行修改，如果是2，说明是在结算页调转，根据back参数觉得跳转回那里。
+					var goReturn=  getUrlParam("back");
+					if(goReturn==1||goReturn==null){
+						location.href="addresslist.html?back="+goReturn;
+					}
+					else if(goReturn==2){
+						location.href="checkout.html"
+					}
+			}
+				else{
+					alert(data.message);
+				}
+			}
+		})
+	});
+
+	
+	//input获得失去焦点时间
+	$(".same").focus(function(){
+		$(this).val("");
+	})
+	$(".same").blur(function(){
+	    var membername= $(".membername").val(); 
+	    var membermobile= $(".membermobile").val(); 
+	    var adrintro= $(".adrintro").val(); 
+	    if(membername.length==0){  
+	        $(this).val("收货人姓名");
+	    }  
+	    if(membermobile.length==0){  
+	        $(this).val("电话");
+	    } 
+	    if(adrintro.length==0){  
+	        $(this).val("详细地址");
+	    }
+	})
+	
+	$(".go_back").click(function(){
+		var go_back=getUrlParam("back");
+		if(go_back==1||go_back==null){
+			location.href="member.html";
+		}
+		else if(go_back==2){
+			location.href="checkout.html";
+		}
+	})
+	
+	//更换默认
+	$(".address_default").click(function(){
+		$(".is_no").removeClass("selected");
+		var istools=$('input:radio[name="def_addr"]:checked').val();
+		 if(istools==null){
+			 $(this).nextAll(".is_no").removeClass("selected");
+         }
+		 else{
+			 $(this).nextAll(".is_no").addClass("selected");
+		 }
+	})
+		
+	var istools=$('input:radio[name="def_addr"]:checked').val();
+	 if(istools==0){
+		 $(".edit_no").addClass("selected");
+    }
+	 if(istools==1){
+		 $(".edit_yes").addClass("selected");
+    }
+		
+});
+</script>
+</body>
+</html>

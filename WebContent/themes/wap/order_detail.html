@@ -1,0 +1,83 @@
+<#assign  title="我的分销" />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css" type="text/css" />
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+<!--创建“订单详细”标签-->
+<#assign orderDetailTag = newTag("orderDetailTag")>
+<!--调用“订单详细”标签，并传递参数-->
+<#assign orderDetail = orderDetailTag('{"ordersn":"${ordersn}"}')>
+<!-- 获取订单状态标签 -->
+<#assign orderStautsTag = newTag("orderStautsTag")>
+<!-- 调用订单状态标签 -->
+<#assign orderState = orderStautsTag()>   
+<!-- 获取会员订单日志标签 -->
+<#assign orderDetailLogTag = newTag("orderDetailLogTag")>
+<!-- 调用订单日志标签 -->
+<#assign orderDetailLog = orderDetailLogTag("{'orderid':${orderDetail.order_id}}")>
+<!-- 获取会员订单详细快递信息 -->
+<#assign orderDeliveryListTag = newTag("orderDeliveryListTag")>
+<!-- 调用会员订单详细快递信息 -->
+<#assign orderDelivery = orderDeliveryListTag("{'orderid':${orderDetail.order_id}}")>
+<!-- 使用关键字"deliveryList"得到会员订单详细快递信息MAP集合 -->
+<#assign orderSend = orderDelivery.deliveryList>
+<!--创建“订单货物列表”标签-->
+<#assign orderItemListTag = newTag("orderItemListTag")>
+<!--调用“订单货物列表”标签，并传递参数-->
+<#assign orderItemList = orderItemListTag("{'orderid':${orderDetail.order_id}}")>
+<!-- 获得商品META（快递、运费）信息 --><!-- 会员优惠券等与王峰商量后在弄。 -->
+<#assign orderMetaTag = newTag("orderMetaTag")>
+<!-- 调用商品META（快递、运费）信息 --><!-- 会员优惠券等与王峰商量后在弄。 -->
+<#assign orderMeta = orderMetaTag("{'orderid':${orderDetail.order_id}}")>
+<!-- 创建“发票标签” -->
+<#assign receiptTag = newTag("receiptTag")>
+<!-- 调用发票标签 -->
+<#assign orderreceipt = receiptTag("{'orderid':${orderDetail.order_id}}")>
+<#assign orderstatus= "com.enation.app.shop.core.taglib.OrderStatusDirectiveModel"?new()>
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			订单详细
+		</p>
+	</div>
+<!-- 获取会员等待评论商品标签 -->
+<#assign memberWaitCommontListTag = newTag("memberWaitCommontListTag")>
+<!-- 调用会员等待评论商品标签 -->
+<#assign memberWaitCommontList = memberWaitCommontListTag()>
+<div class="member_commont">
+
+	<div class="body">   
+	   <ul class="bodylistdd">
+	   <li><em>下单日期</em>	2015-11-09 15:11</li>
+	   <li><em>总金额</em>${(orderDetail.order_amount!0)?string.currency}</li>
+	   <li><em>嘻币</em>￥2.00</li>
+	   <li><em>会员等级</em>1级</li>
+	   <li><em>状态</em><@orderstatus status="${orderDetail.status}" type="order" /></li>
+	   <li><em>付款方式</em>快钱人民币支付</li>
+	   <li><em>操作</em>查看</li>
+	 
+	</ul>
+	</div>
+
+</div>
+<script>
+$(function(){
+	$("#btnSubmit").click(function(){
+		var money = $("#money").val();
+		
+		if(money==""){
+			alert("请输入充值金额");
+			return ;
+		}
+		if(isNaN(money)!==false){
+			alert("金额必须为纯数字");
+			return ;
+		}
+		$("#advance").submit();
+	});
+});	
+</script>
+<#include 'common/footer.html'/>

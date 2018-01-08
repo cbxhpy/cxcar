@@ -1,0 +1,50 @@
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="addForm" method="post" class="validate">
+			<table>
+				<tr>
+					<th>名称：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+						name="washCard.card_name" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>简介：</th>
+					<td><input class="easyui-validatebox input_text" type="text"
+						name="washCard.card_explain" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>天数：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="number"
+						name="washCard.wash_day" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>金额：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="number"
+						name="washCard.price" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>类型：</th>
+					<td>
+						<select class="easyui-validatebox" name="washCard.type" >
+							<option value="1">&nbsp;月卡&nbsp;</option>
+							<option value="2">&nbsp;季卡&nbsp;</option>
+							<option value="3">&nbsp;年卡&nbsp;</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<input type="file" name="pic">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

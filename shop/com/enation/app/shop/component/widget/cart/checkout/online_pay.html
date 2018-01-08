@@ -1,0 +1,28 @@
+<form method="post" action="pay_to_${order.payment_type}.html" target="_blank" id="f_order_pay">
+
+<input type="hidden" name="orderid" value="${order.order_id}" /> 
+<input type="hidden" name="paymentid" value="${order.payment_id}" />
+<div class="FormWrap ">
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="liststyle data">
+	<colgroup class="span-8 ColColorBlue"></colgroup>
+	<colgroup class="span-auto ColColorGray textcenter"></colgroup>
+	<tbody>
+		<tr>
+			<td width="50%">
+ 
+			
+		 
+			<strong>您选择了：${order.payment_name}</strong>
+		 
+			</td>
+		 
+			<td><input type="submit" value="立刻付款"
+				style="width: 200px; padding: 5px 10px; border-left: 2px solid rgb(255, 204, 0); border-width: 2px; border-style: solid; border-color: rgb(255, 204, 0) rgb(159, 78, 43) rgb(159, 78, 43) rgb(255, 204, 0); background: none repeat scroll 0% 0% rgb(255, 153, 0); color: rgb(255, 255, 255); font-weight: bold; font-size: 14px; cursor: pointer;">
+			</td>
+			 
+		</tr>
+	</tbody>
+</table>
+</div>
+</form>

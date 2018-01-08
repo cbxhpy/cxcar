@@ -1,0 +1,100 @@
+<#assign  title="商品列表" />
+<#include 'common/header.html' />
+<!-- 头部 -->
+	<div class="header">
+		<p>
+			商品列表
+		</p>
+	</div>
+<#include 'common/adv.html'/>
+<#-- 创建商品搜索标签 -->
+<#assign goodsSearchTag= newTag("goodsSearchTag") >
+<#-- 创建选择器标签 -->
+<#assign searchSelectorTag= newTag("searchSelectorTag") >
+
+<#-- 获取搜索结果 -->
+<#assign webpage = goodsSearchTag('{"pageSize":4,"pageNo":${page!1}}')>
+<#-- 获取选择器 -->
+<#assign goodsSelector = searchSelectorTag() >
+<#include 'common/search.html'/>
+<div class="sort">
+	<ul>
+		<!-- 创建搜索url标签 -->
+		<#assign seachUrlTag= newTag("seachUrlTag")>
+		<!-- 获取搜索url -->
+		<#assign searchUrl=seachUrlTag('"name":"sort"')!'search' />
+		<!-- 创建搜索参数标签 -->
+		<#assign searchParamTag= newTag("searchParamTag")>
+		<#assign sort=searchParamTag('"name":"sort"')!'0' />
+
+		<li class="sort_price <#if sort=='2' || sort=='3' || sort=='0'>selected</#if>">
+			<#if sort=='2'>
+				<a href="${ctx}${searchUrl}-sort-3.html" class="price_desc">
+			<#else>
+				<a href="${ctx}${searchUrl}-sort-2.html" class="price_asc">
+			</#if>
+			价格
+			</a>
+		</li>
+		<li class="sort_evaluate <#if sort=='4' || sort=='5'>selected</#if>">
+			
+			<#if sort=='4'>
+				<a href="${ctx}${searchUrl}-sort-5.html" class="grade_desc">
+			<#else>
+				<a href="${ctx}${searchUrl}-sort-4.html" class="grade_asc">
+			</#if>
+			评价</a>
+		</li>
+		<li class="sort_sales <#if sort=='6' || sort=='7'>selected</#if>" >
+			<#if sort=='6'>
+				<a href="${ctx}${searchUrl}-sort-7.html" class="sales_desc">
+			<#else>
+				<a href="${ctx}${searchUrl}-sort-6.html" class="sales_asc">
+			</#if>	
+			销量</a>
+		</li>
+		<li class="sotr_time last <#if sort=='8' || sort=='9'>selected</#if>">
+			<#if sort=='8'>
+				<a class="time_desc" href="${ctx}${searchUrl}-sort-9.html">
+			<#else>
+				<a class="time_asc" href="${ctx}${searchUrl}-sort-8.html">
+			</#if>
+			上架时间</a>
+		</li>
+	</ul>
+</div>	
+<div class="faqlist">
+	<div class="goodslist">
+		<#assign goodsSearchTag= newTag("goodsSearchTag") >
+<#-- 获取搜索结果 -->
+<#assign webpage = goodsSearchTag('{"pageSize":10,"pageNo":${page!1},"url":"search-cat-1.html"}')>
+
+<ul class="list">
+	    	<#list webpage.result as goods>
+				<li class="goods_list" rel='${goods.goods_id}'>
+					<a href='goods-${goods.goods_id}.html'>
+						<@image	src="${goods.thumbnail!''}" alt="${goods.name}"/>
+						<a href="goods-${goods.goods_id}.html">
+							<@substring	title="${goods.name}" length="16" dot="..." />
+						</a>
+						<span>￥${goods.price}</span>
+					</a>
+				</li>
+	 		</#list>
+		</ul>
+	</div>
+	<div class="list_page" style="margin-top:20px;">
+		<@pager pageno="${webpage.currentPageNo}" pagesize="${webpage.pageSize}" totalcount="${webpage.totalCount}" /> 
+	</div>
+	
+</div>	
+
+<script>
+$(function(){
+	
+	var sortnum = $(".sort_num").text()
+	
+})
+
+</script>
+<#include 'common/footer.html' />

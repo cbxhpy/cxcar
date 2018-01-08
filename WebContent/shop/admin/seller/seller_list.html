@@ -1,0 +1,203 @@
+<#include '/admin/header.html' >
+<#-- <script type="text/javascript" src="js/WashCard.js"></script> -->
+<div class="main">
+	<div class="buttonArea">
+		<a href="javascript:void(0)" class="button blueButton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增数据</a>
+		<a href="javascript:void(0)" class="button" data-options="iconCls:'icon-remove',plain:true" onclick="del()">删除</a>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'seller!listJson.do',pageList: [10,15,20,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+				    <thead>
+					    <tr>
+					    	<th data-options="field:'seller_id',checkbox:true"></th>
+					    	<th data-options="field:'id',width:50" formatter="formatId">ID</th>
+					    	<th data-options="field:'seller_name',width:100">名称</th>
+					    	<th data-options="field:'cat_name',width:50,sortable:'true'">分类</th>
+					    	<th data-options="field:'address',width:150">地址</th>
+					    	<th data-options="field:'score',width:20,sortable:'true'">评分</th>
+					    	<th data-options="field:'phone',width:50,sortable:'true'">电话</th>
+					    	<th data-options="field:'username',width:50,sortable:'true'">管理员</th>
+					    	<th data-options="field:'action',width:100,align:'center'" formatter="formatOperation">操作</th>
+					    </tr>
+				    </thead>
+			 </table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+function append(id){
+	var map = {}; // Map map = new HashMap();
+	if(!id){
+		map["href"] ="seller!add.do";
+		map["formId"] ="#addForm";
+		map["url"] ="seller!addSave.do?ajax=yes";
+		map["title"]="添加商家";
+		map["loadshow"]="正在添加......";
+	}else{
+		map["href"] ="seller!edit.do?seller_id="+id;
+		map["formId"] ="#editForms";
+		map["url"] ="seller!editSave.do?ajax=yes";
+		map["title"]="修改商家";
+		map["loadshow"]="正在修改......";
+	}
+	map["divDialog"]="#divdia";
+	map["gridreload"]="#adcdata";
+	
+	//需要验证的参数
+	map["nameId"]="#name";
+	map["urlId"]="#acwidth";
+	
+	addDialog(map);
+}
+function addDialog(map){
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title: map["title"],
+		width: 600,
+		height: 400,
+		closed: false,
+		cache: false,
+		href: map["href"],
+		modal: true,
+		buttons: [{
+			 text:'保存',
+			 iconCls:'icon-ok',
+			 handler:function(){
+				 var savebtn = $(this);
+　　				 var disabled=savebtn.hasClass("l-btn-disabled");
+　　				 if(!disabled){
+					submitForm(map,savebtn);
+					}
+　　				 }
+			 },{
+			 text:'清空',
+			 handler:function(){
+				 clearForm(map);
+			 }
+			 }]
+		});
+}
+function submitForm(map,saveBtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(formflag){
+		$.Loading.show(map["loadshow"]);
+		saveBtn.linkbutton("disable"); //禁用	
+		var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result){
+					$.Loading.hide();
+					if(result.result==1){
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if(result.result==0){ 
+						$.Loading.error(result.message);
+					}
+					$(saveBtn).linkButton("enable");
+				
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+					$(saveBtn).linkButton("enable");
+				}
+			};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+	saveBtn.linkbutton("enable"); 
+}
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function forMoney(value, row, index) {
+	var val = "￥" + value;
+	return val;
+}
+
+function formatOperation(value,row,index){
+	var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.seller_id+")' ></a>";
+	return val;
+}
+
+function formatId(value, row, index){
+	var val = row.seller_id;
+	return val;
+}
+
+function formatAtype(value,row,index){
+	var val;
+	if(value==0){
+		val="图片";
+	}else if(value==1){
+		val="Flash";
+	}
+	return val;
+}
+
+function formatState(value,row,index){
+	var val;
+	if(value==1){
+		val="月卡";
+	}else if(value==2){
+		val="季卡";
+	}else if(value==3){
+		val="年卡";
+	}
+	return val;
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value, "yyyy-MM-dd hh:mm");
+	}
+	
+}
+
+function del(){
+	var rows = $('#adcdata').datagrid("getSelections"); 
+		if(rows.length<1){
+			$.Loading.error("请选择删除商家");
+			return;
+		}
+		if(!confirm("确认删除？")){	
+		return ;
+	}
+	$.Loading.show("正在删除......");
+	var options = {
+		url : "seller!delete.do?ajax=yes",
+		type : "POST",
+		dataType : 'json',
+		success : function(result) {
+			if(result.result==1){
+				$.Loading.success(result.message);
+				var rows = $('#adcdata').datagrid("getSelections"); 
+				for(var i =0;i<rows.length;i++){      
+		 			var index = $('#adcdata').datagrid('getRowIndex',rows[i]); 
+		 			$('#adcdata').datagrid('deleteRow',index);    
+		 		}
+			}
+			if(result.result==0){
+				$.Loading.error(result.message);
+			}
+		},
+		error : function(e) {
+			$.Loading.error("出现错误 ，请重试");
+		}
+	};
+	$('#adcform').ajaxSubmit(options);
+
+};
+</script>
+<#include '/admin/footer.html' >
+ 

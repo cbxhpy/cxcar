@@ -1,0 +1,93 @@
+<#include 'member_header.html' />
+	<!-- 获得会员申请退货、换货列表标签 -->
+	<#assign returnOrderListTag = newTag("returnOrderListTag")>
+	<!-- 调用会员申请退货、换货列表标签 -->
+	<#assign return = returnOrderListTag()>
+
+
+
+<div class="data">
+	<h2>申请退换货</h2>
+</div>	
+
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg"/>
+	
+		<div>
+			<h2>温馨提示</h2>
+			<p>1、这里会显示您更多的订单</p>
+			<p>2、您还可以查看申请列表、申请退换货等操作。</p>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="tab">
+	<ul >
+		<li class="curr"><a href="return.html?action=apply"><span>申请退换货</span></a></li>
+		<li class="selected"><a href="return_list.html?action=list"><span>申请列表</span></a></li>
+	</ul>
+</div>
+<div class="box">
+	<div class="top"></div>
+	<div class="body">
+	<#if return?size gt 0 >
+<table id="tbPromsTable" cellspacing="0" cellpadding="0" width="100%" id="apply_for">
+	<tr>
+		<th class="date">申请时间</th>
+		<th class="orderId">订单号</th>
+		<th>申请类型</th>
+		<th class="reasonSum">原因摘要</th>
+		<th class="status">状态</th>
+		<th class="oper">操作</th>
+	</tr>
+	<#list return.returnOrderList as rList>
+	<tr class="hovertr">
+	    <td class="date"><@dateformat time="${ (rList.add_time*1000)?c}" pattern="yyyy-MM-dd HH:mm"/></td>
+	    <td class="orderId">${rList.ordersn!'' }</td>
+	    <td> 
+	    <#if rList.type  == 1>退货</#if>
+	    <#if rList.type  == 2>换货</#if>
+	    </td>
+	    <td class="reasonSum"><p class="reason"><#if rList.apply_reason?exists><@substring title="${rList.apply_reason}" length="30" dot="..." /></#if></p></td>
+	    <td class="status">
+	    <#if rList.state  == 0><span class="status-process">等待处理</span></#if>
+		<#if rList.state  == 1><span class="status-expired">已拒绝</span></#if>
+		<#if rList.state  == 2><span class="status-deliver">审核通过</span></#if>
+		<#if rList.state  == 3><span class="status-used">
+			 <#if rList.type  == 1>退货已收货</#if>
+	   		 <#if rList.type  == 2>换货已收货，新换货物已发出</#if>
+		</span></#if>
+		<#if rList.state  == 4><span class="status-success">完成</span></#if>
+	    </td>
+	    <td class="oper">
+	    <a href="return_detail.html?returnOrderSn=${rList.ordersn}">查看</a></td></tr>
+                                </tr>
+	</#list>
+    
+</table>
+
+<div class="pager_border">
+<@pager pageno="${return.page}" pagesize="${return.pageSize}" totalcount="${return.totalCount}" />
+<div class="clear"></div>
+</div>
+<#else>
+<div class="empty" >您目前还没有申请退换</div>
+</#if>
+	</div>
+	<div class="bottom"></div>
+</div>
+<div class="clear"></div>
+<div class="helper">
+	<h2>小贴士</h2>
+	<ul>
+		<li><a href="help-23-14.html" target="_blank">我怎么进行退换货？</a></li>
+	</ul>
+</div>
+	<div class="rr_bottom"></div></div>
+		<!--会员中心首页右侧结束-->
+	</div>
+		<#include '../common/footer.html'/>

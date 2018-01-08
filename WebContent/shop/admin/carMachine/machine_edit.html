@@ -1,0 +1,157 @@
+<#include '/admin/header.html' > 
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+<style>
+.w_100{
+	width: 60px;
+}
+</style>
+<div class="main" style="background-color: white;">
+	<form id="addForm">
+		<table width="98%" border="0" cellspacing="0" cellpadding="8">
+			<input type="hidden" name="carMachine.car_machine_id" value="${carMachine.car_machine_id!}"/>
+			<tr>
+				<th>名称：</th>
+				<td colspan="3">
+					<input class="input_text easyui-validatebox" type="text" name="carMachine.machine_name" value="${carMachine.machine_name!}" />
+				</td>
+			</tr>
+			<tr>
+				<th>编号：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="text" name="carMachine.machine_number"  value="${carMachine.machine_number!}" data-options="required:true" id="machine_number"/>
+				</td>
+				<th>手机号：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="text" name="phone" value="${carMachine.uname!}" data-options="required:true"/>
+				</td>
+			</tr>
+			<tr>
+				<th>经纬度：</th>
+				<td>
+					<input class="input_text" type="text" name="lng_lat" value="${lng_lat!''}" />
+				</td>
+				<th>选取经纬度</th>
+				<td>
+					<a href="http://lbs.qq.com/tool/getpoint/index.html" target="_blank">点击跳转</a>
+				</td>
+			</tr>
+			<tr>
+				<th>合伙人手机号：</th>
+				<td >
+					<textarea class="input_textarea" rows="5" placeholder="多个以英文,隔开" style="width: 300px;" name="carMachine.partner_phone">${carMachine.partner_phone!}</textarea>
+				</td>
+				<th>合伙人数：</th>
+				<td >
+					<input class="input_text" type="text" value="${carMachine.partner_num!}" placeholder="自动计算" disabled="disabled"/>
+				</td>
+			</tr>
+			<tr>
+				<th>地区：</th>
+				<td>
+					<@regionSelectDirective province_id="${carMachine.province_id!''}" city_id="${carMachine.city_id!''}" region_id="${carMachine.region_id!''}" />
+				</td>
+				<th>地址：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="text" name="carMachine.address"  value="${carMachine.address!}" />
+				</td>
+			</tr>
+			<tr>
+				<th>图片：</th>
+				<td>
+					<input type="file" name="pic">
+				</td>
+				<th>预览：</th>
+				<td>
+					<#if carMachine.image??>
+						<img alt="" src="${carMachine.image!''}" height="120px">
+					<#else>
+						暂无
+					</#if>
+				</td>
+			</tr>
+			<tr>
+				<th>是否使用：</th>
+				<td colspan="3">
+					<select name="carMachine.is_use" class="input_text">
+						<option value="0" <#if carMachine.is_use == '0'>selected</#if>>否</option> 
+						<option value="1" <#if carMachine.is_use == '1'>selected</#if>>是</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>选项1：</th>
+				<td colspan="2">
+					<input class="input_text easyui-validatebox w_100 value0_1"
+						type="number" max="1" min="0" name="carMachine.option1" value="${carMachine.option1!}" /> 远端开机（选中开机） 0：关机 1：开机
+				</td>
+			</tr>
+			<tr>
+				<th>二维码<input class="input_text easyui-validatebox" type="text" style="width: 20px" id="er_w" value="100"/>px*<input class="input_text easyui-validatebox" type="text" style="width: 20px" id="er_h" value="100"/>px：</th>
+				<td colspan="3">
+					<div id="qrcode"></div>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<div class="buttonWrap fixed">
+		<a id="searchAdvance" class="easyui-linkbutton" onclick="submitForm()"
+			href="javascript:;">保存</a>
+	</div>
+</div>
+<script>
+
+	$(function(){
+		$(".value0_1").on("change", function(){
+			var self = $(this);
+			var val = self.val();
+			
+			if("1" != val && "0" != val){
+				self.val("0");
+				$.Loading.error("请输入正确数值");
+			}
+		});
+		$("#machine_number,#er_w,#er_h").on("change", function(){
+			$("#qrcode").empty();
+			$("#qrcode").qrcode({
+			    render: "canvas", //也可以替换为table
+			    width: $("#er_w").val(),
+			    height: $("#er_h").val(),
+			    text: "http://app.yunlinggroup.com/cxcar/#/person/scan/"+$(this).val()
+			});
+		});
+		$("#qrcode").qrcode({
+		    render: "canvas", //也可以替换为table
+		    width: $("#er_w").val(),
+			    height: $("#er_h").val(),
+		    text: "http://app.yunlinggroup.com/cxcar/#/person/scan/"+${carMachine.machine_number!}
+		});
+	});
+
+	function submitForm() {
+		var formflag = $("#addForm").form().form('validate');
+		if (formflag) {
+			$.Loading.show("正在修改......");
+			var options = {
+				url : "machine!editSave.do?ajax=yes",
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+					if (result.result == 1) {
+						$.Loading.success(result.message);
+						newTab("洗车机列表", "${ctx}/shop/admin/machine!list.do");
+						parent.CloseTabByTitle("修改洗车机");
+					}
+					if (result.result == 0) {
+						$.Loading.error(result.message);
+					}
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+				}
+			};
+			$("#addForm").ajaxSubmit(options);
+		}
+	}
+</script>
+
+<#include '/admin/footer.html' >

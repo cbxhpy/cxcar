@@ -1,0 +1,55 @@
+<div class="mt80"></div>
+<ul class="index_navigation_fixed clearfix">
+    <li>
+        <a class="selected" href="index.html">
+            <i class="icon-home"></i>
+            <p>首页</p>
+        </a>
+    </li>
+    <li>
+        <#-- <a href="search-sort-8.html"> -->
+        <a href="orderlist.html">
+            <i class="icon-order"></i>
+            <p>订单</p>
+        </a>
+    </li>
+    <li>
+        <a href="cart.html">
+            <i class="icon-car"></i>
+            <p>购物车</p>
+        </a>
+    </li>
+    <li>
+        <a href="member.html">
+            <i class="icon-center"></i>
+            <p>我的</p>
+        </a>
+    </li>
+</ul>
+
+<#-- <script type="text/javascript" src="themes/wap/js/js-yhy.js"></script> -->
+</body>
+</html>
+
+
+
+
+
+
+	<script>
+		$(function(){
+			//回到上一页
+			$(".go_back").click(function(){
+				self.location=document.referrer;
+			})
+			
+			$(".go_mycollect").click(function(){
+				if(isLogin == 0){
+					alert("会员未登录");
+				}
+				else{
+					location.href="collect.html";
+				}
+			})
+		})
+	</script>

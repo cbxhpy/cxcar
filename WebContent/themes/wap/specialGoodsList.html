@@ -1,0 +1,47 @@
+<#assign  title="特惠特卖" />
+<#assign showback='showback' />
+<#include 'common/header_title.html' />
+
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<!-- 特卖特惠商品列表标签 --> 
+<#assign specialGoodsListTag = newTag("specialGoodsListTag")>
+<!-- 特卖特惠商品列表 -->
+<#assign specialGoodsList = specialGoodsListTag("{'adv_id':'${adv_id!''}';'search_code':'${search_code!''}'}")>
+<#assign goodsList = specialGoodsList.goodsList>
+
+<section class="orderlist-wrap">
+	<div class="order-cont">
+		<ul class="on" id="o_list_0">
+			<li class="order-cell">
+				<ul class="order-detailist">
+					<#list goodsList as goods>
+						<a href="goods_detail_wbl.html?goods_id=${goods.goods_id!''}">
+							<li class="common-box">
+								<p class="inner">
+									<@image src="${goods.image!}" />
+								</p>
+								<div>
+								    <p class="hideinfo">${goods.name}</p>
+									<p class="size-prise" >
+										<span style="font-size: 0.36rem">库存${goods.enable_store!'0'}件</span>
+										<p>
+											<span style="text-decoration:line-through;">原价${goods.original_price?string.currency}</span>
+											<span style="color: red; font-size: 0.34rem;">${goods.price?string.currency}</span>
+										</p>
+									</p>
+								</div>
+							</li>
+						</a>
+					</#list> 
+				</ul>
+			</li>
+		</ul>
+	</div>
+</section>
+
+<script type="text/javascript">
+</script>
+
+<#-- <#include 'common/footer.html'/> -->

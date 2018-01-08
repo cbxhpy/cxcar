@@ -1,0 +1,77 @@
+<div class="detail">
+	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<tbody>
+			<tr>
+				<th width=100>团队业绩:</th>
+				<td id="curr"></td>
+			</tr>
+			<tr>
+				<th>自身消费:</th>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="clear height10"></div>
+<div id="tb" style="height: auto">
+	<span style="float: left;"> 
+		<span id="simpleSearch">
+			注册时间:
+			<input class="easyui-datebox" style="width: 90px;height: 28px;" id="start_time" />
+            <span>&nbsp;~&nbsp;</span>
+            <input class="easyui-datebox" style="width: 90px;height: 28px;" id="end_time" /> 
+			<a href="javascript:void(0)" class="easyui-linkbutton" 
+			data-options="plain:true" onclick="searchMember()">搜索</a>
+		</span>
+	</span>
+</div>
+<div class="clear height10"></div>
+<div style="width:100%;"  class="shadowBoxWhite tableDiv">
+	<table id="dg4"></table>
+</div>
+<script type="text/javascript">
+
+function initDataGrid4(){
+	$('#dg4').datagrid({
+	    url:'${ctx}/shop/admin/fenxiao!memberPerformanceJson.do?member_id=${memberid}',
+	    fitColumns:true,
+	    pagination:true,
+	    columns:[[
+	    {field:'member_id',title:'会员编号',width:100},
+	    {field:'uname',title:'会员名称',width:100},
+	    {field:'level',title:'会员等级',width:100,formatter:formatLevel},
+	    {field:'point',title:'业绩',width:100}
+	    ]]
+		});
+
+}
+
+function searchMember(){
+	
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+
+	$("#dg4").datagrid('load', {
+	    url:'${ctx}/shop/admin/fenxiao!memberPerformanceJson.do',
+	    queryParams:{
+	    	member_id:${memberid},
+	    	start_time:start_time,
+	    	end_time:end_time
+	    },
+	    fitColumns:true,
+	    pagination:true,
+	    columns:[[
+	    {field:'member_id',title:'会员编号',width:100},
+	    {field:'uname',title:'会员名称',width:100},
+	    {field:'level',title:'会员等级',width:100,formatter:formatLevel},
+	    {field:'point',title:'业绩',width:100}
+	    ]]
+		});
+}
+
+function formatLevel(value, row, index) {
+
+	return value+"级";
+}
+ 
+</script>

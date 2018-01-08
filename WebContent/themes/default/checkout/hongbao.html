@@ -1,0 +1,10 @@
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+<ul>
+	<li>红包:<input type="text" class="xfHongbao" />&nbsp;<a class="hongbaoUseBtn" href="javascript:;">使用</a></li>
+	<li>可用红包<span class="hongbaoCanUse">${memberYongjin.hongbao!0}</span></li>
+	<li>嘻币:<input type="text" class="yongjin" />&nbsp;<a class="yongjinUseBtn" href="javascript:;">使用</a></li>
+	<li>可用嘻币<span class="yongjinCanUse">${memberYongjin.yongjin!0}</span></li>
+</ul>

@@ -1,0 +1,37 @@
+<#include 'common/header.html' />
+
+<div class="ur_here clear">当前位置: <a href="${ctx}/index.html">首页</a> <code>&gt;</code> <a href="${ctx}/case.html">客户案例</a></div>
+
+<div class="case clearfix" style="position: relative; overflow:visible; ">
+			<div class="case_classify fl">
+				<h1>案例分类</h1>
+				<ul>
+				<#assign liPinCategoryTag=newTag("liPinCategoryTag") />
+				<#assign categoryList = liPinCategoryTag('{"cat_id":27,"level":1}') />
+				<#if categoryList?exists>
+					<#list categoryList as category>
+   						<li><a href="${ctx}/case.html?cat_id=${category.cat_id}">${category.name}</a></li>
+   					</#list>
+   				</#if>
+                </ul>
+			</div>
+			<div class="case_pic fr">
+				<#assign liPinDataListTag=newTag("liPinDataListTag") />
+				<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+				<#assign webPage = liPinDataListTag('{"modelid":4,"catid":${cat_id!27}}') />
+				<ul>
+					<#list webPage.result as article>
+                    <li>
+						<dl>
+							<dt><a href="${ctx}/case-detail.html?articleId=${article.id}" target="_blank"><@image src="${article.company_logo!''}" width="246" height="120" alt="${article.company_name!''}" /></a></dt>
+							<dd><a href="${ctx}/case-detail.html?articleId=${article.id}" target="_blank">${article.company_name!''}</a></dd>
+						</dl>
+                    </li>
+                    </#list>
+               </ul>          
+               <div class="clear"></div>
+               <@pager pageno="${webPage.currentPageNo}" pagesize="${webPage.pageSize}" totalcount="${webPage.totalCount}" /> 
+			</div>
+</div>
+
+<#include 'common/footer.html' />

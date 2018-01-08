@@ -1,0 +1,212 @@
+<#assign orderstatus = "com.enation.app.shop.core.taglib.OrderStatusDirectiveModel"?new()>
+<div>
+<h1 class="title">订单详情</h1>
+<div class="body">
+<ol>
+	<#list orderLogList as log>
+	<li><span class="date"><@dateFormat date="${log.op_time?c}" pattern="yyyy-MM-dd HH:mm"/></span>&nbsp;&nbsp;&nbsp;&nbsp;${log.message}</li>
+	</#list>
+</ol>
+</div>
+
+
+<#if order.status == ORDER_NOT_PAY ||  order.status==ORDER_SHIP >
+<div class="FormWrap">
+<table cellspacing="0" cellpadding="0" border="0">
+	<tbody>
+		<tr>
+		 
+			<td style="padding: 10px;">
+			
+			<#if order.status == ORDER_NOT_PAY>
+				<#if !order.isCod >
+					<#if order.isOnlinePay >
+						<a href="orderpay.html?sn=${order.sn}" class="btnx">按此为订单付款</a>
+					<#else>
+						<a href="orderpay.html?sn=${order.sn}" class="btnx">提交凭证</a>
+					</#if>
+				</#if> 
+				<a href="member_order.html?action=cancel&sn=${order.sn}"  class="btnx">取消订单</a>
+			</#if>
+			<#if order.isCod &&  order.status==ORDER_SHIP>
+				<a href="javascript:;"  id="confirmRog" orderid="${order.order_id}" class="btnx">确认收货</a>	
+			</#if>			
+			
+			 </td>				
+		</tr>
+	</tbody>
+</table>
+</div>
+</#if>
+
+
+<div class="CartWrap">
+<div
+	style="background: none repeat scroll 0% 0% rgb(245, 244, 236); border: 1px solid rgb(229, 221, 199);"
+	class="FormWrap ">
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="liststyle data">
+	<colgroup class="span-auto ColColorBlue"></colgroup>
+	<colgroup class="span-5 ColColorGray"></colgroup>
+	<colgroup class="span-4 ColColorGray "></colgroup>
+	<tbody>
+		<tr>
+			<td>
+			<h4>订单编号：${order.sn}
+			 
+			</h4>
+			</td>
+			<td>下单日期：<@dateFormat date="${order.create_time?c}" pattern="yyyy-MM-dd HH:mm"/></td>
+			<td>状态：
+			
+			 
+				<@orderstatus status="${order.status}" type="order" />
+				
+				</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+<div
+	style="background: none repeat scroll 0% 0% rgb(245, 244, 236); border: 1px solid rgb(229, 221, 199);"
+	class="FormWrap ">
+<h4>购买的商品</h4>
+<div class="division">
+<table cellspacing="0" cellpadding="3" width="100%" class="liststyle">
+	<colgroup class="span-auto"></colgroup>
+	<colgroup class="span-2"></colgroup>
+	<colgroup class="span-2"></colgroup>
+	<colgroup class="span-3"></colgroup>
+	<colgroup class="span-2 ColColorOrange"></colgroup>
+	<thead>
+		<tr>
+			<th>商品名称</th>
+			<th>商品积分</th>
+			<th>价格</th>
+			<th>数量</th>
+			<th>小计</th>
+		</tr>
+	</thead>
+	<tbody>
+		<#list orderItemsList as item>
+		<tr>
+			<td><a target="_blank" href="goods-${item.goods_id}.html">${item.name}</a></td>
+			<td>${item.gainedpoint}&nbsp;</td>
+			<td>${item.price?string.currency}</td>
+			<td>${item.num}</td>
+			<td>${(item.num * item.price)?string.currency}</td>
+		</tr>
+		</#list>
+	</tbody>
+</table>
+</div>
+
+<#include 'giftList.html' />
+
+<h4>收货人信息</h4>
+<div class="division">
+<table cellspacing="0" cellpadding="0" width="100%"
+	class="liststyle data">
+	<tbody>
+		<tr>
+			<th>收货人姓名:</th>
+			<td>${order.ship_name!''}</td>
+			<th>收货人Mail:</th>
+			<td>${order.ship_email!''}</td>
+		</tr>
+		<tr>
+			<th>配送地区:</th>
+			<td>${order.shipping_area!''}</td>
+			<th>联系电话:</th>
+			<td>${order.ship_tel!''}</td>
+		</tr>
+		<tr>
+			<th>收货人邮编:</th>
+			<td>${order.ship_zip!''}</td>
+			<th>送货时间:</th>
+			<td>${order.ship_day!''}&nbsp;${order.ship_time!''}</td>
+		</tr>
+		<tr>
+			<th>配送方式:</th>
+			<td>${order.shipping_type!''}</td>
+			<th>付款方式:</th>
+			<td>${order.payment_name!''}</td>
+		</tr>
+		<tr>
+			<th>商品重量:</th>
+			<td colspan="3">${order.weight!''}</td>
+		</tr>
+		<tr>
+			<th valign="top">收货人地址:</th>
+			<td valign="top" colspan="3">${order.ship_addr!''}</td>
+		</tr>
+		<tr>
+			<th valign="top">订单附言:</th>
+			<td valign="top" colspan="3">${order.remark!''}</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="liststyle data">
+	<col class="span-auto ColColorGray">
+	<col class="span-4 ColColorOrange textright">
+	<tbody>
+		<tr>
+			<th>商品总金额:</th>
+			<td>${(order.goods_amount!0)?string.currency}</td>
+		</tr>
+		<tr>
+			<th>配送费用:</th>
+			<td>${(order.shipping_amount!0)?string.currency}</td>
+		</tr>
+		<tr>
+			<th>您可获得积分:</th>
+			<td>${order.gainedpoint!0}</td>
+		</tr>
+		<tr>
+			<th>优惠金额:</th>
+			<td style="color: rgb(255, 0, 0);">-${(order.discount!0)?string.currency}</td>
+		</tr>
+
+		<tr>
+			<th>订单总金额:</th>
+			<td class="price1">${(order.order_amount!0)?string.currency}</td>
+		</tr>
+		<tr>
+			<th>已付金额:</th>
+			<td>${(order.paymoney!0)?string.currency}</td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+<script>
+$(function(){
+	$("#confirmRog").click(function(){
+		var orderId = $(this).attr("orderid");
+		if( confirm( "请您确认已经收到货物再执行此操作！" ) ){
+
+			$.ajax({
+				url:"widget.do?type=member_order&ajax=yes&action=confirmRog&orderId="+orderId+"&rmd="+new Date().getTime(),
+				dataType:"json",
+				success:function(result){
+					if(result.result==1){
+						location.reload();
+					}else{
+						alert(result.message);
+					}
+					
+				},
+				error:function(){
+					alert("出错了:(");
+				}
+			});	
+					
+		}
+		
+	});
+	
+});
+</script>

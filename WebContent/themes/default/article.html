@@ -1,0 +1,35 @@
+<#include 'common/header.html' />
+
+<div class="ur_here clear">当前位置: <a href="${ctx}/index.html">首页</a> <code>&gt;</code> <a href="${ctx}/article.html">礼品百科</a></div>
+
+<div class="case clearfix" style="position: relative; overflow:visible; ">
+			<div class="case_classify fl">
+				<h1>案例分类</h1>
+				<ul>
+				<#assign liPinCategoryTag=newTag("liPinCategoryTag") />
+				<#assign categoryList = liPinCategoryTag('{"cat_id":28,"level":1}') />
+				<#if categoryList?exists>
+					<#list categoryList as category>
+   						<li><a href="${ctx}/article.html?cat_id=${category.cat_id}">${category.name}</a></li>
+   					</#list>
+   				</#if>
+                </ul>
+			</div>
+			<div class="lipin-list fr">
+				<#assign liPinDataListTag=newTag("liPinDataListTag") />
+				<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+				<#assign webPage = liPinDataListTag('{"modelid":5,"catid":${cat_id!28}}') />
+				<ul class="NewsList">
+					<#list webPage.result as article>
+                    <li class="NewsListLi">
+						<span><@dateformat time="${article.add_time?c}" pattern="yyyy-MM-dd"/></span>
+						<a href="${ctx}/article-detail.html?articleId=${article.id}" class="blk12_20h">${article.article_title!''}</a>
+                    </li>
+                    </#list>
+               </ul>          
+               <div class="clear"></div>
+               <@pager pageno="${webPage.currentPageNo}" pagesize="${webPage.pageSize}" totalcount="${webPage.totalCount}" /> 
+			</div>
+</div>
+
+<#include 'common/footer.html' />

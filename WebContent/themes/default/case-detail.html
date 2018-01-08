@@ -1,0 +1,27 @@
+<#assign dataDetailTag=newTag("dataDetailTag")>
+
+<#assign dataDetail=dataDetailTag("{'catid':${catid!27},'id':${articleId!7}}")>
+<#if  dataDetail.page_title??>
+	<#assign  title="${dataDetail.page_title}" />
+	<#else>
+	<#assign  title="${dataDetail.company_name}" />
+</#if>
+<#if dataDetail.page_keywords??>
+	<#assign  keywords="${dataDetail.page_keywords}" />
+</#if>
+
+<#if dataDetail.page_description??>
+	<#assign  description="${dataDetail.page_description}" />
+</#if>
+<#include 'common/header.html' />			
+<div class="ur_here clear">当前位置: <a href="${ctx}/index.html">首页</a> <code>&gt;</code> <a href="${ctx}/case.html">客户案例</a>
+	<code>&gt;</code> <a href="#">${dataDetail.company_name!''}</a>
+</div>
+
+<div class="case clearfix" style="position: relative; overflow:visible; ">
+	<div class="about_right_center">
+	  ${dataDetail.case_content!''}
+  </div>
+</div>
+
+<#include 'common/footer.html' />

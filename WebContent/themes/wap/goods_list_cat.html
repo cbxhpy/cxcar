@@ -1,0 +1,61 @@
+<div cat_id="${cat.cat_id!''}" div_level="${level}" parent_id="${cat.parent_id!''}" class="cat_div" style="display: none">
+
+	<p cat_id="${cat.cat_id!''}" parent_id="${cat.parent_id!''}" class="title cat_p" style="float: left;">${cat.name!''}</p>
+	
+	<div class="nav-select js-navselect" >
+		<#if cat.hasChildren>
+			<#list cat.children as cat>
+				<span cat_id="${cat.cat_id!''}" parent_id="${cat.parent_id!''}" class="cat_span<#--  <#if cat_index == 0>active</#if> -->">${cat.name!''}</span>
+				
+				<#if cat.hasChildren>
+					
+					<#-- <#include 'goods_list_cat.html' /> -->
+				</#if>
+			</#list>
+		</#if>
+		<#-- <span>本地优质玫瑰</span>
+		<span>粉色</span>
+		<span>红色</span>
+		<span>桃红色</span>
+		<span>白色</span>
+		<span>本地优质玫瑰</span>
+		<span>粉色</span>
+		<span>红色</span>
+		<span>桃红色</span>
+		<span>粉色</span> -->
+	</div>
+
+</div>
+
+<#if cat.hasChildren>
+	<#list cat.children as cat>
+		<#if cat.hasChildren>
+			<#assign level=level+1 />
+			<#include 'goods_list_cat.html' />
+			<#assign level=level-1/>	
+		</#if>
+	</#list>
+</#if>
+
+
+<#-- <p class="title">品种</p>
+<div class="nav-select">
+	<span class="active">雪山</span>
+	<span>双色粉白粉边</span>
+	<span>芬得拉</span>
+	<span>雪山</span>
+	<span>桃红色</span>
+	<span>白色</span>
+	<span>本地优质玫瑰</span>
+	<span>粉色</span>
+	<span>红色</span>
+	<span>桃红色</span>
+	<span>粉色</span>
+</div>
+<p class="title">品级</p>
+<div class="nav-select">
+	<span class="active">A</span>
+	<span>B</span>
+	<span>C</span>
+	<span>D</span>
+</div> -->

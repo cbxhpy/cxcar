@@ -1,0 +1,46 @@
+<#include 'common/header.html' />
+<link rel="stylesheet" href="${ctx}/themes/default/css/member.css" type="text/css" />
+<!--登录界面-->
+
+	<div class="tip_wrap">
+		<div class="success">
+			<div class="span-auto">
+				<h1 style="height:60px;line-height:60px">恭喜，您已成功注册为会员!</h1>
+				<ul>
+					<li>
+						<span>
+							<#if forward?? && forward!="" >
+								<a href="${forward}" style="color: red">继续操作</a>
+								<#else>
+								<a href="index.html" style="color: red" >返回网站首页</a>
+							</#if>
+						</span>
+						<span>
+							<a href="member/member.html" style="color: red" class="zhuce_cg2">去会员中心</a>
+						</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+<script>
+$(function(){
+	$("#resend_btn").click(function(){
+		$.Loading.show("请稍候...");
+		$.ajax({		
+			url:'api/shop/member!reSendRegMail.do?ajax=yes',
+			dataType:'json',
+			success:function(result){
+				$.Loading.hide();
+				$.alert(result.message);
+			},error:function(){
+				$.Loading.hide();
+				$.alert("抱歉，发生错误");
+			}
+			
+		});
+	});
+});
+</script>
+<#include 'common/footer.html'/>

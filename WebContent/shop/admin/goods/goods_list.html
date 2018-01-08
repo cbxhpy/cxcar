@@ -1,0 +1,352 @@
+<#include '/admin/header.html' >
+<#assign dateFormat="com.enation.framework.directive.DateformateDirective"?new()>
+<#assign permssion = "com.enation.app.base.core.directive.PermssionDirective"?new()>
+<style>
+.searchAdvancedS{
+	background-color: #FDEA7A;
+}
+.a-upload {
+    padding: 4px 10px;
+    height: 20px;
+    line-height: 20px;
+    position: relative;
+    cursor: pointer;
+    color: #A9A9A9;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    /* display: inline-block; */
+    *display: inline;
+    *zoom: 1
+}
+
+.a-upload  input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer
+}
+
+.a-upload:hover {
+    color: #444;
+    background: #eee;
+    border-color: #ccc;
+    text-decoration: none
+}
+
+</style>
+<div id="loading"></div>
+<div class="main">
+	
+	<#-- <form method="post" id="sc_excel_form" enctype="multipart/form-data" >
+		<div style="float: left; margin-right: 10px;">
+			<a href="javascript:;" class="a-upload">
+			    <input type="file" name="goodsexcel" id=""><span class="showFileName">点击这里上传文件</span>
+			</a>
+			<a class="button sc_excel" href="javascript:;" >上传excel</a>
+		</div>
+	</form> -->
+
+	<form id="gridform" method="post">
+		<div class='buttonArea'>
+			<span id="searchbtn" style="float:left; display:block">	
+				<@permssion actid="goods,super_admin">		
+					<a href="javascript:void(0)" class="button blueButton" onclick="newTab('添加商品','${ctx}/shop/admin/goods!selectCat.do')">添加</a>
+					<a href="javascript:void(0)" class="button" onclick="del()">删除</a>
+					<a href="javascript:void(0)" class="button" onclick="newTab('商品回收站','${ctx}/shop/admin/goods!trash_list.do')">回收站</a>
+				</@permssion>
+			</span>
+			<span style="float:right; height:28px;"> 
+				<a href="javascript:void(0)" class="button b_fr" id="aAdvanced">高级搜索</a>
+				<a href="javascript:void(0)" class="button b_fr" onclick="searchGoods()">搜索</a>
+				<input id="searchKeyword" class="input_text b_fr mr5" type="text" value="" size="30" placeholder="请输入模糊关键字" name="searchKeyWord"> 
+			</span>
+		</div>
+		
+		<div style="display: block;" class="searchAdvanced" >
+			<input id="Advanced" name="Advanced" type="hidden" value="0" />	
+			<table width="98%" border="0" cellspacing="0" cellpadding="8">
+				<tr>
+					<td width="70" align="right">商品名称</td>
+					<td>
+						<input type="text" value="${name!''}" id="name" class="input_text" style="width: 95%;" >
+					</td>
+					<td width="70" align="right">商品编号</td>
+					<td>
+						<input type="text" value="${name!''}" id="sn" class="input_text" style="width: 95%;">
+					</td>
+					<#-- <td width="70" align="right">类别</td>
+					<td>
+						<input class="easyui-combotree" name="cat.parent_id" id="catid"
+							data-options="url:'cat!addlistJson.do',method:'get'" style="width: 200px; height: 28px;" />
+					</td> -->
+					<td>
+						<a id="searchAdvance" class="button blueButton" onclick="searchGoods()" href="javascript:;">开始搜索</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="clear height10"></div>
+		<div class="shadowBoxWhite tableDiv">
+			<table class="easyui-datagrid"  url="goods!listJson.do" 
+				data-options="pageList: [5,10,15,20],pageSize:${pageSize},fitColumns:'true'" pagination="true" width="width" id="goodsdata"
+				sortName="goods_id" sortOrder="desc">
+				<thead>
+					<tr>
+						<th data-options="field:'goods_id',checkbox:true,width:100" ></th>
+						<th data-options="field:'id',width:50" formatter="formatId">ID</th>
+						<th data-options="field:'sn',width:80,sortable:'true'" >商品编号</th>
+						<th data-options="field:'name',width:150" <#-- formatter="formatName" -->>商品名称</th>
+						<th data-options="field:'seller_name',sortable:'true',width:150">店铺</th>
+						<th data-options="field:'price',sortable:'true',width:50" formatter="formatMoney">销售价格</th>
+						<th data-options="field:'buy_count',sortable:'true',width:50">销售量</th>
+						<th data-options="field:'market_enable',sortable:'true',width:30" formatter="market_enable">上架</th>
+						<#-- <th data-options="field:'have_spec',sortable:'true',width:50" formatter="formatHasSpec">规格</th> -->
+						<#-- <th data-options="field:'brand_name',sortable:'true',width:200">品牌</th> -->
+						<th data-options="field:'last_modify',sortable:'true',width:100" formatter="formatTime">上架时间</th>
+						<#-- <th data-options="field:'spec_store',align:'center',width:100" formatter="formatSpecStore">价格/库存</th> -->
+						<th data-options="field:'action',align:'center',width:50" formatter="formatAction">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</form>
+</div>
+
+<div id="spec_store" style="display: none;"></div>
+
+<script type="text/javascript">
+
+$(function(){
+	var i = 0;
+	$(".sc_excel").click(function(){
+		if(i != 0){
+			$.Loading.error("不要重复点击，请刷新后重试");
+			return;
+		}
+		
+		$("#spec_store").show();
+		$('#spec_store').dialog({
+		　　	title: '处理完成之前不要关闭页面，或重新上次',			
+		　　	width: 300,
+			height: 30,
+		　　	closed: false,
+		　　	cache: false,
+		　　	href: "", 	 
+		　　	modal: true,
+		　　	buttons: []
+	　　	});
+		
+		i ++;
+		$.Loading.show("正在更新......");
+		var formData = new FormData($( "#sc_excel_form" )[0]); 
+		$.ajax({
+			url : "${ctx}/shop/admin/goods!uploadExcel4Goods.do?ajax=yes",
+			type : "POST",
+			data: formData,
+			// 告诉jQuery不要去处理发送的数据
+			processData : false, 
+			// 告诉jQuery不要去设置Content-Type请求头
+			contentType : false,
+			dataType : 'json',
+			success : function(data) {
+				if(data == null){
+					$.Loading.error("出现错误 ，请重试");
+					return;
+				}	
+				$.Loading.success(data.message);
+				$("#spec_store").dialog('close');
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+		});
+	});
+
+	$(".a-upload").on("change","input[type='file']",function(){
+	    var filePath=$(this).val();
+	    if(filePath.indexOf("xls")!=-1){
+	        var arr=filePath.split('\\');
+	        var fileName=arr[arr.length-1];
+	        $(".showFileName").html(fileName);
+	    }else{
+	        $(".showFileName").html("点击这里上传文件");
+	        $.Loading.error("您未上传文件，或者您上传文件类型有误！");
+	        return false 
+	    }
+	})
+});
+
+function formatName(value, row, index){
+	var val="<a href=\"../../goods-"+row.goods_id+".html\"target=\"_blank\">"+row.name+"</a>";
+	return val;
+}
+
+function market_enable(value, row, index){
+	var val;
+	if(value==1){val="是";}else if(value==0){val="否";}
+	return val;
+}
+
+function formatId(value, row, index){
+	var val = row.goods_id;
+	return val;
+}
+
+function formatHasSpec(value, row, index){
+	var val;
+	if(value==1){val="是";}else if(value==0){val="否";}
+	return val;
+}
+
+function formatMoney(value, row, index){
+	var val="￥"+value;
+	return val;
+}
+
+function formatTime(value, row, index){
+	
+	return getFormatDateByLong(value, "yyyy-MM-dd hh:mm:ss");
+}
+
+function formatAction(value, row, index){
+	var val="<a class='edit' title='修改' href='#' onclick='newTab(\""+(row.name).substring(0,11)+"..\",\"${ctx}/shop/admin/goods!edit.do?goodsId="+row.goods_id+"\")' ></a>";
+	return val;
+}
+
+function formatSpecStore(value, row, index){
+	var val="<a class='edit' title='价格/库存' href='#' onclick='getSpecStore("+row.goods_id+","+row.have_spec+")' ></a>";
+	return val;
+}
+
+function getSpecStore(goods_id, have_spec){
+	/* if(have_spec == '0'){
+		$.Loading.error("请选择有规格的商品");
+		return;
+	} */
+	$("#spec_store").show();
+	$('#spec_store').dialog({
+	　　	title: '修改价格/库存',			
+	　　	width: 750,
+		height: 350,
+	　　	closed: false,
+	　　	cache: false,
+	　　	href: "${ctx}/shop/admin/goods!getSpecStore.do?ajax=yes&goods_id="+goods_id, 	 
+	　　	modal: true,
+	　　	buttons: [{					
+	　　		text:'保存',
+	　　		iconCls:'icon-ok',
+	　　		handler:function(){
+	　　			setSpecStore(goods_id);
+	　　		}
+　　		},{
+　　			text:'还原',
+　　			handler:function(){
+　　				$.Loading.success("还原");
+　　			}
+　　		}]
+　　	});
+}
+
+function setSpecStore(goods_id){
+	var options = {
+		url : "goods!setSpecStore.do?ajax=yes&goods_id="+goods_id,
+		type : "POST",
+		dataType : 'json',
+		success : function(result) {
+			if(result.result==1){
+				$("#spec_store").dialog('close');
+				$.Loading.success(result.message);
+			}
+			if(result.result==0){
+				$.Loading.error(result.message);
+			}
+		},
+		error : function(e) {
+			$.Loading.error("出现错误 ，请重试");
+		}
+	};
+	$('#specTableForm').ajaxSubmit(options);
+}
+
+function del(){ 
+	var rows = $('#goodsdata').datagrid("getSelections"); 
+	if(rows.length<1){
+		$.Loading.error("请选择删除商品");
+		return;
+	}
+	if(!confirm("确认要将这些商品放入回收站吗？")){	
+		return ;
+	}
+	$.Loading.show("正在删除......");
+ 	var options = {
+		url : "goods!delete.do?ajax=yes",
+		type : "POST",
+		dataType : 'json',
+		success : function(result) {
+			if(result.result==1){
+				$.Loading.success(result.message);
+	 			$('#goodsdata').datagrid("reload");      
+			}
+			if(result.result==0){
+				$.Loading.error(result.message);
+			}
+		},
+		error : function(e) {
+			$.Loading.error("出现错误 ，请重试");
+		}
+	};
+	$('#gridform').ajaxSubmit(options);
+}
+	
+function append(){
+	location.href="goods!selectCat.do";
+}
+
+$(function(){
+	if("${optype}"=="stock"){
+		$("#searchbtn").hide();
+	};
+	$(".searchAdvanced").hide();
+	//高级查询按钮
+    $("#aAdvanced").click(function () {
+        if ($("#Advanced").val() == "0") {
+            $("#Advanced").val(1);
+            $("#simpleSearch").hide();
+            $("#aAdvanced").addClass("searchAdvancedS");
+        } else {
+            $("#Advanced").val(0);
+            $("#simpleSearch").show();
+            $("#aAdvanced").removeClass("searchAdvancedS");
+        }
+        $(".searchAdvanced").slideToggle("slow");
+    });
+})		
+
+//搜索
+function searchGoods(){
+	
+	var searchtype = $("#Advanced").val();
+	var keyword = $.trim($("#searchKeyword").val());
+	var name = $.trim($("#name").val());
+	var sn = $.trim($("#sn").val());
+	var catid = $("#catid").combo('getValue');
+	
+	$('#goodsdata').datagrid('load', {
+		 stype:searchtype,
+		 keyword:keyword,
+		 name:name,
+		 sn:sn,
+		 catid:catid,
+		 page:1
+    }); 
+}
+ 	
+</script>
+
+<#include '/admin/footer.html' >
+

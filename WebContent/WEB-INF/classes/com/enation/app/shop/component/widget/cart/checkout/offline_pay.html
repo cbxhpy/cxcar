@@ -1,0 +1,41 @@
+ <form method="post" action="checkout.html?action=savepay" class="validate">
+
+<input type="hidden" name="ordersn" value="${order.sn}" />  
+<div class="FormWrap ">
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="liststyle data">
+	<colgroup class="span-8 ColColorBlue"></colgroup>
+	<colgroup class="span-auto ColColorGray textcenter"></colgroup>
+	<tbody>
+		<tr>
+			<td width="50%">
+			
+ 
+			<strong>您选择了线下支付，请根据支付方式说明进行付款，付款后可通过网站信息联系我们。</strong>
+			
+			<#include 'pingzheng.html' />
+	 
+  
+			</td>
+		 
+		</tr>
+	</tbody>
+</table>
+</div>
+</form>
+ <script type="text/javascript">
+$(function(){
+	$("form.validate").validate();
+});
+
+//流水号
+function checkSerialNumber(value,callback){
+	var pattern = /^[0-9a-zA-Z]{10,50}$/; 
+	var sno = $("#snumber").val();
+	if (!pattern.test(sno)) {
+		return "您的流水号输入不正确！";
+	}
+	return true;
+}
+
+</script>

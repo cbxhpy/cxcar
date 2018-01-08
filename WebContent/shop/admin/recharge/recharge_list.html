@@ -1,0 +1,308 @@
+<#include '/admin/header.html' >
+<#-- <script type="text/javascript" src="js/WashRecord.js"></script> -->
+<style>
+.input_text{
+	width: 200px;
+}
+</style>
+<div class="main">
+	<form id="gridform" method="post">
+		<div class='buttonArea'>
+			<#-- <a href="javascript:void(0)" class="button blueButton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增数据</a> -->
+			<a href="javascript:void(0)" class="button" data-options="iconCls:'icon-remove',plain:true" onclick="del()">删除</a>
+			<input class="easyui-datebox" style="width: 90px; height: 28px;" id="start_time" data-options="buttons:buttons" />
+			<span>&nbsp;~&nbsp;</span>
+			<input class="easyui-datebox" style="width: 90px; height: 28px;" id="end_time" data-options="buttons:e_buttons" />
+			<a id="exportRecharge" class="button blueButton" onclick="exportRecharge()" href="javascript:;">导出</a>
+			<span style="float:right; height:28px;"> 
+				<#-- <a href="javascript:void(0)" class="button b_fr" id="aAdvanced">高级搜索</a> -->
+				<a href="javascript:void(0)" class="button b_fr" onclick="searchRecharge()">搜索</a>
+				<span>sn：</span>
+				<input class="input_text mr5" id="sn" type="text" value="${sn!}" size="20" style="width: 150px" placeholder="请输入sn" name="sn"> 
+				<span>手机号：</span>
+				<input class="input_text mr5" id="uname" type="text" value="${uname!}" size="20" style="width: 150px" placeholder="请输入手机号" name="uname">
+				<span>支付状态：</span>
+				<select class="inputSelect" name="pay_status" id="pay_status" style="margin-right: 5px;">
+					<option value="">-请选择-</option>
+					<option value="0">未支付</option>
+					<option value="1">已支付</option>
+				</select>
+			</span>
+		</div>
+	</form>
+	
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'recharge!listJson.do?uname_=${uname_!}&sn_=${sn_!}',pageList: [10,15,19,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+				    <thead>
+					    <tr>
+					    	<th data-options="field:'recharge_id',checkbox:true"></th>
+					    	<th data-options="field:'id',width:70" formatter="formatId">ID</th>
+					    	<th data-options="field:'sn',width:200,sortable:'true'">sn</th>
+					    	<th data-options="field:'uname',width:100,sortable:'true'">手机号</th>
+					    	<th data-options="field:'price',width:100,sortable:'true'" formatter="forMoney">充值金额</th>
+					    	<th data-options="field:'balance',width:100,sortable:'true'" formatter="forMoney">获得金额</th>
+					    	<th data-options="field:'pay_type',width:100,sortable:'true'" formatter="formatType">支付类型</th>
+					    	<th data-options="field:'pay_status',width:100,sortable:'true'" formatter="formatState">支付状态</th>
+					    	<th data-options="field:'create_time',width:200" formatter="formatDate">创建时间</th>
+					    	<th data-options="field:'pay_time',width:200" formatter="formatDate">支付时间</th>
+					    	<#-- <th data-options="field:'action',width:100,align:'center'" formatter="formatOperation">操作</th> -->
+					    </tr>
+				    </thead>
+			 </table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#start_time').datebox('setValue',"");
+	}
+});
+
+var e_buttons = $.extend([], $.fn.datebox.defaults.buttons);
+e_buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#end_time').datebox('setValue',"");
+	}
+});
+
+/**
+ * 导出消费记录
+ */
+function exportRecharge(){
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	
+	if(start_time=="" || end_time==""){
+		$.Loading.error("请选择要导出的消费记录日期范围");
+		return;
+	}
+	$.ajax({
+		url:"recharge!exportExcel.do?ajax=yes"+"&start_time="+start_time+"&end_time="+end_time,
+		type:"get",
+		//data:$("form#gridform").serialize(),
+		dataType:"json",
+		success:function(json){
+			$.Loading.hide();
+			if(json.result == 1){
+				location.href = json.message;
+			}else{
+				alert(json.message);
+			}
+		},
+		error:function(){
+			$.Loading.hide();
+			alert("网络连接异常，请重试！");
+		}
+	});
+}
+
+//搜索
+function searchRecharge(){
+	
+	var sn = $.trim($("#sn").val());
+	var uname = $.trim($("#uname").val());
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	var pay_status = $.trim($("#pay_status").val());
+	
+	$('#adcdata').datagrid('load', {
+		 uname : uname,
+		 sn : sn,
+		 page : 1,
+		 start_time : start_time,
+		 end_time : end_time,
+		 pay_status : pay_status
+    }); 
+}
+
+function append(id){
+	var map = {}; // Map map = new HashMap();
+	if(!id){
+		map["href"] ="washRecord!add.do";
+		map["formId"] ="#addForm";
+		map["url"] ="washRecord!addSave.do?ajax=yes";
+		map["title"]="添加洗车记录";
+		map["loadshow"]="正在添加......";
+	}else{
+		map["href"] ="washRecord!edit.do?dictionary_id="+id;
+		map["formId"] ="#editForms";
+		map["url"] ="washRecord!editSave.do?ajax=yes";
+		map["title"]="修改洗车记录";
+		map["loadshow"]="正在修改......";
+	}
+	map["divDialog"]="#divdia";
+	map["gridreload"]="#adcdata";
+	
+	//需要验证的参数
+	map["nameId"]="#name";
+	map["urlId"]="#acwidth";
+	
+	addDialog(map);
+}
+function addDialog(map){
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title: map["title"],
+		width: 500,
+		height: 400,
+		closed: false,
+		cache: false,
+		href: map["href"],
+		modal: true,
+		buttons: [{
+			 text:'保存',
+			 iconCls:'icon-ok',
+			 handler:function(){
+				 var savebtn = $(this);
+　　				 var disabled=savebtn.hasClass("l-btn-disabled");
+　　				 if(!disabled){
+					submitForm(map,savebtn);
+					}
+　　				 }
+			 },{
+			 text:'清空',
+			 handler:function(){
+				 clearForm(map);
+			 }
+			 }]
+		});
+}
+function submitForm(map,saveBtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(formflag){
+		$.Loading.show(map["loadshow"]);
+		saveBtn.linkbutton("disable"); //禁用	
+		var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result){
+					$.Loading.hide();
+					if(result.result==1){
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if(result.result==0){ 
+						$.Loading.error(result.message);
+					}
+					$(saveBtn).linkButton("enable");
+				
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+					$(saveBtn).linkButton("enable");
+				}
+			};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+	saveBtn.linkbutton("enable"); 
+}
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function forMoney(value, row, index) {
+	var val = "￥" + value;
+	return val;
+}
+
+function formatOperation(value,row,index){
+	var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.recharge_id+")' ></a>";
+	return val;
+}
+
+function formatId(value, row, index){
+	var val = row.recharge_id;
+	return val;
+}
+
+function formatAtype(value,row,index){
+	var val;
+	if(value==0){
+		val="图片";
+	}else if(value==1){
+		val="Flash";
+	}
+	return val;
+}
+
+function formatType(value,row,index){
+	var val;
+	if(value==1){
+		val="支付宝";
+	}else if(value==2){
+		val="微信";
+	}else if(value==3){
+		val="管理员充值";
+	}
+	return val;
+}
+
+function formatState(value,row,index){
+	var val;
+	if(value==0){
+		val="未支付";
+	}else if(value==1){
+		val="已支付";
+	}
+	return val;
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value*0.001, "yyyy-MM-dd hh:mm");
+	}
+	
+}
+
+function del(){
+	var rows = $('#adcdata').datagrid("getSelections"); 
+		if(rows.length<1){
+			$.Loading.error("请选择删除充值记录");
+			return;
+		}
+		if(!confirm("确认删除？")){	
+		return ;
+	}
+		$.Loading.show("正在删除......");
+	 var options = {
+			url : "recharge!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if(result.result==1){
+					$.Loading.success(result.message);
+					var rows = $('#adcdata').datagrid("getSelections"); 
+					for(var i =0;i<rows.length;i++){      
+			 			var index = $('#adcdata').datagrid('getRowIndex',rows[i]); 
+			 			$('#adcdata').datagrid('deleteRow',index);    
+			 		}
+				}
+				if(result.result==0){
+					$.Loading.error(result.message);
+				}
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+	};
+	$('#adcform').ajaxSubmit(options);
+
+};
+</script>
+<#include '/admin/footer.html' >
+ 

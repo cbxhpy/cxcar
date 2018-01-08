@@ -1,0 +1,39 @@
+<#assign  title="待评论商品" />
+<#include 'common/header.html' />
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			未评论的商品
+		</p>
+	</div>
+<!-- 获取会员等待评论商品标签 -->
+<#assign memberWaitCommontListTag = newTag("memberWaitCommontListTag")>
+<!-- 调用会员等待评论商品标签 -->
+<#assign memberWaitCommontList = memberWaitCommontListTag()>
+<div class="member_commont">
+	<ul>
+		<#if memberWaitCommontList?size gt 0 >
+			<#list memberWaitCommontList.waitcommentsList as goods>
+				<li class="member_clist">
+					<div class="w_goodsimg">
+						<a href="../goods-${goods.goods_id}.html"  title="${goods.name}" class="img">
+							<img src="${goods.thumbnail!''}" alt="${goods.name}" />
+						</a>
+					</div>
+					<div class="w_goodsintro">
+						<a href="../goods-${goods.goods_id}.html">${goods.name}</a>
+						<span>商品货号：${goods.sn}</span>
+						<span class="goods_p">￥${goods.price?string("0.##")}</span>
+					</div>
+				</li>
+			</#list>
+			<div class="pager_border">
+				<@pager pageno="${page!'1'}" pagesize="${memberWaitCommontList.pageSize}" totalcount="${memberWaitCommontList.totalCount}" />
+			</div>
+		<#else>
+		<liv class="empty" >您尚未评价过商品</li>
+		</#if>
+	</ul>
+</div>
+<#include 'common/footer.html'/>

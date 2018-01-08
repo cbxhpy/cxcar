@@ -1,0 +1,12 @@
+<#-- 创建结算订单金额标签 
+<#assign checkoutOrderTotalTag = newTag("checkoutOrderTotalTag") />-->
+<#-- 调用结算订单金额标签, 需要传递参数regionId(地区id)及typeId(配送方式id)
+<#assign orderPrice = checkoutOrderTotalTag("{'regionId':${regionId},'typeId':${typeId}}") />
+<h2>订单总价：${orderPrice.orderPrice?string("currency")}</h2>
+<p>(含运费：${orderPrice.shippingPrice?string("currency")})</p> -->
+
+<#-- 创建订单价格标签 -->
+<#assign orderPiceTag= newTag("orderPriceTag") >
+<#--通过订单价标签获取订单价格 -->
+<#assign orderPrice = orderPiceTag("{'cart_ids':'${cart_ids!}'}") >	
+合计:<span style="font-size: 0.32rem;color: #ea5514;">${orderPrice.goodsPrice?string("currency")}</span>

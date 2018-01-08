@@ -1,0 +1,176 @@
+<#assign title="首页" />
+<#-- <#assign showback='showback' /> -->
+<#include "common/header_title.html" />
+
+<!-- 判断登录-->
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<!-- 头部 
+	<div class="header">
+		<p>
+<#if title??>
+${header.title}
+<#else>
+${header.title}
+</#if>
+		</p>
+	</div> -->
+<#include 'common/adv.html'/>
+
+<!-- 号外 -->
+<section class="m-extra common-box">
+	<div class="marquee-box">
+		<!-- 创建公告标签 -->
+		<#assign noticeListWblTag= newTag("noticeListWblTag")>
+		<!-- 调用广告信息,传递参数文档name -->
+		<#assign notices = noticeListWblTag("'name':'noticeList'")!'' >
+		<!-- 获取广告列表 -->
+		<#assign noticeList = notices.noticeList />
+		<#if !noticeList?exists || noticeList?size==0> 
+		
+		<#else>
+			<div class="adv" id="slider2">
+				<ul class="major major2">
+					<#list noticeList as notice>
+						<li style="width: 303px;float: left;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+							<em></em><label class="zhi"><a href="wblHelp.html?name=noticeList&notice_id=${notice.notice_id!''}&show=show">${notice.title!''}</a></label>
+					   </li>
+					</#list>
+				</ul>
+				<div id="pagenavi2"><a></a></div>
+			</div>
+		</#if>
+ </div>
+</section>
+
+<section class="m-flow">
+	<h2 class="title-h2">鲜花品类</h2>
+	<p class="line"></p>
+	<p class="title-img"><img src="themes/wap/images/flowers/flowers-category.png" alt=""></p>
+</section>
+
+<ul class="index_nav clearfix">
+
+	<!-- 创建商品分类标签 -->
+	<#assign goodsCatListWblTag= newTag("goodsCatListWblTag")>
+	<!-- 调用商品分类信息,传递参数文档name -->
+	<#assign goodsCat = goodsCatListWblTag("")!'' >
+	<!-- 获取商品分类列表 -->
+	<#assign catList = goodsCat.catList />
+	<#if !catList?exists || catList?size==0> 
+	
+	<#else>
+		<#list catList as cat>
+			<#if cat.list_show == '1'>
+				<li>
+			        <a href="goods_list.html?cat_id=${cat.cat_id!''}">
+			        	<div class="inner">
+			            	<@image	src="${cat.image!''}" alt="${cat.name!''}"/>
+			            </div>
+			            <p>${cat.name!''}</p>
+			        </a>
+			    </li>
+		    </#if>
+		</#list>
+	</#if>
+	
+    <#-- <li>
+        <a href="index.html">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower1.png" alt="">
+            </div>
+            <p>玫瑰花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower2.png" alt="">
+            </div>
+            <p>百合花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">	
+            	<img src="themes/wap/images/flowers/flower3.png" alt="">
+            </div>
+            <p>菊花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower4.png" alt="">
+            </div>
+            <p>康乃馨</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower5.png" alt="">
+            </div>
+            <p>配花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower6.png" alt="">
+            </div>
+            <p>配叶</p>
+        </a>
+    </li> -->
+</ul>
+<!--特卖特惠 -->
+<section class="m-spe-ad">
+	<div class="inner">
+		<!-- 创建广告标签 -->
+		<#assign advListWblTag= newTag("advListWblTag")>
+		<!-- 调用广告信息,传递参数acid:1 -->
+		<#assign adv = advListWblTag("'keyword':'homeactivity'")!'' >
+		<!-- 获取广告列表 -->
+		<#assign advList = adv.advList />
+		<#if !advList?exists || advList?size==0> 
+		
+		<#else>
+			<#list advList as adv>
+				<a href="specialGoodsList.html?adv_id=${adv.aid}">
+					<@image border="0" src="${adv.atturl!''}" alt="${adv.aname!''}" />
+				</a>
+			</#list>
+		</#if>
+	</div>
+</section>
+	
+<#include 'common/footer.html'/>
+
+<script>
+$(function(){
+	var geshu= $(".major2 li").length;    //获取大幅图片中li的总个数。
+	for(i=1;i<=geshu;i++){    //for循环，定i=1,每次循环就加1; 当i的值由1循环到等于result的值一样时（即“文本框的name='text'的值”）就停止循环
+		var createobj = $("<a></a>"); //把div定义为变量createobj
+		$("#pagenavi2").append(createobj); //把createobj这个变量追加到html中的'body'里
+	};
+	/*具体我也没太读懂*/
+	var active=0,                   
+	as=document.getElementById('pagenavi2').getElementsByTagName('a');	
+	for(var i=0;i<as.length;i++){
+		(function(){
+			var j=i;
+			as[i].onclick=function(){
+				t2.slide(j);
+				return false;
+			}
+		})();
+	};
+	var t2 = new TouchSlider({id:'slider2', speed:500, timeout:2000, before:function(index){
+		as[active].className='';
+		active=index;
+		as[active].className='active';
+	}});
+  /*循环滚动结束*/
+})
+</script>

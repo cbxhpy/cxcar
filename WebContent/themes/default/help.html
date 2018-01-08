@@ -1,0 +1,120 @@
+<#include 'common/header.html' />
+
+<div id="helpbanner"><img src="${ctx}/themes/default/images/b1.jpg" /></div>
+<#assign dataDetailTag=newTag("dataDetailTag")>
+<!-- 调用CMS蚊香详细标签，并传递文章所在分类ID，及文章ID -->
+<#assign dataDetail=dataDetailTag("{'catid':${catid!21},'id':${articleid!7}}")>
+<!-- 文章详细，所需的catid与articleid通过help.html?catid=XXX&articleid=XXX传递参数 -->
+
+<div class="w">
+    <div class="abouttiter">
+        <h2>${dataDetail.title!''}</h2>
+    </div>
+    <div class="aboutfl fl">
+     <div class="aboutflcen">
+       ${dataDetail.content!''}
+     </div>
+    </div>
+    
+    <div class="aboutfr fr">
+                <div class="nav-affix">
+                <nav data-spy="affix" class="affix-top">
+                    <ul id="direction_target">
+                        <li class=""><a class="target_to" href="#">关于网站</a>
+                        	<#assign dataSearchTag=newTag("dataSearchTag") />
+							<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+							<#assign webPage = dataSearchTag('{"modelid":2,"catid":21}') />
+                            <dl class="expanded"> 
+                            	<#list webPage.result as article> 
+                                <dt <#if articleid==article.id?c>class="dtselected"</#if>><a href="help.html?articleid=${article.id}" >${article.title!''}</a></dt>
+                                </#list>
+                            </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">新手上路</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":17}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">购物指南</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":18}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">支付方式</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":19}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">购物条款</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":20}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">配送方式</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":22}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">服务指南</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":23}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                        <li class="">
+                           <a class="target_to" href="#">我的订单</a>
+                             <dl class="expanded">  
+                             	<#assign dataSearchTag=newTag("dataSearchTag") />
+								<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+								<#assign webPage = dataSearchTag('{"modelid":2,"catid":25}') />
+								<#list webPage.result as articlea>
+                                	<dt <#if articleid==articlea.id?c>class="dtselected"</#if>><a href="help.html?articleid=${articlea.id}" >${articlea.title!''}</a></dt>
+                                </#list>
+                             </dl>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$(".dtselected").parent().parent().addClass("active");
+});
+</script>
+<#include 'common/footer.html' />

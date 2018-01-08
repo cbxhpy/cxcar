@@ -1,0 +1,35 @@
+<form method="post" id="askform" class="addcomment" >
+<input type="hidden" name="goods_id" value="${goodsid}" />
+<input type="hidden" name="commenttype" value="2" />
+<h4>商品咨询</h4>
+<div class="division">
+<table cellspacing="0" cellpadding="0" border="0" width="100%"
+	class="forform">
+	<tbody>
+		<tr>
+			<th><em>*</em>请输入您的问题：</th>
+			<td>
+				<textarea name="content"   id="askcomment" style="width:685px; height:100px;" ></textarea>
+			</td>
+		</tr>
+ 
+		<tr>
+			<td></td>
+			<td><input type="button"id="askBtn" value="  提交    " class="btnx"></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</form>
+<script type="text/javascript">
+$(function(){	
+	$("#askBtn").click(function(){
+		if($('#askcomment').val() == ''){
+			alert("请输入您的问题！");
+			return false;
+		}
+		CommentForm.formSubmit($(this),$("#askform"));
+		return false;
+	});
+});
+</script>

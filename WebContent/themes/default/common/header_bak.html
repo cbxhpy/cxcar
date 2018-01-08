@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<#assign headerTag = newTag("headerTag") />
+<#assign header = headerTag() />
+<#if title??>
+	<title>${title}-${header.title}</title>
+	<#else>
+	<title>${header.title}</title>
+</#if>
+<#if keywords??>
+	<meta name="keywords" content="${keywords!''}">
+	<#else>
+	<meta name="keywords" content="${header.keywords!''}">
+</#if>
+<#if description??>
+	<meta name="description" content="${description!''}">
+	<#else>
+	<meta name="description" content="${header.description!''}">
+</#if>
+
+<meta http-equiv="X-UA-Compatible" content="IE=8" > </meta>
+<#if site.icofile?exists>
+	<link href="${site.icofile}" rel="shortcut icon" >
+</#if>
+
+<script>
+	var ctx="${ctx}";
+</script>
+<link href="${ctx}/themes/default/style/common0.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/themes/default/style/common.css" rel="stylesheet" type="text/css" />
+<link href="${ctx}/themes/default/style/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="${ctx}/themes/default/js/jquery.min-.js"></script>
+<script type="text/javascript" src="${ctx}/themes/default/js/common.js"></script>
+<script type="text/javascript" src="${ctx}/themes/default/js/index.js"></script>
+<script type="text/javascript" src="${ctx}/themes/default/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="${ctx}/themes/default/js/switch.js" ></script>
+
+
+<link rel="stylesheet" href="${ctx}/themes/default/css/button.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/themes/default/css/dialog.css" type="text/css" />
+<script src="${ctx}/themes/default/js/jquery-1.8.3.min-.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/jquery.validate.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/jquery.form-3.51.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/lhgdialog.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/jquery.blockUI.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/Utils.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/shop.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/CartBar.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/DropDownMenu.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/ui.datepicker.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/DatePicker.js" type="text/javascript"></script>
+<script src="${ctx}/themes/default/js/LoginDialog.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div style="height:110px; margin:0px auto;"><img src="${ctx}/themes/default/images/chivas_ad.jpg" /></div>
+<div id="indexcut-2015">
+    <div class="w">
+    <div class="fl">
+  <ul>
+    <li>嗨，欢迎来到厦门众道生活电子商务有限公司  </li>
+      <li class="fore1" id="ttbar-login">
+			<#if member?? >
+				<!-- 获取member信息 -->
+				<script type="text/javascript">var isLogin= true;</script>
+				您好：${member.name}
+				<a href="${ctx}/member/member.html">[会员中心]</a>
+				<a href="#" id="logout">[退出]</a>
+
+			<#else>
+				<script type="text/javascript">var isLogin= false;</script>
+
+
+                <a href="login.html" class="link-login style-red">
+                   请登录   
+              </a>
+                &nbsp;&nbsp;
+                <a href="register.html" class="link-regist style-red">
+                  免费注册
+              </a>
+			</#if>
+
+            </li>
+            
+      </ul>
+    </div>
+        <ul class="fr">
+            <li class="fore3 dorpdown" id="ttbar-myjd">
+                <div class="dt cw-icon">
+                    <i class="ci-right">
+                        <s>
+                            ◇
+                        </s>
+                    </i>
+                    <a target="_blank" href="#">
+                        我的账户
+                  </a>
+                </div>
+                <div class="dd dorpdown-layer">
+                    <div class="dd-spacer">
+                    </div>
+                    <div class="userinfo">
+                        <div class="u-pic">
+                            <a href="#">
+                                <img src="${ctx}/themes/default/images/no-img_mid_.jpg" width="100" height="100">
+                            </a>
+                        </div>
+                        <div class="u-name u-login">
+                            <a href="javascript:login();" class="link-login">
+                                你好，请登录
+                            </a>
+                        </div>
+                        <div class="u-extra">
+                            <a href="$" target="_blank">
+                                优惠券
+                                <span id="num-ticket">
+                                </span>
+                            </a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="#" target="_blank">
+                                消息
+                                <span id="num-tip">
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="otherlist">
+                    </div>
+                    <div class="viewlist" style="display:none;">
+                        <div class="smt">
+                            <h4>
+                                最近浏览
+                            </h4>
+                            <span class="extra">
+                                <a target="_blank" href="#">
+                                    更多&nbsp;&gt;
+                                </a>
+                            </span>
+                        </div>
+                        <div class="smc">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li class="spacer">
+            </li>
+            <li class="fore8 dorpdown" id="ttbar-serv" >
+                <div class="dt cw-icon"> <i class="ci-right"><s> ◇</s></i> 帮助中心</div>
+                <div class="dd dorpdown-layer">
+                    <div class="dd-spacer">
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank">
+                            帮助中心
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank">
+                            售后服务
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank">
+                            在线客服
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank">
+                            意见建议
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="#" target="_blank">
+                            客服邮箱
+                        </a>
+                    </div>
+                </div>
+            </li>
+            
+            <li class="spacer">
+            </li>
+            <li class="fore6 dorpdown" id="ttbar-apps">
+                <div class="dt cw-icon">
+                    <i class="ci-right">
+                        <s>
+                            ◇
+                        </s>
+                    </i>
+                    <a target="_blank" href="%">
+                       收藏本站
+                    </a>
+                </div>
+                <div class="dd dorpdown-layer">
+                    <div class="dd-spacer">
+                    </div>
+                    <div class="dd-inner" id="ttbar-apps-main" >
+                        <a href="#"  target="_blank">
+                           收藏本站
+                        </a>
+                        <a href="#" target="_blank">
+                          收藏本站
+                        </a>
+                       
+                    </div>
+                </div>
+            </li>
+           
+        </ul>
+        <span class="clr"></span>
+    </div>
+</div>
+
+<div class="w">
+    <div id="logo-2015"><a class="logo" href="#"></a></div>
+  <div id="search-2015">
+        <ul id="shelper" class="hide" style="display: none; ">
+        </ul>
+        <div class="form">
+            <input  type="text" onkeydown="" autocomplete="off" id="keyword" accesskey="s" class="text" value="请输入产品关键字，如品牌、型号等"  title="请输入产品关键字，如品牌、型号等">
+            <button  onclick="" name="s_seek" id="searchBtn" class="button cw-icon">
+                <i>
+                </i>
+                搜索
+            </button>
+        </div>
+    </div>
+  <div id="settleup-2015" class="dorpdown">
+		<div class="cw-icon">
+			<li id="cart_bar_wrapper" class="first">
+            <i class="ci-left"></i>
+
+				<a href="cart.html" style='padding-left:20px;white-space:nowrap'>我的购物车(<span class="num">0</span>)件</a>
+				<div class="content" style="display:none" >
+					<div class="border"></div>
+					<div class="cart_list" >
+						<@image class="loading" src='images/ajax-loader.gif'/>						
+					</div>					
+				</div>
+			</li>
+		</div>
+    </div>
+    <div id="hotwords-2015">
+	<!-- 获取CMS数据搜索标签， -->
+	<#assign dataSearchTag=newTag("dataSearchTag") />
+  	<!-- 调用CMS数据搜索标签，并传递所在模型ID参数(es_hot_keyword表.)“3”表示出现三个关键词。 -->
+	<#assign webPage = dataSearchTag('{"modelid":1,"pageSize":5}')  />
+		<#list webPage.result as data>
+			<a href="${ctx}/search-keyword-${data.keyword}.html" >${data.keyword}</a>
+		</#list>
+    </div>
+    <span class="clr">
+    </span>
+</div>
+
+<script type="text/javascript">
+var searchTipText = "请输入产品关键字，如品牌、型号等";
+function search(){
+	var keyword = $.trim( $("#keyword").val());
+	if(keyword == searchTipText){
+		keyword = '';
+	}
+	if(keyword.indexOf('\\')!=-1){
+		alert("请输入正确的关键词");
+		return false;
+	}
+	if(keyword==''){
+		alert("请输入关键字");
+	}else{
+		keyword = keyword.replace(/\//g,"-xie-")
+		var url =  encodeURIComponent("search-keyword-"+keyword+".html");
+		location.href="${ctx}/"+url;
+	}
+}
+
+$(function(){	
+	$("#keyword").keypress(function(event){
+	//	$("#keyword").attr("class","seek");
+		if(event.keyCode=="13" ){
+			search();
+		}
+	});
+	$("#keyword").click(function(){
+		if($(this).val() == searchTipText){
+			$(this).val("");
+		}
+	});
+	$("#keyword").blur(function(){
+		if($(this).val() == ''){
+			$(this).val(searchTipText);
+		}
+	});
+	
+	$("#searchBtn").click(function(){
+		search();
+	});
+});
+</script>
+
+<script>
+$(function(){
+	$("#logout").click(function(){
+		$.ajax({
+			url:"api/shop/member!logout.do?ajax=yes",
+			dataType:"json",
+			cache: false,             //清楚缓存，暂时测试，如果产生冲突，请优先考虑是否是这条语句。
+			success:function(result){
+				if(result.result==1){
+					$.alert(result.message);
+					location.href="${ctx}/index.html";
+					
+				}else{
+					$.alert(result.message);
+				}	
+				$.Loading.hide();
+			},
+			error:function(){
+				$.Loading.hide();
+				$.alert("出错了:(");
+			}
+		});
+		return false;
+	})	
+})
+</script>	

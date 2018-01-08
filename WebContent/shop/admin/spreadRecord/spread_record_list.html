@@ -1,0 +1,405 @@
+<#include '/admin/header.html' >
+<#-- <script type="text/javascript" src="js/WashCard.js"></script> -->
+
+<div class="main">
+	<form id="gridform" method="post">
+		<div class="buttonArea" >
+			<input type="hidden" value="${member_id!''}" name="member_id" id="member_id"/>
+			<#-- <a href="javascript:void(0)" class="button blueButton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增数据</a> -->
+			<a href="javascript:void(0)" class="button" data-options="iconCls:'icon-remove',plain:true" onclick="del()">删除</a>
+			<input class="easyui-datebox" style="width: 90px; height: 28px;" id="start_time" data-options="buttons:buttons" />
+			<span>&nbsp;~&nbsp;</span>
+			<input class="easyui-datebox" style="width: 90px; height: 28px;" id="end_time" data-options="buttons:e_buttons" />
+			<a id="exportSpread" class="button blueButton" onclick="exportSpread()" href="javascript:;">导出</a>
+			<a id="countSpread" class="button" onclick="countSpread()" href="javascript:;">统计</a>
+			<label style="color: red;" id="total_recharge"></label>
+			<span style="float:right; height:28px;"> 
+				<#-- <a href="javascript:void(0)" class="button b_fr" id="aAdvanced">高级搜索</a> -->
+				<a href="javascript:void(0)" class="button b_fr" onclick="searchSpread()">搜索</a>
+				<span>推广员：</span>
+				<input class="input_text mr5" id="uname" type="text" value="${uname!}" size="20" style="width: 100px" placeholder="请输入推广员" name="sn"> 
+				<span>名称：</span>
+				<input class="input_text mr5" id="name" type="text" value="${name!}" size="20" style="width: 80px" placeholder="请输入名称" name="uname">
+				<span>是否处理：</span>
+				<select class="inputSelect" name="spread_status" id="spread_status" style="margin-right: 5px;">
+					<option value="">-请选择-</option>
+					<option value="0">未处理</option>
+					<option value="1">已处理</option>
+				</select>
+				<span>类型：</span>
+				<select class="inputSelect" name="type" id="type" style="margin-right: 10px;">
+					<option value="">-请选择-</option>
+					<option value="0">充值</option>
+					<option value="1">提现</option>
+				</select>
+			</span>
+		</div>
+	</form>
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'spreadRecord!listJson.do?member_id=${member_id!''}',pageList: [10,15,20,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+				    <thead>
+					    <tr>
+					    	<th data-options="field:'spread_record_id',checkbox:true"></th>
+					    	<th data-options="field:'id',width:50" formatter="formatId">ID</th>
+					    	<th data-options="field:'uname',width:100,sortable:'true'">推广员</th>
+					    	<th data-options="field:'name',width:50,sortable:'true'">名称</th>
+					    	<th data-options="field:'price',width:50,sortable:'true'">金额</th>
+					    	<th data-options="field:'create_time',width:100,sortable:'true'" formatter="formatDate">时间</th>
+					    	<th data-options="field:'remark',width:150,sortable:'true'">备注信息</th>
+					    	<th data-options="field:'spread_status',width:60,sortable:'true'" formatter="formatStatus">是否处理</th>
+					    	<th data-options="field:'type',width:50,sortable:'true',align:'center'" formatter="formatType">交易类型</th>
+					    	<#-- <th data-options="field:'action',width:50,align:'center'" formatter="formatOperation">操作</th> -->
+					    </tr>
+				    </thead>
+			 </table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#start_time').datebox('setValue',"");
+	}
+});
+
+var e_buttons = $.extend([], $.fn.datebox.defaults.buttons);
+e_buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#end_time').datebox('setValue',"");
+	}
+});
+
+/**
+ * 导出交易记录
+ */
+function exportSpread(){
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	var member_id = $('input[name=member_id]').val();
+	
+	if(start_time=="" || end_time==""){
+		$.Loading.error("请选择要导出的交易记录日期范围");
+		return;
+	}
+	$.ajax({
+		url:"spreadRecord!exportExcel.do?ajax=yes"+"&start_time="+start_time+"&end_time="+end_time+"&member_id="+member_id,
+		type:"get",
+		//data:$("form#gridform").serialize(),
+		dataType:"json",
+		success:function(json){
+			$.Loading.hide();
+			if(json.result == 1){
+				location.href = json.message;
+			}else{
+				alert(json.message);
+			}
+		},
+		error:function(){
+			$.Loading.hide();
+			alert("网络连接异常，请重试！");
+		}
+	});
+}
+
+/**
+ * 统计总充值金额
+ */
+function countSpread(){
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	var member_id = $('input[name=member_id]').val();
+	
+	if(start_time=="" || end_time==""){
+		$.Loading.error("请选择要统计的交易记录日期范围");
+		return;
+	}
+	$.ajax({
+		url:"spreadRecord!countSpread.do?ajax=yes"+"&start_time="+start_time+"&end_time="+end_time+"&member_id="+member_id,
+		type:"get",
+		//data:$("form#gridform").serialize(),
+		dataType:"json",
+		success:function(json){
+			$.Loading.hide();
+			if(json.result == 1){
+				$("#total_recharge").html(json.message+"元");
+			}else{
+				alert(json.message);
+			}
+		},
+		error:function(){
+			$.Loading.hide();
+			alert("网络连接异常，请重试！");
+		}
+	});
+}
+
+//搜索
+function searchSpread(){
+	
+	var uname = $.trim($("#uname").val());
+	var name = $.trim($("#name").val());
+	var spread_status = $.trim($("#spread_status").val());
+	var type = $.trim($("#type").val());
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	
+	$('#adcdata').datagrid('load', {
+		 uname : uname,
+		 name : name,
+		 spread_status : spread_status,
+		 type : type,
+		 page : 1,
+		 start_time : start_time,
+		 end_time : end_time
+    }); 
+}
+
+function append(id){
+	var map = {}; // Map map = new HashMap();
+	if(!id){
+		map["href"] ="spreadRecord!add.do";
+		map["formId"] ="#addForm";
+		map["url"] ="spreadRecord!addSave.do?ajax=yes";
+		map["title"]="添加交易记录";
+		map["loadshow"]="正在添加......";
+	}else{
+		map["href"] ="spreadRecord!edit.do?operator_city_id="+id;
+		map["formId"] ="#editForms";
+		map["url"] ="spreadRecord!editSave.do?ajax=yes";
+		map["title"]="修改交易记录";
+		map["loadshow"]="正在修改......";
+	}
+	map["divDialog"]="#divdia";
+	map["gridreload"]="#adcdata";
+	
+	//需要验证的参数
+	map["nameId"]="#name";
+	map["urlId"]="#acwidth";
+	
+	addDialog(map);
+}
+function addDialog(map){
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title: map["title"],
+		width: 600,
+		height: 400,
+		closed: false,
+		cache: false,
+		href: map["href"],
+		modal: true,
+		buttons: [{
+			 text:'保存',
+			 iconCls:'icon-ok',
+			 handler:function(){
+				 var savebtn = $(this);
+　　				 var disabled=savebtn.hasClass("l-btn-disabled");
+　　				 if(!disabled){
+					submitForm(map,savebtn);
+					}
+　　				 }
+			 },{
+			 text:'清空',
+			 handler:function(){
+				 clearForm(map);
+			 }
+			 }]
+		});
+}
+function submitForm(map,saveBtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(formflag){
+		$.Loading.show(map["loadshow"]);
+		saveBtn.linkbutton("disable"); //禁用	
+		var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result){
+					$.Loading.hide();
+					if(result.result==1){
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if(result.result==0){ 
+						$.Loading.error(result.message);
+					}
+					$(saveBtn).linkButton("enable");
+				
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+					$(saveBtn).linkButton("enable");
+				}
+			};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+	saveBtn.linkbutton("enable"); 
+}
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function forMoney(value, row, index) {
+	var val = "￥" + value;
+	return val;
+}
+
+function formatOperation1(value,row,index){
+	var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.spread_record_id+")' ></a>";
+	return val;
+}
+
+function formatOperation(value,row,index){
+	var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.spread_record_id+")' ></a>";
+	return val;
+}
+
+
+function formatId(value, row, index){
+	var val = row.spread_record_id;
+	return val;
+}
+
+function formatAtype(value,row,index){
+	var val;
+	if(value==0){
+		val="图片";
+	}else if(value==1){
+		val="Flash";
+	}
+	return val;
+}
+
+function formatType(value,row,index){
+	if(value==0){
+		val="充值收益";
+	}else if(value==1){
+		val="提现";
+	}
+	return val;
+}
+
+function formatStatus1(value,row,index){
+	if(value==0){
+		val="未处理";
+	}else if(value==1){
+		val="已处理";
+	}
+	return val;
+}
+
+$(function(){
+	$(".tongguo").on("click", function(){
+		var spread_record_id = $(this).attr("spread_record_id");
+		shengQing(spread_record_id, 2, "已处理");
+	});
+});
+
+function shengQing(spread_record_id, status, str){
+	var self = $(this); 
+	$.ajax({
+		url : "spreadRecord!spreadHandle.do?ajax=yes&spread_record_id="+spread_record_id+"&spreadStatus="+status,
+		dataType:"json",
+		success:function(result){//prev()
+			if(result.result==1){
+				console.log($("span[spread_record_id="+spread_record_id+"]").html());
+				$("span[spread_record_id="+spread_record_id+"]").html(str);
+				$("span[spread_record_id="+spread_record_id+"]").next().remove();
+				$.Loading.success(result.message);
+			}else{
+				$.Loading.error(result.message);
+			}
+			
+		},
+		error:function(){
+			$.Loading.error("服务器出错");
+		}
+	});
+}
+
+function formatStatus(value, row, index) {
+	var val;
+	// 提现
+	if(row.type == 1){
+		if (value == 0) {
+			val = "<div style='text-align:center;'><span spread_record_id='"+row.spread_record_id+"'>未处理</span><a class='button tongguo' onClick='shengQing("+row.spread_record_id+", 1, \"已处理\")' >处理</a></div>";
+		}else if(value == 1){
+			val = "<div style='text-align:center;'>已处理</div>";
+		}else{
+			val = "未知";
+		}
+	}
+	return val;
+	
+}
+
+function formatState(value,row,index){
+	var val;
+	if(value==1){
+		val="月卡";
+	}else if(value==2){
+		val="季卡";
+	}else if(value==3){
+		val="年卡";
+	}
+	return val;
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value/1000, "yyyy-MM-dd hh:mm");
+	}
+	
+}
+
+function del(){
+	var rows = $('#adcdata').datagrid("getSelections"); 
+		if(rows.length<1){
+			$.Loading.error("请选择交易记录");
+			return;
+		}
+		if(!confirm("确认删除？")){	
+		return ;
+	}
+	$.Loading.show("正在删除......");
+	var options = {
+		url : "spreadRecord!delete.do?ajax=yes",
+		type : "POST",
+		dataType : 'json',
+		success : function(result) {
+			if(result.result==1){
+				$.Loading.success(result.message);
+				var rows = $('#adcdata').datagrid("getSelections"); 
+				for(var i =0;i<rows.length;i++){      
+		 			var index = $('#adcdata').datagrid('getRowIndex',rows[i]); 
+		 			$('#adcdata').datagrid('deleteRow',index);    
+		 		}
+			}
+			if(result.result==0){
+				$.Loading.error(result.message);
+			}
+		},
+		error : function(e) {
+			$.Loading.error("出现错误 ，请重试");
+		}
+	};
+	$('#adcform').ajaxSubmit(options);
+
+};
+</script>
+<#include '/admin/footer.html' >
+ 

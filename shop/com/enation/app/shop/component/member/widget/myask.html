@@ -1,0 +1,55 @@
+<script type="text/javascript" src="js/jquery.pager.js"></script>
+<link href="css/Pager.css" rel="stylesheet" type="text/css" />
+
+<h1 class="title">我的咨询</h1>
+共有<em id="comment_count">${totalCount}</em>条咨询
+<div class="FormWrap">
+<div id="goods-comment">
+	
+	 <#list commentsList as comment>
+ 
+<div class="division boxBrown">
+<strong><span class="author fontcolorOrange">  <a href="goods-${comment.goods_id}.html" target="_blank">${comment.name}</a> </span>：&nbsp; </strong>
+<span class="timpstamp font10px fontcolorGray replies prepend-1"><@dateFormat date="${comment.dateline?c}" pattern="yy-MM-dd HH:mm"/>&nbsp;&nbsp;</span> 
+ 
+<div class="boxBlue" style="margin: 10px 0pt;">${comment.content}</div>
+<div>
+	<#if comment.replystatus == 1>
+	<div style="border-bottom: 1px dotted rgb(174, 195, 207);">
+		<span class="author fontcolorOrange" style="color: rgb(0, 51, 153);">回复：</span> 
+		<div>${comment.reply}</div>
+	</div>
+	</#if>	
+</div>
+</div>
+ 
+</#list>
+	 
+ 
+</div>
+</div>
+<div id="pager" ></div>
+
+<script>
+var Pager = {
+	init:function(){
+		var self = this;
+		var PC = 0;
+		var em  =$("#comment_count");
+		PC = (parseInt(em.text()) % ${pageSize} == 0) ? (parseInt(em.text()) / ${pageSize}): (parseInt(em.text()) / ${pageSize} + 1);
+		if(PC!=0){
+			$("#pager").pager({ pagerid:'pager',pagenumber: ${page}, pagecount: PC, buttonClickCallback: self.PageClick });
+			//$("#pager").pager({ pagerid:'pager',pagenumber: 1, pagecount: 2, buttonClickCallback: self.PageClick });
+		}
+	},
+
+	PageClick:function(pageclickednumber){
+		var self = this;
+		location.href="member_ask.html?page="+pageclickednumber;
+	}
+}
+
+$(function(){
+	Pager.init();
+});
+</script>

@@ -1,0 +1,422 @@
+<#assign  title="商品详情" />
+<#include 'common/header.html' />
+<!-- 头部 -->
+<#-- <header class="bheader">
+	<a class="back" href="javascript:history.go(-1);location.reload()"></a>
+	<a href="javascript:;"></a>
+	<h4>商品详情</h4>
+	<a href="javascript:;"></a>
+	<a href="javascript:;"></a>
+</header> -->
+<div class="header">
+	<a class="go_back" href="javascript:;">返回</a>
+	<p>
+		购物车
+	</p>
+</div>
+<!-- 调用滚动js -->
+<script type="text/javascript" src="themes/wap/js/touchslider.js"></script>
+<script type="text/javascript" src="themes/wap/js/goods.js"></script>
+<script type="text/javascript" src="themes/wap/js/spec.js"></script>
+<#-- 创建商品基本信息标签 -->
+<#assign goodsBaseDataTag= newTag("goodsBaseDataTag") >
+<#-- 调用标签获取商品基本信息 -->
+<#assign goods = goodsBaseDataTag() >
+<#assign title = "${goods.name}" />
+<#-- 创建商品相册标签 -->
+<#assign goodsGalleryTag = newTag("goodsGalleryTag")>
+<#-- 调用标签获取商品相册信息 -->
+<#assign galleryList = goodsGalleryTag()!'' >
+<#-- 创建商品属性标签 -->
+<#assign goodsAttributeListTag = newTag("goodsAttributeListTag")>
+<#-- 调用标签获取商品属性信息 -->
+<#assign attrList = goodsAttributeListTag("'goodsid':${goods.goods_id!''}")!'' >
+
+<#-- 创建商品参数标签 -->
+<#assign goodsParametersTag = newTag("goodsParametersTag")>
+<#-- 调用标签获取商品参数信息 -->
+<#assign goodsPara = goodsParametersTag()!'' >
+
+<#-- 获得商品参数的参数组 -->
+<#if goodsPara.hasParam == true>
+	<#assign para = goodsPara.paramList>
+</#if>
+<#list galleryList as gallery>
+	<#if gallery.isdefault==1>
+		<#assign big ="${gallery.big!''}" />
+		<#assign small ="${gallery.small!''}" />
+	</#if>
+</#list>
+
+<#-- 创建会员评论标签 -->
+<#assign memberIsCommentTag = newTag("memberIsCommentTag")>
+<#assign isComment = memberIsCommentTag("{'goods_id':${goods.goods_id}}") >	
+
+<!-- 商品相册 -->
+	<div class="photo" id="slider">
+	
+	
+		<ul class="goods_images">
+			<#list galleryList as gallery>
+				<li <#if !gallery_has_next>class="last"</#if> <#if gallery.isdefault==1>class="selected"</#if>> <@image src="${gallery.big}"  big="${gallery.big}" small="${gallery.small}"/></li>
+			</#list>
+		</ul>
+		<div id="goods_circle"></div>
+	</div>
+<!-- 商品简介 -->
+<div class="goods_intro">
+	<div class="goodprice">
+		<div class="goodstitle"><h1>${goods.name}</h1><span class="goods_collect" rel="${goods.goods_id}">收藏</span></div>
+		<h2>嘻嘻价：<span>&yen;${goods.price!''}</span></h2>
+		<p><span>商品货号：${goods.sn}</span>
+			<span class="have">
+				<#if goods.store?? && goods.store gt 0 >
+				有货
+				<#else>
+				缺货
+				</#if>
+			</span>
+		</p>
+		<p><span>计价单位：</span>${goods.unit!''}</p>
+		<p><span>嘻嘻值：</span>${goods.point!''}</p>
+	</div>
+	<!-- 商品规格 -->
+	<#if goods.isvirtual?exists && goods.isvirtual==1>
+		<form action="virtual_checkout.html" id="goodsform" method="post">
+		<#else>
+		<form action="cart.html" id="goodsform" method="post">
+		</#if>
+	<div class="goods_spec" id="goods_spec">
+		<h4 class="spec_tip"></h4>
+		<#if goods.have_spec?exists && goods.have_spec==1 >
+		<!-- 创建商品规格标签 -->
+		<#assign goodsSpecTag = newTag("goodsSpecTag") >
+		<!-- 调用商品规格标签 -->
+		<#assign goodsSpace = goodsSpecTag("'goods_id':${goods.goods_id}")!'' >
+		<!-- 规格列表 -->
+		<#list goodsSpace.specList as spec>
+		<table width="100%" class="spec_item">
+			<tbody>
+				<tr>
+					<td style="width: 10%; white-space: nowrap;"><span><em>${spec.spec_name}</em>：</span></td>
+					<td style="padding-left: 15px;">
+		 				<ul>
+							<#list spec.valueList as val  >
+								<#if spec.spec_type==0>
+									<li class="spec_word">
+										<a specid="${spec.spec_id}" specvid="${val.spec_value_id}"  href="javascript:;" class="" title="${val.spec_value}">
+											<span>${val.spec_value}</span>
+											<i title="${val.spec_value}">&nbsp;</i>
+										</a>
+									</li>
+								</#if>
+								<#if spec.spec_type==1>
+									<li class="spec_img">
+										<a specid="${spec.spec_id}" specvid="${val.spec_value_id}"  href="javascript:;" class="" title="${val.spec_value}" >
+											<@image height="30" width="30" title="${val.spec_value}" alt="${val.spec_value}" src="${val.spec_image}" />
+											<i title="${val.spec_value}">&nbsp;</i>
+										</a>
+									</li>
+								</#if>				
+							</#list>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</#list>
+		</#if>
+	</div>
+	</form>
+	
+<!-- 购买数量 -->
+	<div class="goods_num">
+		<p>数量：</p>
+		<label><span class="goods_cut">-</span><input type="text" value="1" class="goodsnum"/><span class="goods_add" rel="${goods.store!0}">+</span></label>
+		<p class="goods_s">库存：${goods.store!0}</p>
+	</div>
+</div>
+<!-- 返回官网 -->
+<div class="goods_back">
+	<p class="go_home"></p>
+	<a class="go_back" href="javascript:;"></a>
+</div>
+<!-- 商品详细说明 -->
+<div class="goods">
+	<ul class="goods_title">
+		<li class="t_property ">商品属性</li>
+		<li class="t_photo selected">图文详情</li>
+		<li class="t_commont">评价</li>
+	</ul>
+	<div class="property" style="display:none">
+		<h1>基本信息</h1>
+		<ul>
+		 <#if attrList?exists >
+		  	<#list attrList as list>
+	  			<li>
+					<p>${list.attrName!'' }:</p>
+					<span>${list.attrValue!'' }</span>
+				</li>
+		  	</#list>
+		  </#if>
+		</ul>	
+		<h1>商品属性</h1>
+		<ul>
+		<#if goodsPara.hasParam==true>
+			<#list para as parameters>
+				<!-- 获得 paramList下的json数组，使用第二层list循环-->
+				<#list parameters.paramList as gparam>
+					<li>
+						<p>${gparam.name!'' }:</p>
+						<span>${gparam.value!'' }</span>
+					</li>
+				</#list>
+			</#list>
+			</#if>
+		</ul>
+	</div>
+	<div class="g_photo">
+		${goods.intro!''}
+	</div>
+	<div class="commont" style="display:none">
+	<!-- 获取商品评论标签 -->
+	<#assign commentListTag = newTag("commentListTag")>
+	<!--调取"评论"标签，并传递参数,获取Page对象-->
+	<#assign commentPage = commentListTag("{'goods_id':${goods.goods_id},'type':1}")>
+	
+	<div class="grade_list">
+	<#if commentPage.totalCount != 0 >
+		<ul>
+			<#list commentPage.result as comment>  
+				<li <#if !comment_has_next >class="last"</#if>>
+					<div class="problem_right">
+						<span class="goods_member">
+						     <#if comment.member_id != 0>
+				            	${comment.uname!''}
+				            <#else>
+				            	匿名
+				            </#if>
+						</span>
+						<p class="goods_othermember">
+							<span class="goods_memberlv">
+								<#if comment.levelname?exists>
+		         					<#if comment.levelname?exists>
+										<span class="lv">
+		          							${comment.levelname!''}
+		            					</span>
+		        					</#if>
+		           				</#if>
+							</span>
+							<span class="goods_time"><@dateformat time="${comment.dateline?c}" pattern="yyyy-MM-dd HH:mm"/></span>
+						</p>
+						
+						<p class="right_word">${comment.content!''}</p>
+						<div class="problem_time">
+							<p class="star${comment.grade}"></p>
+						</div>	
+						<#if comment.replystatus==1>
+						<div class="problem_answer">
+								<span></span>
+								<p>${comment.reply}</p>
+						</div>
+						</#if>
+					</div>
+				</li>
+			</#list>
+		</ul>
+	<#else>
+		 暂无评论，抢沙发，赢取更多积分。 
+	</#if>
+	</div>
+	<div class="page">
+		<@ajaxpager pageno="${page!'1'}" pagesize="${commentPage.pageSize}" totalcount="${commentPage.totalCount}" />
+	</div>
+	<!-- 商品评论 -->
+	<div class="g_comment">
+		
+		<form action="#" method="post" id="discussForm">
+				<h2>
+					<b>给商品打分：</b>
+					<select name="grade" class="grade_list" style="width:67%;">
+						<option value="3">好评</option>
+						<option value="2">中评</option>
+						<option value="1">差评</option>
+					</select>
+				</h2>
+				<div class="comment_word">
+					<textarea name="content" id="discuss_content" placeholder="请输入您要评价的内容"></textarea>
+					<input type="hidden" name="goods_id" value="${goods.goods_id}" />
+					<input type="hidden" name="commenttype" value="1" />
+				</div>
+				<div class="comment_btn">
+					<input href="javascript:;" class="comment_ok" id="discussBtn" value="发表评论">
+				</div>	
+	</form>
+		
+	</div>
+	</div>
+</div>
+<div class="goods_blank" style="width:100%;height:70px;display:block;">
+</div>
+<!-- 购买功能板块 -->
+<div class="goods_tools" rel="${goods.goods_id}">
+	<a href="javascript:;" class="my_collect">
+	<#if member?? ><script type="text/javascript">var isLogin= "1";</script><#else><script type="text/javascript">var isLogin= "0";</script></#if></a>
+	<a href="cart.html" class="my_cart"><span>0</span></a>
+	<div class="cart_way">
+	 <#if goods.have_spec?exists && goods.have_spec==1 >
+	 	<input type="hidden" value="1" name="havespec" />
+		<input type="hidden" name="productid" id="productid"  />
+		<input type="hidden" name="action" value="addProduct" />
+	<#else>
+	
+	<input type="hidden" name="goodsid" value="${goods.goods_id}" />
+	<input type="hidden" name="action" value="addGoods" />
+	</#if>
+	</div>
+	
+	<input type="button" value="加入购物车" class="in_cart"/>
+	<input type="button" value="立即购买" class="buy_now">
+</div>
+<script type="text/javascript" src="themes/wap/js/js-yhy.js"></script>
+<script>
+$(function(){
+	
+	//改变图片大小
+	$(".g_photo p img").css({"width":"100%","height":"auto","max-width":"640px"})
+	
+	//判断移动端屏幕大小，以此来判断是否是手机还是平板
+	var windows_width = $(window).width();
+	if(windows_width < 640){
+		$(".spec_item tr td ul li").css("width","40%");
+	}
+	else{
+		$(".spec_item tr td ul li").css("width","16%");
+	}
+	
+	//标签切换
+	$(".goods_title li").click(function(){
+		$(".goods_title li").removeClass("selected");
+		$(this).addClass("selected");
+	})
+	$(".t_property").click(function(){
+		$(".property").show();
+		$(".g_photo").hide();
+		$(".commont").hide();
+	})
+	$(".t_photo").click(function(){
+		$(".property").hide();
+		$(".g_photo").show();
+		$(".commont").hide();
+	})
+	$(".t_commont").click(function(){
+		$(".property").hide();
+		$(".g_photo").hide();
+		$(".commont").show();
+	})
+	//判断库存
+	goodsjs.goods_stock();
+	//立即购买
+	goodsjs.buy();
+	//加入收藏
+	goodsjs.goodscollect();
+	//图片滚动
+	goodsjs.goodsimg();
+	//加入购物车
+	goodsjs.incart();
+	//加载购物数量
+	goodsjs.firstnum();
+	
+	//回到上一页
+	$(".go_back").click(function(){
+		/* self.location=document.referrer; */
+		self.location = history.go(-1);
+	})
+	$(".go_home").click(function(){
+		self.location="index.html";
+	})
+	
+	//跳转到我的收藏
+	$(".my_collect").click(function(){
+		if(isLogin == 0){
+			alert("会员未登录")
+		}
+		else{
+			location.href="collect.html";
+		}
+	})
+	
+	//评论
+	$(".comment_ok").click(function(){
+		<#if !isComment.isLogin >
+		alert("请您先登录，然后再进行评论！");
+		return;
+	<#else>
+		<#if !isComment.isBuy>
+			alert("您只有购买该商品后才能进行评论！");
+			return;
+		<#else>
+			<#if isComment.isCommented>
+				alert("对不起，您已经评论过此商品！");
+				return;
+			<#else>
+				var cval = $('#discuss_content').val();
+				if(cval == '' ||cval=='请在此处输入您的评论' ){
+					alert("请输入您的评论内容！");
+					return;
+				}
+				else if(cval.length>1000){
+					alert("请您输入1000字以内的评论");
+					return;
+				}
+				var options = { 
+						url : "api/shop/commentApi!add.do?ajax=yes",
+						type : "POST",
+						dataType : "json",
+						success : function(result) {
+			 				if(result.result==1){
+								 alert("提交成功，请等待管理员审核!");
+								 form.get(0).reset();
+								 window.location.reload();
+					 		}else{
+					 			alert(result.message);
+						 	}
+						},
+						error : function(e) {
+							alert("出现错误 ，请重试");
+							btn.attr("disabled",false); 
+						}
+				};
+				
+				$('#discussForm').ajaxSubmit(options);	
+			</#if>
+		</#if>
+	</#if>
+	})
+})
+</script>
+<!-- 商品规格 -->
+<script type="text/javascript">
+var haveSpec=0;
+<#if goodsSpace?exists>
+	haveSpec=1;
+</#if>
+var Products=
+	[
+		<#if goodsSpace?exists>
+			<#list goodsSpace.productList as product>	
+				{'product_id':${product.product_id},'goods_id':${product.goods_id},'sn':'${product.sn}','store':${product.store!0},
+					'price':${product.price},
+	   				'specs':${product.specsvIdJson}
+				}
+	  			<#if product_has_next >,</#if>
+			</#list>
+		</#if>
+	];
+$(function(){
+	Eop.Spec.init(haveSpec);
+});
+
+</script>
+</body>
+</html>

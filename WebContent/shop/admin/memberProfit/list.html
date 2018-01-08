@@ -1,0 +1,139 @@
+<#include '/admin/header.html' >
+<style>
+.input_text{
+	width: 200px;
+}
+</style>
+<div class="main">
+	<div class="buttonArea">
+		<input class="easyui-datebox" style="width: 90px; height: 28px;" id="start_time" data-options="buttons:buttons" />
+		<span>&nbsp;~&nbsp;</span>
+		<input class="easyui-datebox" style="width: 90px; height: 28px;" id="end_time" data-options="buttons:e_buttons" />
+		<a id="exportRecharge" class="button blueButton" onclick="exportRecharge()" href="javascript:;">导出</a>
+		<span style="float:right; height:28px;"> 
+			<a href="javascript:void(0)" class="button b_fr" onclick="searchMemberProfit()">搜索</a>
+			<span>手机号：</span>
+			<input class="input_text mr5" id="uname" type="text" value="${uname!}" size="20" style="width: 150px" placeholder="请输入手机号" name="uname">
+			<span>洗车机编码：</span>
+			<input class="input_text mr5" id="machine_number" type="text" value="${machine_number!}" size="20" style="width: 100px" placeholder="洗车机编码" name="machine_number">
+			<span>收益类型：</span>
+			<select class="inputSelect" name="profit_type" id="profit_type" style="margin-right: 10px;">
+				<option value="">-请选择-</option>
+				<option value="1">合伙人收益</option>
+				<option value="2">分润</option>
+			</select>
+		</span>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'memberProfit!listJson.do',pageList: [10,15,20,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+			    <thead>
+				    <tr>
+				    	<th data-options="field:'profit_id',checkbox:true"></th>
+				    	<th data-options="field:'uname',width:80">会员帐号</th>
+				    	<th data-options="field:'role_name',width:150">会员角色</th>
+				    	<th data-options="field:'machine_number',width:60">编号</th>
+				    	<th data-options="field:'machine_name',width:150">洗车机名称</th>
+				    	<th data-options="field:'profit_type',width:80" formatter="formatProfitType">收益类型</th>
+				    	<th data-options="field:'total_price',width:100">订单总额</th>
+				    	<th data-options="field:'income_price',width:100">收益金额</th>
+				    	<th data-options="field:'create_time',width:120" formatter="formatDate">创建时间</th>
+				    </tr>
+			    </thead>
+			</table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#start_time').datebox('setValue',"");
+	}
+});
+
+var e_buttons = $.extend([], $.fn.datebox.defaults.buttons);
+e_buttons.splice(1, 0, {
+	text: '清空',
+	handler: function(target){
+		$('#end_time').datebox('setValue',"");
+	}
+});
+
+/**
+ * 导出会员收益
+ */
+function exportRecharge(){
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	
+	if(start_time=="" || end_time==""){
+		$.Loading.error("请选择要导出的会员收益日期范围");
+		return;
+	}
+	$.ajax({
+		url:"memberProfit!exportExcel.do?ajax=yes"+"&start_time="+start_time+"&end_time="+end_time,
+		type:"get",
+		//data:$("form#gridform").serialize(),
+		dataType:"json",
+		success:function(json){
+			$.Loading.hide();
+			if(json.result == 1){
+				location.href = json.message;
+			}else{
+				alert(json.message);
+			}
+		},
+		error:function(){
+			$.Loading.hide();
+			alert("网络连接异常，请重试！");
+		}
+	});
+}
+
+//搜索
+function searchMemberProfit(){
+	
+	var uname = $.trim($("#uname").val());
+	var machine_number = $.trim($("#machine_number").val());
+	var profit_type = $.trim($("#profit_type").val());
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	
+	$('#adcdata').datagrid('load', {
+		 uname : uname,
+		 page : 1,
+		 machine_number : machine_number,
+		 start_time : start_time,
+		 end_time : end_time,
+		 profit_type : profit_type
+    }); 
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value*0.001, "yyyy-MM-dd hh:mm:ss");
+	}
+}
+
+function formatProfitType(value,row,index){
+	if(value==1){
+		return "合伙人收益";
+	}
+	else if(value==2){
+		return "分润";
+	}
+}
+
+</script>
+<#include '/admin/footer.html' >
+ 

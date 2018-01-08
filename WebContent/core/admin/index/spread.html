@@ -1,0 +1,24 @@
+<#assign dateFormat="com.enation.framework.directive.DateformateDirective"?new()>
+<table cellspacing="0" cellpadding="0" border="0" width="100%">
+	<tbody>        
+		<tr>
+			<th width="80px"><span>推广员总数：</span></th>
+			<td>
+				<span>
+					<b>${spreadss.all_num!'0'}人</b>	
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th><span>推广员申请：</span></th>
+			<td>
+				<div style="width:120px;height:18px;overflow:hidden">
+					<a href='javascript:void(0);' onclick='newTab("推广员申请","${ctx}/shop/admin/member!memberlist.do?spreadStatus=1&is_admin=1")' >
+						${spreadss.num!'0'}人
+					 </a>
+				</div>
+			</td>
+		</tr>
+		        
+	</tbody>
+</table>

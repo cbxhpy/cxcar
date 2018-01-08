@@ -1,0 +1,60 @@
+<#assign  title="商品分类" />
+<#include 'common/header.html'/>
+<!-- 头部 -->
+	<div class="header">
+		<a class="go_back" href="javascript:;">返回</a>
+		<p>
+			产品分类
+		</p>
+	</div>
+<#include 'common/adv.html'/>
+<#include 'common/search.html'/>
+<!-- 分类 -->
+<#assign goodsCatTag= newTag("goodsCatTag")>
+<!-- 调用商品分类信息 -->
+<#assign goodsCat = goodsCatTag()!'' >
+<div class="title_1"><h1>全部分类</h1></div>
+<div class="classify">
+	<ul class="classify_list">
+		<#list goodsCat.cat_tree as cat>
+			<li class="c_list <#if cat.hasChildren >haschild</#if>">
+				<h2><a href="${ctx}/search-cat-${cat.cat_id}.html" class="menu">${cat.name}</a></h2>
+				<span class="down"></span>
+				<#assign children2=cat.children />
+				<ul class="list_children" style="display:none;">
+					<#list children2 as cat2>
+						<li <#if !cat2_has_next>class="last"</#if> >
+							<a href="${ctx}/search-cat-${cat2.cat_id}.html">${cat2.name }</a>
+						</li>
+					</#list>
+				</ul>
+			</li>
+		</#list>	
+	</ul>
+</div>
+<script>
+$(function(){
+	//判断是否有子分类
+	$(".classify_list .c_list").each(function(){
+		var num=$(this).find("ul li").length;
+		if(num==0){
+			$(this).find("span").removeClass("down");
+		}
+	})
+	//点击展开
+	$(".down").click(function(){
+		if($(this).attr("class")=="down"){
+			$(this).removeClass("down");
+			$(this).addClass("up");
+			$(this).next(".list_children").show();
+		}
+		else{
+			$(this).removeClass("up");
+			$(this).addClass("down");
+			$(this).next(".list_children").hide();
+		}
+	})
+	
+})
+</script>
+<#include 'common/footer.html'/>

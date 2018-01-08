@@ -1,0 +1,24 @@
+<div class="rer_para">
+	<#if attrList?exists || attrList?size gt 0>
+		<ul class="attributeszy-list">
+			<#list attrList as goodsattr>
+			<li >${goodsattr.attrName!''}：${goodsattr.attrValue!''}</li>
+			</#list>
+		</ul>
+	</#if>
+</div>
+<div class="rer_para paramList">
+	<#if goodsPara.hasParam==true && (para?exists || para?size gt 0)>
+		<ul class="attributeszy-list">
+			<#list para as parameters>
+			<!-- 获得 paramList下的json数组，使用第二层list循环-->
+			<#list parameters.paramList as gparam>
+			<li >${gparam.name!'' }：${gparam.value!'' }</li>
+			</#list>
+			</#list>
+		</ul>
+	</#if>
+</div>
+
+
+				

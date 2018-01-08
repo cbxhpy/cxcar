@@ -1,0 +1,332 @@
+<#assign  title="基本资料" />
+<#include 'member_header.html' />
+<#assign regionSelect = "com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+
+<div class="data">
+	<h2>完善基本资料</h2>
+</div>
+
+<div class="form_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+		
+			<form id="form_saveMember"   method="post" class="validate"  action="#">
+			
+				<table width="100%" cellspacing="0" cellpadding="0"	class="perfection">
+					<tr>
+						<th>注册邮箱：</th>
+						<td class="email" colspan="3"><span class="def"><span id="lbEmail">${member.email!''}</span></span></td>
+						
+					</tr>
+					<tr>
+						<th>用户名：</th>
+						<td class="email" colspan="3">
+							<span class="def"><span id="lbNickName">${member.uname!''}</span></span>
+						</td>
+					</tr>
+					<tr>
+						<th>推荐人：</th>
+						<td class="email" colspan="3"><span class="def"><span id="lbPname">${member.pname!'无推荐人'}</span></span></td>
+						
+					</tr>
+					<tr>
+						<th class="member_turename">真实姓名：</th>
+						<td class="email" colspan="3"><input type="text" isrequired="true" name="nickname" value="${member.nickname!''}" class="input_text" style="float:left;display:inline;" fun="checkUserName" />
+							<p class="prompt member_p">请务必填写您的真实姓名，以便出现问题时客服核对您的真实信息！</p>
+						</td>
+					</tr>
+					<tr>
+						<th class="member_cardno">身份证：</th>
+						<td class="email" colspan="3"><input type="text" isrequired="true" name="card_no" value="${member.card_no!''}" class="input_text member_card" style="float:left;display:inline;" fun="checkCardNo" />
+						</td>
+					</tr>
+					<tr>
+						<th>设置头像：</th>
+						<td colspan="3">
+							<div class="userico">
+								<#if member.face?exists && member.face != ''>
+								<img src="<@imgurl pic='${member.face}'/>" width="100" />
+								<#else>
+								<@image src="images/default_face.jpg" width="100" height="100" />
+								</#if>
+							</div>
+							<div class="uploadIco">
+								<h3 style="float: none; display: block;">从您的电脑中上传图片作为头像</h3>
+								<div class="file clearfix">
+									<div class="ifUpfile">
+											<input type="file" name="file">
+									</div>
+									<span id="imgS"></span>
+								</div>
+								<!--file end-->
+								<p class="prompt">(建议尺寸120*120像素，200k以内)</p>
+								<input name="txtIco" type="hidden" id="txtIco" value="/ajax/MImageHandler.ashx?d=ico\default.jpg" />
+							</div>
+						</td>
+					</tr>
+					<tr id="gender">
+						<th>性别：</th>
+						<td class="middle" colspan="3"><label class="gender">
+							<input type="radio" name="sex" <#if member.sex!=0>checked</#if> value="1"  />
+							<span>男</span></label>
+							<label class="gender" id="lgender">
+							<input type="radio" value="0"  name="sex" <#if member.sex==0>checked</#if> />
+							<span>女</span>
+							</label>
+						</td>
+					</tr>
+					<tr>
+						<th>生日：</th> 
+						<td colspan="3" class="birthday middle">    <!--  mybirthday   -->     
+							<input class="Wdate" type="text" name="mybirthday" onClick="WdatePicker()" <#if member.birthday??> value="<@dateformat time="${(member.birthday)?c}" pattern="yyyy-MM-dd"/>"</#if> >                     
+						</td>
+					</tr>
+					<tr>
+						<th>居住地：</th>
+						<td colspan="3" class="choseAddr ">
+							<div class="select clearfix"><@regionSelect /></div>
+						</td>
+					</tr>
+					<tr>
+						<th>联系地址：</th>
+						<td colspan="3" class="birthday middle">
+							<input name="address" type="text" value="${member.address!''}" class="input_text" />
+						</td>
+					</tr>
+					<tr>
+						<th>邮编：</th>
+						<td colspan="3" class="birthday middle">
+							<input name="zip" type="text" value="${member.zip!''}" id="zipcode" class="input_text">
+						</td>
+					</tr>
+					<tr>
+						<th class="label middle">手机：</th>
+						<td colspan="3">
+							<input id="cellphone" name="mobile" type="text" value="${member.mobile!''}" class="input_text" isrequired="true" style="float:left;display:inline;" fun="checkCellphone"/>
+						</td>
+					</tr>
+					<tr>
+						<th class="label middle">开户银行：</th>
+						<td colspan="3">
+							<input id="bank_name" name="bank_name" type="text" value="${member.bank_name!''}" class="input_text" isrequired="true" style="float:left;display:inline;" />
+						</td>
+					</tr>
+					<tr>
+						<th class="label middle">银行账号：</th>
+						<td colspan="3">
+							<input id="bank_no" name="bank_no" type="text" value="${member.bank_no!''}" class="input_text" isrequired="true" style="float:left;display:inline;" />
+						</td>
+					</tr>
+					<#if member.pay_password?exists && member.pay_password != ''>
+						<tr>
+							<th class="member_turename">原支付密码：</th>
+							<td class="email" colspan="3">
+								<input id="old_pay_password" name="old_pay_password" type="password" value="" class="input_text" style="float:left;display:inline;" fun="checkPaypassword"/>
+								<p class="prompt member_p">如不修改支付密码无需输入</p>
+							</td>
+						</tr>
+						<tr>
+							<th class="label middle">新支付密码：</th>
+							<td colspan="3">
+								<input id="pay_password" name="pay_password" type="password" value="" class="input_text" style="float:left;display:inline;" fun="validatePaypassword2"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="label middle">确认支付密码：</th>
+							<td colspan="3">
+								<input id="re_pay_password" name="re_pay_password" type="password" value="" class="input_text" style="float:left;display:inline;" fun="rePaypassword"/>
+							</td>
+						</tr>
+					<#else>
+						<tr>
+							<th class="label middle">支付密码：</th>
+							<td colspan="3">
+								<input id="pay_password" name="pay_password" type="password" value="" class="input_text" isrequired="true" style="float:left;display:inline;" fun="validatePaypassword"/>
+							</td>
+						</tr>
+						<tr>
+							<th class="label middle">确认支付密码：</th>
+							<td colspan="3">
+								<input id="re_pay_password" name="re_pay_password" type="password" value="" class="input_text" isrequired="true" style="float:left;display:inline;" fun="rePaypassword"/>
+							</td>
+						</tr>
+					</#if>
+				</table>
+				<div class="mc-mdOper">
+					<div class="btn">
+						<input type="button" name="btnSubmit" value="保存资料" id="btnSubmit" class="yellow_btn" />
+					</div>
+					<#if member.info_full == 0>
+					<span>
+						<span>即可获得<strong>10元红包</strong>！</span>
+					</span>
+					</#if>
+				</div>
+			</form>
+		</div>
+		<div class="bottom"></div>
+	</div>
+</div>
+</div>
+<script language="javascript"> 
+function check(){
+	var a = /^(\d{4})-(\d{2})-(\d{2})$/
+	if (!a.test(document.getElementById("birthdaysss").value)) { 
+	alert("日期格式不正确!") 
+	return false 
+	} 
+	else 
+	return true 
+	} 
+	
+//检测用户名
+function checkUserName(value,callback){
+	if(value==""){
+		callback(false,"真实姓名不能为空");
+	}	
+	return true;
+}
+
+function validatePaypassword(value,callback){
+	if(value==""){
+		return "原支付密码不能为空";
+	}
+	if(value.length<6){
+		return "支付密码必须大于5位数";
+	}
+	$.ajax({
+		url:"${ctx}/api/shop/member!validatePaypassword.do?ajax=yes",
+		type:"POST",
+		data:"pay_password=" + value,
+		dataType:"json",
+		success:function(json){
+			if(json.result==1){
+				callback(true,"");
+			}else{
+				callback(false,json.message);
+			}
+		}		
+	});	
+	return true;
+}
+
+function validatePaypassword2(value,callback){
+	
+	var old_password = $("#old_pay_password").val();
+	
+	if(value!="" && old_password==""){
+		return "请输入原支付密码";
+	}
+	
+	if(old_password!="" && value==""){
+		return "支付密码不能为空";
+	}
+	if(old_password!="" && value.length<6){
+		return "支付密码必须大于5位数";
+	}
+	$.ajax({
+		url:"${ctx}/api/shop/member!validatePaypassword.do?ajax=yes",
+		type:"POST",
+		data:"pay_password=" + value,
+		dataType:"json",
+		success:function(json){
+			if(json.result==1){
+				callback(true,"");
+			}else{
+				callback(false,json.message);
+			}
+		}		
+	});	
+	return true;
+}
+
+function checkPaypassword(value,callback){	
+	
+	if(value==""){
+		return true;
+	}else{
+		$.ajax({
+			url:"${ctx}/api/shop/member!checkPaypassword.do?ajax=yes",
+			type:"POST",
+			data:"pay_password=" + value,
+			dataType:"json",
+			success:function(json){
+				if(json.result==1){
+					callback(true,"");
+				}else{
+					callback(false,"原支付密码错误");
+				}
+			}		
+		});	
+		return true;
+	}
+	
+}
+
+//检测身份证
+function checkCardNo(value,callback){
+	if(value==""){
+		callback(false,"身份证号码不能为空");
+	}	
+	return true;
+}
+
+//检测身份证
+function rePaypassword(){
+	if ($("#re_pay_password").val() == $("#pay_password").val()) {
+		return true;
+	} else {
+		return "支付密码不一致";
+	}
+}
+
+//判断手机格式
+function checkCellphone(value,callback){
+	 if(isNaN(value)!==false){
+		 return "手机格式错误";
+	 }
+	 return true;
+}
+</script> 
+<script type="text/javascript">
+$(function(){
+	<#if member.province_id?exists && member.city_id?exists && member.region_id?exists>
+	RegionsSelect.load(${member.province_id},${member.city_id},${member.region_id});
+	</#if>
+	//地区联动选择-选择最后一级（区）时自动设置邮编
+	RegionsSelect.regionChange=function(regionid,name,zipcode){
+		$("#zipcode").val(zipcode);
+	};
+	
+	//保存会员信息	
+	$("#btnSubmit").click(function(result){
+　　		if(!$("#form_saveMember").checkall())
+　　			return false;
+　　		var province_id = $("#province_id").val();
+　　		if(province_id==0){
+　　			alert("请填写居住地信息");
+　　			return false;
+　　		}
+		 $("#form_saveMember").ajaxSubmit({
+				url:"${ctx}/api/shop/member!saveInfo.do",
+				dataType:"json",
+				success:function(data){
+					if(data.result==1){
+						alert("保存成功");
+						location.href="member.html"
+					}
+					else{
+						alert(data.message);
+					}
+				}
+			})
+	});
+});
+</script>
+
+<div class="rr_bottom"></div></div>
+		<!--会员中心首页右侧结束-->
+	</div>
+	</div>
+	<#include '../common/footer.html'/>

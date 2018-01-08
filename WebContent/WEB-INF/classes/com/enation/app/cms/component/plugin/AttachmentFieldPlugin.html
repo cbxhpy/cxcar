@@ -1,0 +1,65 @@
+<div class="uploadWrapper${fieldname}">
+	<div style="float:left;margin-bottom:5px;margin-right:5px;">
+		<span id="span_${fieldname}"></span>
+	</div>
+	<input type="button" class="button" value="上传" id="uploadBtn_${fieldname}" />
+	<input type="hidden" name="${fieldname}_path" id="${fieldname}_path" />
+	<input type="hidden" name="${fieldname}_name" id="${fieldname}_name" />
+	<div id="uploadDlg_${fieldname}"></div>
+</div>
+<script>
+
+
+$(function(){
+	<#if path?exists && path!='' >
+		$("#${fieldname}_path").val('${path}');
+		$("#${fieldname}_name").val('${name}');
+		$("#span_${fieldname}").html('<a href="${path}">${name}</a>');
+	<#else>
+		$("#span_${fieldname}").empty();
+	</#if>
+	$("#uploadBtn_${fieldname}").click(function(){
+		$("#uploadDlg_${fieldname}").dialog({
+			title : "上传附件",
+			top : 130,
+			width : 350,
+			height : 160,
+			closed : false,
+			cache : false,
+			href : "${ctx}/eop/upload.do?subFolder=cms",
+			modal : true,
+			buttons : [ {
+				text : '保存',
+				handler : function() {
+					imgSubmit();
+					$("#photoDiv").dialog('close');
+				}
+			}]
+		});
+	});
+	function imgSubmit() {
+		var path="";
+		var options ={
+			url:"${ctx}/eop/upload!upload.do?ajax=1",
+			dataType:"json",
+			success:function(data){
+				uploadOk${fieldname}(data);
+			},
+			error:function(){
+				alert("上传错误，请重试");
+			}
+		};
+		$('#uploadForm').ajaxSubmit(options);
+	};
+	function uploadOk${fieldname}(data){
+		if(data.result==1){
+			 $("#${fieldname}_name").val(data.filename);
+			 $("#${fieldname}_path").val(data.path);
+			 $("#span_${fieldname}").html(data.filename);	 
+		}else{
+			alert(data.message);
+		}
+		$("#uploadDlg_${fieldname}").dialog('close');
+	};
+})
+</script>

@@ -1,0 +1,113 @@
+<#assign  title="月月分红" />
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css" type="text/css" />
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+<#assign agentYongjinHistoryListTag = newTag("agentYongjinHistoryListTag")>
+<#assign agentYongjinHistoryList = agentYongjinHistoryListTag()>
+<#assign pList = agentYongjinHistoryList.aList>
+
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			月月分红
+		</p>
+	</div>
+<div class="member_commont" id=content_wrapper>
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>月月分红:</h3>
+				<ol>
+					<li>描写相关细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="tab">
+	<ul>					
+		<li class="selected"><a href="agentlevel.html"><span>月月分红</span></a></li>
+	</ul>
+</div>
+<div class="box">				
+	<div class="top"></div>
+	<div class="body" >
+	<#if pList?size gt 0 >
+		<table cellspacing="0" cellpadding="0" width="100%" >
+			<thead>
+				<tr>
+					<th>月份</th>	 
+					<th>代理级别</th>
+					<th>分红</th>
+					<th>描述</th>
+				</tr>
+			</thead>
+			<tbody  >
+				<#list pList as agent>
+						<tr>
+							<td>${agent.xxw_month}</td>
+							<td><@agentlevel level="${agent.agent_level}" /></td>
+							<td>${agent.yongjin}</td>
+							<td>${agent.reason}</td>
+						</tr>
+				</#list>
+			</tbody>
+		</table>
+		<div class="pager_border">
+			<@pager pageno="${agentYongjinHistoryList.page}" pagesize="${agentYongjinHistoryList.pageSize}" totalcount="${agentYongjinHistoryList.totalCount}" />
+			<div class="clear"></div>
+		</div>
+		<#else>
+		<div class="empty" >尚无记录</div>
+		</#if>
+	</div>
+	<div class="bottom"></div>
+</div>
+</div>
+<script>
+var canUse = ${memberYongjin.yongjin!0};
+$(function(){
+	$("#btnSubmit").click(function(){
+		var yongjin = $("#yongjin").val();
+		
+		if(yongjin==""){
+			alert("请输入提现金额");
+			return ;
+		}
+		if(isNaN(yongjin)!==false){
+			alert("积分必须为纯数字");
+			return ;
+		}
+		if(yongjin>canUse){
+			alert("您输入的数额大于可用积分");
+			return ;
+		}
+		$.ajax({
+			url:"${ctx}/api/shop/fenxiao!withdrawAdd.do?yongjin="+yongjin,
+			dataType:"json",
+			success:function(res){
+				if(res.result==1){
+					alert(res.message);
+					location.href = "${ctx}/member/levelorder.html?status=2";
+				}else{
+					alert(res.message);
+				}
+			},
+			error:function(){
+				alert("出现错误 ，请重试");
+			}
+		});
+	});
+});	
+</script>
+<#include 'common/footer.html'/>

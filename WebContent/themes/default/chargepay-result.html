@@ -1,0 +1,35 @@
+<#include 'common/header.html' />
+<link rel="stylesheet" href="${ctx}/themes/default/css/member.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/themes/default/css/checkout.css" type="text/css" />
+<div id="main">
+	<div class="checkout_step2">
+		<@image src="images/pay.jpg" alt="结算流程第二步" />
+	</div>
+	<#--创建支付结果标签-->
+	<#assign paymentResultTag = newTag("chargePayResultTag")   />
+	<#--获取支付结果-->
+	<#assign paymentResult= paymentResultTag()   />
+	<div id="checkout_wrapper">
+		<div class="encircle" style="background:#F0F1F5;">
+			<h1>支付状态</h1>
+			<div class="deliver">
+				<div>
+					<#if paymentResult.result==1>
+						<@image src="images/jstj.jpg" alt="支付成功" />
+					<#else>
+						<@image src="images/lose.jpg" alt="支付失败" />
+					</#if>
+					<p>
+						<#if paymentResult.result==1>
+							支付成功，<a href="${ctx}/member/fenxiao.html">查看嘻币</a>
+						<#else>
+							支付失败，原因为：${paymentResult.error!''}	
+						</#if>
+					</p>
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
+<#include 'common/footer.html' />
+	

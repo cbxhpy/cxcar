@@ -1,0 +1,273 @@
+<#include '/admin/header.html' > 
+<#assign dateformat="com.enation.framework.directive.DateformateDirective"?new()>
+<#assign permssion="com.enation.app.base.core.directive.PermssionDirective"?new()>
+
+<div class="main">
+	<form  method="post" id="theForm">
+		<div class="shadowBoxWhite  whiteBox">
+			<table>
+				<tr>
+					<th class="title" colspan="8">退货入库</th>
+				</tr>
+				<tr>
+					<th align="right" style="width: 100px;">退货单号：</th>
+					<td>${sellBackList.tradeno}</td>
+					<th>状态：</th>
+					<td><#if sellBackList.tradestatus==0>新建</#if> <#if
+						sellBackList.tradestatus==1>待入库</#if> <#if
+						sellBackList.tradestatus==2>已入库</#if> <#if
+						sellBackList.tradestatus==3>已完成</#if> <#if
+						sellBackList.tradestatus==4>已取消</#if></td>
+				</tr>
+				<tr>
+					<th align="right">关联订单号：</th>
+					<td>${sellBackList.ordersn}</td>
+					<th>订单使用：</th>
+					<td>已支付：￥${orderinfo.paymoney}</td>
+				</tr>
+				<tr>
+					<th align="right">退货人：</th>
+					<td>${sellBackList.sndto}</td>
+					<th style="width: 80px">物流公司：</th>
+					<td>${ sellBackList.logi_name} &nbsp;&nbsp; 物流单号：
+						${sellBackList.logi_no!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">退款金额：</th>
+					<td width="300">${sellBackList.alltotal_pay } 元</td>
+					<th>退款运费：</th>
+					<td>
+						<#if sellBackList.fare??&&sellBackList.fare!=''>
+						${sellBackList.fare} <#else> 0 </#if>元 
+						&nbsp;&nbsp; 合计：
+						<#if sellBackList.total??> ${sellBackList.total } 
+							<#else> 0 
+						</#if>元
+					</td>
+				</tr>
+				<tr>
+					<th align="right">是否全部退货：</th>
+					<td >
+						<#if sellBackList.isall==1>
+							全部退货
+						</#if>
+						<#if sellBackList.isall==0>
+							部分退货
+						</#if>
+					</td>
+					
+					<th >退货仓库：</th>
+					<td >
+						<#if sellBackList.depotid==1>海淀仓库</#if>
+						<#if sellBackList.depotid==2>朝阳仓库</#if>
+						<#if sellBackList.depotid==3>昌平仓库</#if>
+					</td>
+				</tr>
+				<tr>
+					<th align="right">退款备注：</th>
+					<td colspan="3">${sellBackList.remark!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">客服操作备注：</th>
+					<td colspan="3">${sellBackList.seller_remark!'' }</td>
+				</tr>
+				<tr>
+					<th align="right">操作备注：</th>
+					<td colspan="3"><textarea rows="3" id="seller_remark" 
+							name="sellBackList.warehouse_remark">${sellBackList.warehouse_remark!'' }</textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<br>
+		<div class="shadowBoxWhite  whiteBox">
+			<table width="100%">
+				<tr>
+					<th class="title" colspan="8">请选择入库的商品</th>
+				</tr>
+				<tr>
+					<td>
+						<div class="detail">
+							<table class="goodsList" fitColumns="true" id="goodsin" cellspacing="0" cellpadding="0" border="0">
+								<thead>
+									<tr>
+										<th data-options="field:'gids',width:50">选择</th>
+										<th data-options="field:'names',width:300">商品名称</th>
+										<th data-options="field:'prices',width:100">金额</th>
+										<th data-options="field:'payNums',width:100">购买数量</th>
+										<th data-options="field:'returnNums',width:100">退货数量</th>
+										<th data-options="field:'oldStorageNums',width:100">已入库数量</th>
+										<th data-options="field:'storageNums',width:100">本次入库</th>
+									</tr>
+								</thead>
+								<tbody>
+									<#list goodsList as data> 
+										<#if data.return_num??>
+										<tr>
+											<td>
+												<input type="checkbox" name="goodsId"  <#if data.goodsId??>checked</#if> value="${data.goods_id }" id="${data.goods_id }" /> 
+												<input type="hidden" checked="" value="${data.goods_id }" name="gid" />
+												<input type="hidden" name="productId" value="${data.product_id}" >
+											</td>
+											<td>${data.name } <input type="hidden" name="goodsName"
+												value="${data.name }" />
+											</td>
+											<td>${data.price } <input type="hidden" name="goodsPrice"
+												value="${data.price }" />
+											</td>
+											<td>${data.num } <input type="hidden" name="payNum"
+												value="${data.num }" />
+											</td>
+											<td>${data.return_num } <input type="hidden"
+												name="returnNum" value="${data.return_num }" />
+											</td>
+											<td><input type="hidden" class="input"
+												value="${(data.storage_num)!0 }" name="oldStorageNum"
+												style="width: 20px;"> ${(data.storage_num)!0 }</td>
+											<td><input type="text" class="input input_text easyui-numberbox" data-options="required:true" id="storageNums" 
+												returnNum="${(data.return_num)!''}"
+												oldStorageNum="${(data.storage_num)!''}"  placeholder="请填写入库数量"
+												name="storageNum" style="width: 60%">
+											</td>
+										</tr>
+										</#if> 
+									</#list>
+								</tbody>
+							</table>
+						</div>
+						</td>
+				</tr>
+
+				<tr id="cancel" style="display: none;">
+					<input type="hidden" id="canceltype" value="0" >
+					<td colspan="4" align="center">取消原因：<input type="text" class="input_text" 
+						value="" name="cancelRemark" id="cancelRemark" /></td>
+				</tr>
+				<tr>
+					<td colspan="8" align="center"><input type="hidden"
+						value="${sellBackList.id }" name="id" /> <#if is_all==1> <input
+						type="hidden" value="2" name="status"> <#elseif is_all==0>
+						<input type="hidden" value="5" name="status"> </#if>
+						<@permssion actid='depot_admin'> <a href="javascript:void(0)"
+						class="easyui-linkbutton saveBtn" id="submit">确认入库</a>
+						</@permssion> <@permssion actid='depot_admin'> <a
+						href="javascript:void(0)" class="easyui-linkbutton cancelBtn" 
+						status="${sellBackList.tradestatus }">取消退货</a> </@permssion></td>
+				</tr>
+			</table>
+		</div>
+
+		<br>
+		<div class="shadowBoxWhite  whiteBox">
+			<table width="100%">
+				<tr>
+					<th class="title" colspan="8">操作日志</th>
+				</tr>
+				<tr>
+					<td>
+						<div class="detail">
+							<table cellspacing="0" cellpadding="0" border="0" id="log">
+								<thead>
+									<tr>
+										<th data-options="field:'operator',width:200">操作人员</th>
+										<th data-options="field:'logdetail',width:200">操作详情</th>
+										<th data-options="field:'time',width:200">操作时间</th>
+									</tr>
+								</thead>
+								<tbody>
+									<#list logList as log>
+									<tr>
+										<td>${log.operator }</td>
+										<td>${log.logdetail }</td>
+										<td><@dateformat time='${log.logtime}'pattern='yyyy-MM-dd'/></td>
+									</tr>
+									</#list>
+
+								</tbody>
+							</table>
+						</div></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	
+	<div id="canceldiv" style="padding: 10px 10px 10px 10px;"></div>
+</div>
+
+<script type="text/javascript">
+	$(function() {
+		$('.saveBtn').click(function() {
+			
+			var formflag= $("#theForm").form('validate');
+			if(formflag){
+				$.Loading.success("正在提交......");
+				$(".savebtn").linkbutton("disable");
+				var options = {
+					url : "sellBack!update.do",
+					type : "POST",
+					dataType : 'json',
+					success : function(result) {
+						if (result.result == 1) {
+							$.Loading.success(result.message);
+							parent.reloadTabGrid("退货单");
+							parent.CloseTabByTitle("退货入库");
+							//window.location.href = "${ctx}/shop/admin/sellBack!payment.do?id=${sellBackList.id}";
+						}
+						if (result.result == 0) {
+							$.Loading.error(result.message);
+							$(".savebtn").linkbutton("enable");
+						}
+					},
+					error : function(e) {
+						alert("出现错误 ，请重试");
+						$(".savebtn").linkbutton("enable");
+					}
+				};
+				$('#theForm').ajaxSubmit(options);
+			}
+		});
+		
+		$(".cancelBtn").click(function(){
+			var status = $(this).attr("status");
+			$("#canceldiv").dialog({
+				 title: '取消原因',
+				 width: 300,
+				 height: 200,
+				 closed: false,
+				 cache: false,
+				 content: '<textarea id="ctext" rows="3" style="width: 280px;height:80px;"></textarea>',
+				 modal: true,
+				 buttons:[{
+						text:'提交',
+						handler:function(){
+							var status = $(".cancelBtn").attr("status");
+							$("#cancelRemark").val($("#ctext").val());
+							cancel(status);
+						}
+					}]
+			})
+		});
+	})
+	
+	function cancel(status){
+		$("#savebtn").linkbutton("disable");
+		var options = {
+			url : "sellBack!cancel.do?ajax=yes&ctype="+status,
+			dataType : 'json',
+			success : function(result) {	
+				$.Loading.success(result.message);
+				parent.reloadTabGrid("退货单");
+				parent.CloseTabByTitle("退货入库");
+			},
+			error : function(e) {
+				$.Loading.hide();
+				alert("出现错误 ，请重试");
+				$("#savebtn").linkbutton("enable");
+			}
+		};
+		$('#theForm').ajaxSubmit(options);
+	}
+</script>
+
+<#include '/admin/footer.html' >

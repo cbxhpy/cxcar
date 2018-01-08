@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd">
+
+    <bean id="webForwardHandler" class="com.enation.app.shop.core.netty.handler.WebForwardHandler">
+        <!-- <property name="handlers">
+            <map>
+                <entry key="10001">
+                    <bean id="cXWashHandler" class="com.enation.app.shop.core.action.cxwash.CXWashHandler"/>
+                </entry>
+            </map>
+        </property> -->
+    </bean>
+    
+    <bean id="wifiLengthFieldDecoder" class="com.enation.app.shop.core.netty.omen.demo.handler.codec.WifiLengthFieldDecoder" ></bean>
+	<bean id="wifiLengthFieldEncoder" class="com.enation.app.shop.core.netty.omen.demo.handler.codec.WifiLengthFieldEncoder" ></bean>
+	<bean id="wifiServiceHandler" class="com.enation.app.shop.core.netty.omen.demo.handler.WifiServiceHandler" >
+		<property name="handlers">
+            <map>
+                <entry key="201">
+                    <bean id="cXWashHandler" class="com.enation.app.shop.core.action.cxwash.CXWashHandler"/>
+                </entry>
+            </map>
+        </property>
+	</bean>
+    
+    <bean id="webSocketServerHandler" class="com.enation.app.shop.core.netty.handler.WebSocketServerHandler"/>
+
+    <bean id="childChannelHandler" class="com.enation.app.shop.core.netty.handler.ChildChannelHandler">
+		<property name="webSocketServerHandler" ref="webSocketServerHandler"/>
+		<property name="wifiLengthFieldDecoder" ref="wifiLengthFieldDecoder"/>
+		<property name="wifiLengthFieldEncoder" ref="wifiLengthFieldEncoder"/>
+		<property name="wifiServiceHandler" ref="wifiServiceHandler"/>
+    </bean>
+
+    <bean id="bossGroup" class="io.netty.channel.nio.NioEventLoopGroup"/>
+    <bean id="workerGroup" class="io.netty.channel.nio.NioEventLoopGroup"/>
+
+    <bean id="serverBootstrap" class="io.netty.bootstrap.ServerBootstrap"/>
+
+    <!-- 转发中心 客户端 -->
+    <!-- <bean class="com.qhgame.netty.client.handler.ControlCenterClientHandler" id="controlCenterClientHandler">
+        <property name="handlers">
+            <map>
+                <entry key="100001">
+                    <bean id="tradingResultsPushHandler" class="com.qhgame.netty.client.handler.TradingResultsPushHandler"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="controlCenterClientInitializer" class="com.enation.app.shop.core.netty.client.ControlCenterClientInitializer">
+        <property name="controlCenterClientHandler" ref="controlCenterClientHandler"/>
+    </bean>
+
+    <bean id="controlCenterClient" class="com.qhgame.netty.client.ControlCenterClient" init-method="initClient" destroy-method="shutDown">
+        <property name="controlCenterClientInitializer" ref="controlCenterClientInitializer"/>
+    </bean> -->
+    
+    <bean id="nettyServer" class="com.enation.app.shop.core.netty.server.NettyServer" init-method="startServer" destroy-method="stopServer">
+        <property name="bossGroup" ref="bossGroup"/>
+        <property name="workerGroup" ref="workerGroup"/>
+        <property name="serverBootstrap" ref="serverBootstrap"/>
+        <property name="port" value="8083"/>
+        <property name="childChannelHandler" ref="childChannelHandler"/>
+    </bean>
+</beans>

@@ -1,0 +1,134 @@
+<#assign  title="我的积分" />
+<#include 'member_header.html' />
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+
+<div class="data">
+	<h2>提现申请</h2>
+</div>
+
+<div class="form_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+			<div class="pointsSumm">
+				<div class="overview">
+					<p class="layerCol">嘻币：<strong>${memberYongjin.yongjin!0}</strong></p>
+				</div>
+				<div class="overview">
+					<p class="layerCol" style="color:red;">*请务必核对开户行及银行账户信息后，提交提现申请</p>
+				</div>				
+			</div>
+			<form id="form_withdraw"  method="post" class="validate"  action="#">
+			
+				<table width="100%" cellspacing="0" cellpadding="0"	class="perfection">
+					<tr>
+						<th>开户银行：</th>
+						<td class="email" colspan="3"><span class="def"><span id="lbBankName">${member.bank_name!''}</span></span></td>
+						
+					</tr>
+					<tr>
+						<th>银行帐号：</th>
+						<td class="email" colspan="3">
+							<span class="def"><span id="lbBankNo">${member.bank_no!''}</span></span>
+						</td>
+					</tr>
+					<tr>
+						<th class="label middle">支付密码：</th>
+						<td colspan="3">
+							<input id="pay_password" name="pay_password" type="password" value="" class="input_text" isrequired="true" style="float:left;display:inline;" fun="checkPaypassword"/>
+						</td>
+					</tr>
+					<tr>
+						<th class="label middle">提现金额：</th>
+						<td colspan="3">
+							<input id="yongjin" name="yongjin" type="text" value="" class="input_text" isrequired="true" style="float:left;display:inline;" fun="checkYongjin"/>
+						</td>
+					</tr>
+				</table>
+				<div class="mc-mdOper">
+					<div class="btn">
+						<input type="button" name="btnSubmit" value="提现申请" id="btnSubmit" class="yellow_btn" />
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="bottom"></div>
+	</div>
+</div>
+</div>
+<script>
+
+function checkPaypassword(value,callback){	
+	
+	var bankName = "${member.bank_name!''}";
+	var bankNo = "${member.bank_no!''}";
+	
+	if(bankName=="" || bankNo==""){
+		return "银行帐号信息不完善，请先前往完善个人资料"
+	}
+	 
+	if(value==""){
+		return "支付密码不能为空";
+	}	
+	$.ajax({
+		url:"${ctx}/api/shop/member!checkPaypassword.do?ajax=yes",
+		type:"POST",
+		data:"pay_password=" + value,
+		dataType:"json",
+		success:function(json){
+			if(json.result==1){
+				callback(true,"");
+			}else{
+				callback(false,"支付密码错误");
+			}
+		}		
+	});	
+	return true;
+}
+
+function checkYongjin(value,callback){	
+	
+	var canUse = ${memberYongjin.yongjin!0};
+	
+	if(value==""){
+		return "请输入提现金额";
+	}
+	if(isNaN(value)!==false){
+		return "金额必须为纯数字";
+	}
+	if(value>canUse){
+		return "您输入的数额大于可用积分";
+	}
+	return true;
+}
+
+
+$(function(){
+	$("#btnSubmit").click(function(result){
+		if(!$("#form_withdraw").checkall())
+　　			return false;
+		
+		$("#form_withdraw").ajaxSubmit({
+			url:"${ctx}/api/shop/fenxiao!withdrawAdd.do",
+			dataType:"json",
+			success:function(data){
+				if(data.result==1){
+					alert("提交成功");
+					location.href = "${ctx}/member/levelorder.html?status=2";
+				}
+				else{
+					alert(data.message);
+				}
+			}
+		})		
+	});
+});	
+</script>
+<div class="rr_bottom"></div></div>
+		<!--会员中心首页右侧结束-->
+	</div>
+	</div>
+	<#include '../common/footer.html'/>

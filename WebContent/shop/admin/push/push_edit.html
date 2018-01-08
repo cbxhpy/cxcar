@@ -1,0 +1,65 @@
+<#assign dateformat=
+"com.enation.framework.directive.DateformateDirective"?new()>
+<style>
+.input_text {
+	width: 200px;
+}
+</style>
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel">
+		<form id="editForm" method="post" class="validate">
+			<table width="100%">
+				<tr>
+					<th>标题：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text"
+							value="${pushMsg.title!}" name="pushMsg.title" data-options="required:true"/>
+					</td>
+				</tr>
+				<tr>
+					<th>内容：</th>
+					<td>
+						<textarea rows="4" name="pushMsg.content" cols="20">${pushMsg.content!}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>跳转方式：</th>
+					<td>
+						<input type="radio" name="pushMsg.skip_type" value="0"<#if pushMsg.skip_type=="1">checked</#if> /> 不跳转&nbsp;&nbsp;
+						<input type="radio" name="pushMsg.skip_type" value="1"<#if pushMsg.skip_type=="1">checked</#if> /> 商品&nbsp;&nbsp;
+						<input type="radio" name="pushMsg.skip_type" value="2"<#if pushMsg.skip_type=="2">checked</#if> /> 外部链接					
+					</td>
+				</tr>
+				<tr>
+					<th>商品sn：</th>
+					<td>
+						<input class="input_text" type="text" name="pushMsg.goods_sn" value="${pushMsg.goods_sn!}"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>外部链接：</th>
+					<td>
+						<input class="input_text" type="input" value="${pushMsg.html_url!}" name="pushMsg.html_url"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<input class="easyui-validatebox" type="file" name="pic">
+					</td>
+				</tr>
+				<tr>
+					<th>图片预览：</th>
+					<td>
+						<#if pushMsg.image??>
+							<img alt="${pushMsg.title!}" src="${pushMsg.image!''}" height="150px">
+						<#else>
+							暂无
+						</#if>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="pushMsg.push_msg_id" value="${pushMsg.push_msg_id!}">
+		</form>
+	</div>
+</div>

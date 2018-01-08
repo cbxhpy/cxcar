@@ -1,0 +1,221 @@
+<#include '/admin/header.html' > 
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+
+<div class="main" style="background-color: white;">
+	<form id="addForm">
+		<table width="80%" border="0" cellspacing="0" cellpadding="8">
+			<tr>
+				<th>用户名：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="text" id="m_name" name="member.uname" data-options="required:true"></input>
+				</td>
+				<th>密码：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="password" name="member.password" data-options="required:true"></input>
+				</td>
+			</tr>
+			<tr>
+				<th>昵称：</th>
+				<td>
+					<input class="input_text" type="text" name="member.nickname"></input>
+				</td>
+				<th>余额：</th>
+				<td>
+					<input class="input_text easyui-validatebox" type="number" name="member.balance" "/>
+				</td>
+				<!-- <th>性别：</th>
+				<td valign="middle"><select class="easyui-validatebox"
+					name="member.sex">
+						<option value="1">&nbsp;男&nbsp;</option>
+						<option value="0">&nbsp;女&nbsp;</option>
+				</select></td> -->
+			</tr>
+			<tr>
+				<th>运营商：</th>
+				<td>
+					<select name="member.adminuser_id">
+						<option value="">-请选择-</option>
+						<#list adminList as ad>
+							<option value="${ad.userid}">${ad.username!}</option>
+						</#list>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>会员角色：</th>
+				<td>
+					<select name="member.role_id" multiple="multiple" class="input_text" style="height: 100px;">
+						<option value="0">--请选择等级--</option>
+						<#if rolelist??>
+							<#list rolelist as role>
+								<option value="${role.role_id }">${role.name }</option>
+							</#list>
+						</#if>
+					</select>
+				</td>
+				<th>是否加盟：</th>
+				<td>
+					<select class="easyui-validatebox input_text" name="member.is_join">
+						<option value="0">&nbsp;否&nbsp;</option>
+						<option value="1">&nbsp;是&nbsp;</option>
+					</select>
+				</td>
+				<!-- <th>会员等级：</th>
+				<td>
+					<select name="member.lv_id">
+						<option value="0">--请选择等级--</option>
+						<#if lvlist??> 
+							<#list lvlist as lv>
+								<option value="${lv.lv_id }">${lv.name }</option>
+							</#list>
+						</#if>
+					</select>
+				</td> -->
+			</tr>
+			<!-- <tr>
+				<th>出生日期：</th>
+				<td><input class="input_text easyui-datebox" name="birthday"
+					data-options="required:true" id="birthday" style="height: 28px;" />
+				</td>
+				<th>Email：</th>
+				<td><input class="input_text easyui-validatebox" type="text" name="member.email"
+					data-options="required:true,validType:'email'"></input>
+				</td>
+			</tr>
+			<tr>
+				<th>固定电话：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					id="name" validType="tel" name="member.tel"
+					data-options="required:false" maxlength="15"></input>
+				</td>
+				<th>移动电话：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					id="name" validType="mobile" name="member.mobile"
+					data-options="required:false" maxlength="11"></input>
+				</td>
+			</tr> -->
+
+			<!--<tr>
+				<th>地区：</th>
+				<td><@regionSelectDirective /></td>
+				<th>地址：</th>
+				<td><input class="input_text" type="text" name="member.address"></input>
+				</td>
+				 <th>邮编：</th>
+				<td><input class="input_text" name="member.zip" maxlength="6">
+				</td>
+			</tr> -->
+
+			<!-- <tr>
+				<th>安全问题：</th>
+				<td><input class="input_text" type="text" id="name"
+					name="member.pw_question" data-options="required:true"
+					value="我的宠物名字是？"></input>
+				</td>
+				<th>回答：</th>
+				<td><input class="input_text" type="text" id="name"
+					name="member.pw_answer" data-options="required:true"></input></td>
+			</tr> -->
+			
+			<tr>
+				<th colspan="4"><hr></th>
+			</tr>
+			<tr>
+				<th>下面为申请信息：</th>
+				<td colspan="3"></td>
+			</tr>
+			
+			<tr>
+				<th>名字：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.name" value=""></input></td>
+				<th>身份证：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.card_no" value=""></input></td>
+			</tr>
+			
+			<tr>
+				<th>银行：</th>
+				<td>
+					<select name="member.bank_id" class="input_text">
+						<option value="0">--请选择等级--</option> 
+						<option value="1">中国工商银行</option>
+						<option value="2">中国建设银行</option> 
+						<option value="3">中国银行</option> 
+						<option value="4">中国农业银行</option> 
+						<option value="5">交通银行</option> 
+						<option value="6">招商银行</option> 
+						<option value="7">浦东发展银行</option> 
+						<option value="8">中信银行</option> 
+						<option value="9">兴业银行</option> 
+						<option value="10">中国民生银行</option> 
+						<option value="11">中国邮政储蓄银行</option> 
+						<option value="12">中国光大银行</option> 
+						<option value="13">平安银行</option> 
+						<option value="14">农商银行</option> 
+						<option value="15">北京银行</option> 
+						<option value="16">华夏银行</option> 
+						<option value="17">广发银行</option> 
+					</select>
+				</td>
+				<th>手机：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.spread_phone" value=""></input></td>
+			</tr>
+			
+			<tr>
+				<th>开户行：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.bank_name" value=""></input></td>
+				<th>银行卡号：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.bank_no" value=""></input></td>
+			</tr>
+			
+			<tr>
+				<th>微信：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.wx_code" value=""></input></td>
+				<th>支付宝：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.alipay_code" value=""></input></td>
+			</tr>
+			
+		</table>
+	</form>
+	<div class="buttonWrap fixed">
+		<a id="searchAdvance" class="easyui-linkbutton" onclick="submitForm()"
+			href="javascript:;">保存</a>
+	</div>
+</div>
+<script>
+	function submitForm() {
+		var formflag = $("#addForm").form().form('validate');
+		if (formflag) {
+			$.Loading.show("正在添加......");
+			var options = {
+				url : "member!saveMember.do?ajax=yes",
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+					if (result.result == 1) {
+						$.Loading.success(result.message);
+						newTab($("#m_name").val() + "—会员修改",
+								"${ctx}/shop/admin/member!detail.do?memberId="
+										+ result.id);
+						parent.CloseTabByTitle("会员添加");
+					}
+					if (result.result == 0) {
+						$.Loading.error(result.message);
+					}
+				},
+				error : function(e) {
+					alert("出现错误 ，请重试");
+				}
+			};
+			$("#addForm").ajaxSubmit(options);
+		}
+	}
+</script>
+
+<#include '/admin/footer.html' >

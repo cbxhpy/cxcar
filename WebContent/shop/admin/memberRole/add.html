@@ -1,0 +1,48 @@
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+
+<style>
+.input_text{
+	width: 200px;
+}
+</style>
+
+<div class="easyui-panel" style="border-style: none;">
+	<div style="padding: 10px 0 10px 20px">
+		<form id="memberRoleForm" method="post" class="validate">
+			<table>
+				<tr>
+					<th>角色类型：</th>
+					<td>
+						<select id="role_type" name="memberRole.role_type" class="input_text">
+							<option value="1">平台</option>
+							<option value="2">运营商</option>
+							<option value="3">市代</option>
+							<option value="4">县代</option>
+							<option value="5">投资人</option>
+							<option value="6">招商</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>角色名称：</th>
+					<td><input class="input_text easyui-validatebox" type="text" id="name"
+						name="memberRole.name" data-options="required:true"
+						style="width: 155px;"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>地区：</th>
+					<td>
+						<@regionSelectDirective />
+					</td>
+				</tr>
+				<tr>
+					<th>分润比例(%)：</th>
+					<td><input class="easyui-validatebox input_text" type="text" id="profit_ratio"
+						name="memberRole.profit_ratio" data-options="required:true"></input>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>

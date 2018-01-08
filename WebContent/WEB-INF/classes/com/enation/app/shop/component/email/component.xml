@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="网店邮件组件"  version="1.0" javashop_version="3.0.0" author="javashop">
+ 
+	<plugins>
+		<plugin name="会员注册发送邮件插件" id="memberRegisterSendEmailPlugin">
+			<bundle id="memberPluginBundle"></bundle>
+		</plugin>
+ 		<plugin name="订单邮件插件" id="orderEmailPlugin">
+ 			<bundle id="orderPluginBundle"></bundle>
+ 		</plugin>
+	</plugins>
+
+	<widgets>
+		<widget id="resend_regmail" name="重新发送注册邮件挂件"></widget>	
+		<widget id="member_email_check" name="会员注册邮件验证挂件"></widget>	
+	</widgets>
+	
+</component>

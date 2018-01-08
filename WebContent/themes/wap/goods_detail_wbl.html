@@ -1,0 +1,732 @@
+<#assign title="商品详情" />
+<#assign showback='showback' />
+<#include "common/header_title.html" />
+
+<!-- 判断登录-->
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<!-- 商品详情标签 --> 
+<#assign goodsDetailWblTag = newTag("goodsDetailWblTag")>
+<!-- 商品详情 -->
+<#assign goodsDetail = goodsDetailWblTag("{'goods_id':'${goods_id!''}'}")>
+<#assign goods = goodsDetail.goods>
+<#assign product = goodsDetail.product>
+
+<#-- <#include 'common/adv.html'/> -->
+<#-- 创建商品搜索标签 -->
+<#assign goodsSearchTag= newTag("goodsSearchTag") >
+<#-- 创建选择器标签 -->
+<#assign searchSelectorTag= newTag("searchSelectorTag") >
+
+<#-- 获取搜索结果 -->
+<#assign webpage = goodsSearchTag('{"pageSize":4,"pageNo":${page!1}}')>
+<#-- 获取选择器 -->
+<#assign goodsSelector = searchSelectorTag() >
+<#include 'common/search.html'/>
+<!-- 创建搜索url标签 -->
+<#assign seachUrlTag= newTag("seachUrlTag")>
+<!-- 获取搜索url -->
+<#assign searchUrl=seachUrlTag('"name":"sort"')!'search' />
+<!-- 创建搜索参数标签 -->
+<#assign searchParamTag= newTag("searchParamTag")>
+<#assign sort=searchParamTag('"name":"sort"')!'0' />
+
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<!-- 菜单列表 -->
+<link href="themes/wap/css/photoswipe.css" rel="stylesheet" type="text/css">
+<link href="themes/wap/css/default-skin/default-skin.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="themes/wap/js/photoswipe.min.js"></script>
+<script type="text/javascript" src="themes/wap/js/photoswipe-ui-default.min.js"></script>
+<script type="text/javascript" src="themes/wap/js/spec_wbl.js"></script>
+<!-- 颜色选项 -->
+<section class="chose-select" >
+	<#assign level=1 />
+	<#if !catList?exists || catList?size==0> 
+	<#else>
+		<#list catList as cat>
+			<#include 'goods_list_cat.html' />
+		</#list>
+	</#if>
+	
+	<p class="title goods_title" style="float: left; display: none">商品</p>
+	<div class="nav-select goods_list">
+	</div> 
+	
+	<div class="guige_title" style=" display: none">
+		<p class="title" style="float: left; height: 0px;"></p>
+		<div class="<#-- nav-select --> guige_list">
+			<#-- <span class="active">A</span>
+			<span>B</span>
+			<span>C</span>
+			<span>D</span>-->
+		</div>
+	</div> 
+	
+</section>
+<section class="goodes-detail" style="float: left;width: 96%; margin-bottom: 50px;">
+	<div class="title-name" >
+		<span>图文详情</span>
+	</div>
+	<div class="goods-content" >
+		<div class="my-gallery" data-pswp-uid="1" >
+		</div>
+		<!--  -->
+		<!-- <div class="goodprice" style="float: left; width: 100%;">
+			<h2>价格：<span></span></h2>
+		</div> -->
+		<div class="price_spec_num">
+			<p class="goodsprice"></p>
+			<p class="store_num"></p>
+			<p class="spec_tip"></p>
+		</div>
+	</div>
+</section>
+
+<p style="height: 1.2rem;"></p>
+<section class="goods-bottomfix common-box">
+	<div class="cart-line">
+		<span class="number-span">合计：&yen<label for="" id="zongji" store="-1"></label></span>
+		<div class="jisuan">
+			<span class="plus-button">-</span>
+			<input type="number" class="text-span" id="store" value="0" style="width: 40px;"/>
+			<span class="add-button">+</span>
+		</div>
+	</div>
+	<p class="cont-server">加入购物车</p>
+</section>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <!-- <button class="pswp__button pswp__button--share" title="Share"></button> -->
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<#if product??>
+	<input type="hidden" id="productid" value="${product.product_id!''}"/>
+<#else>
+	<input type="hidden" id="productid" value=""/>
+</#if>
+<input type="hidden" id="goodsid" value="${goods.goods_id!''}"/>
+<input type="hidden" id="havespec" value="${goods.havespec!''}"/>
+
+<input type="hidden" name="goods_id" id="goods_id" value="${goods.goods_id!''}"/>
+<input type="hidden" name="spec_type" id="spec_type" value="${goods.havespec!''}"/>
+<input type="hidden" name="store" id="store" value="${goods.enable_store!''}"/>
+<input type="hidden" name="price" id="price" value="${goods.price!''}"/>
+
+<script>
+
+$(function(){
+	
+	Initscroll();//设置上方nav的宽度
+	Inittabnav();//点击二级..级分类
+	Inittab();//点击上方nav一级分类
+	Inigoods();//点击商品
+	
+	InigoodsDetail();
+	
+	$(".go_back").click(function(){
+		//self.location=document.referrer;
+		self.location = history.go(-1);
+	})
+	
+	var cat_id = 0;
+	<#if cat_id??>
+		cat_id = ${cat_id!''};
+	<#else>
+		cat_id = $(".goods-nav a:eq(1)").attr("cat_id");
+	</#if>
+	// $("p[cat_id="+cat_id+"]").show();
+	// $("span[parent_id="+cat_id+"]").show();
+	$("div[cat_id="+cat_id+"]").show();
+
+	$(".plus-button").on("click", function(){
+		var num = $(".text-span").val();
+		var store = $("#zongji").attr("store");
+		if(store == "-1"){
+			InitShowMessage("请选择商品");
+			return;
+		}
+		if(num == ""){
+			$(".text-span").val(0);
+			return;
+		}
+		if(isNaN(num)){
+  			InitShowMessage("请输入数字");
+  			return;
+		}
+		num = parseInt(num);
+		store = parseInt(store);
+		if(num <= 1){
+			$(".text-span").val(0);
+		}else{
+			$(".text-span").val(num - 1);
+		}
+	});
+	
+	$(".add-button").on("click", function(){
+		var num = $(".text-span").val();
+		var store = $("#zongji").attr("store");
+		if(store == "-1"){
+			InitShowMessage("请选择商品");
+			return;
+		}
+		if(num == ""){
+			$(".text-span").val(0);
+			return;
+		}
+		if(isNaN(num)){
+  			InitShowMessage("请输入数字");
+  			return;
+		}
+		num = parseInt(num);
+		store = parseInt(store);
+		if(num + 1 > store){
+			InitShowMessage("不能超过库存数");
+			$(".text-span").val(store);
+		}else{
+			$(".text-span").val(num + 1);
+		}
+	});
+	
+	$(".text-span").on("blur", function(){
+		var num = $(".text-span").val();
+		var store = $("#zongji").attr("store");
+		if(store == "-1"){
+			InitShowMessage("请选择商品");
+			$(".text-span").val("0");
+		}
+		if(isNaN(num)){
+  			InitShowMessage("请输入数字");
+		}
+		if(num == ""){
+			$(".text-span").val("0");
+		}
+		num = parseInt(num);
+		store = parseInt(store);
+		if(num > store){
+			InitShowMessage("不能超过库存数");
+			$(".text-span").val(store);
+		}
+	});
+	
+	$(".cont-server").on("click", function(){
+		var store = $("#zongji").attr("store");
+		if(store == "-1"){
+			InitShowMessage("请选择商品");
+			return;
+		}	
+		var num = $(".text-span").val();
+		if(isNaN(num)){
+  			InitShowMessage("数量请输入数字");
+  			return;
+		}
+		if("0" == num){
+  			InitShowMessage("请添加购物数量");
+  			return;
+		}
+		num = parseInt(num);
+		store = parseInt(store);
+		if(num > store){
+			InitShowMessage("购买数量不能超过库存数");
+			$(".text-span").val(store);
+			return;
+		}
+		//加入购物车
+		var havespec = $("#havespec").val();
+		if(havespec == ""){
+			InitShowMessage("请选择商品");
+			return;
+		}
+		var goods_id = $("#goodsid").val();
+		var product_id = $("#productid").val();
+		var send_data = {
+            havespec : havespec,
+            goods_id : goods_id,
+            product_id : product_id,
+            num : num
+        };
+		$.ajax({
+			url : "api/shop/cart!addGoodsProductToCart.do?ajax=yes&aa="+new Date().getTime(),
+			dataType : "json",
+			type : "get",
+			data : send_data,
+			success : function(result){
+				InitShowMessage(result.message);
+				if(result = -99){
+					
+				}
+			},
+			error : function(){
+				InitShowMessage("服务器出错");
+			}
+			
+		});
+				 
+	});
+
+})
+
+function InigoodsDetail(){
+	var goods_id = $("input[name=goods_id]").val();
+	var spec_type = $("input[name=spec_type]").val();
+	//隐藏图片，价格规格，库存
+	hide_p_p_s();
+	if(spec_type == '1'){
+		$(".store_num").html("库存：");
+		$("#zongji").attr("store", "-1");
+		$(".guige_list").load("goods_spec_wbl.html?goods_id="+goods_id);
+		setTimeout(function() { 
+			$(".guige_title").show();
+		}, 200);
+	}else{
+		$(".my-gallery").empty();
+		$(".my-gallery").load("goods_spec_image_wbl.html?goods_id="+goods_id+"&spec_value_id=-1");
+		//var price = $(this).attr("price");
+		//var store = $(this).attr("store");
+		var price = $("input[name=price]").val();
+		var store = $("input[name=store]").val();
+		$(".goodsprice").html("价格：￥"+price);
+		$(".store_num").html("库存："+store);
+		$("#zongji").html(price);
+		$("#zongji").attr("store", store);
+		$("#goodsid").val(goods_id);
+		$("#havespec").val(0);
+		$(".spec_tip").hide();
+		$(".price_spec_num").show();
+		
+		setTimeout(function() { 
+			$(".my-gallery").show();
+		}, 200);
+	}
+}
+
+function Inigoods(){
+	$(".goods_list span").live("click", function(){
+		var goods_id = $(this).attr("goods_id");
+		var spec_type = $(this).attr("spec_type");
+		$(this).addClass("active").siblings("span").removeClass("active");
+		//隐藏图片，价格规格，库存
+		hide_p_p_s();
+		if(spec_type == '1'){
+			$(".store_num").html("库存：");
+			$("#zongji").attr("store", "-1");
+			$(".guige_list").load("goods_spec_wbl.html?goods_id="+goods_id);
+			setTimeout(function() { 
+				$(".guige_title").show();
+			}, 200);
+		}else{
+			$(".my-gallery").empty();
+			$(".my-gallery").load("goods_spec_image_wbl.html?goods_id="+goods_id+"&spec_value_id=-1");
+			var price = $(this).attr("price");
+			var store = $(this).attr("store");
+			
+			$(".goodsprice").html("价格：￥"+price);
+			$(".store_num").html("库存："+store);
+			$("#zongji").html(price);
+			$("#zongji").attr("store", store);
+			$("#goodsid").val(goods_id);
+			$("#havespec").val(0);
+			$(".spec_tip").hide();
+			$(".price_spec_num").show();
+			
+			setTimeout(function() { 
+				$(".my-gallery").show();
+			}, 200);
+		}
+		
+	});
+}
+
+//设置上方nav的宽度
+function Initscroll(){
+	$_this = $(".goods-nav a");
+ 	var totle = 0;
+ 	$_this.each(function(){
+ 		var _val = $(this).outerWidth() + 4;//因为padding: 0 0.15rem;
+ 		totle = totle+_val;
+ 	})
+ 	$(".goods-nav").find("div").width(totle);
+}
+
+//点击上方nav一级分类
+function Inittab(){
+	$(".goods-nav a").on("click",function(){
+		$(this).addClass("active").siblings("a").removeClass("active");
+		
+		var cat_id = $(this).attr("cat_id");
+		//var parent_id = $(this).attr("parent_id");
+		//$(".cat_p").hide();
+		//$(".cat_span").hide();
+		//$("p[cat_id="+cat_id+"]").show();
+		//$("span[parent_id="+cat_id+"]").show();
+		$(".cat_div").hide();
+		$("div[cat_id="+cat_id+"]").find("span").removeClass("active");
+		$("div[cat_id="+cat_id+"]").show();
+		
+		//隐藏商品
+		hide_goods();
+		
+		//隐藏图片，价格规格，库存
+		hide_p_p_s();
+		
+	})
+}
+
+//点击二级..级分类
+function Inittabnav(){
+	$(".nav-select span").on("click",function(){
+		$(this).addClass("active").siblings("span").removeClass("active");
+		var cat_id = $(this).attr("cat_id");
+		var parent_id = $(this).attr("parent_id");
+		
+		span_p_hide($(this));
+		
+		var span_html = $("p[cat_id="+cat_id+"]").html();
+		var goods_id = $(this).attr("goods_id");
+		if(typeof(goods_id) == "undefined"){
+			if (typeof(span_html) == "undefined"){//没有找到下级，load商品列表
+			
+				//隐藏图片，价格规格，库存
+				hide_p_p_s();
+				
+				$(".goods_title").show();
+				$(".goods_list").load("goods_name_list.html?cat_id="+cat_id);
+					$(".goods_list").show();
+			}else{
+				//隐藏商品
+				hide_goods();
+				
+				//隐藏图片，价格规格，库存
+				hide_p_p_s();
+				
+				/* $("p[cat_id="+cat_id+"]").show();
+				$("span[parent_id="+cat_id+"]").show(); */
+				$("div[cat_id="+cat_id+"]").find("span").removeClass("active");
+				$("div[cat_id="+cat_id+"]").show();
+			}
+		}
+		
+	})
+}
+
+//隐藏图片，价格规格，库存
+function hide_p_p_s(){
+	$(".guige_title").hide();
+	$(".my-gallery").hide();
+	$(".price_spec_num").hide();
+	$("#productid").val("");
+	$("#goodsid").val("");
+	$("#havespec").val("");
+	$("#zongji").attr("store", "-1");
+}
+
+//隐藏商品
+function hide_goods(){
+	$(".goods_title").hide();
+	$(".goods_list").hide();
+}
+
+function span_p_hide(self){
+	/* self.siblings("span").each(function(){                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+		var cat_id_ = $(this).attr("cat_id");
+		var parent_id_ = $(this).attr("parent_id");
+		/* $("p[cat_id="+cat_id_+"]").hide();
+		$("span[parent_id="+cat_id_+"]").hide();
+		$("div[cat_id="+cat_id_+"]").hide();
+		span_p_hide_(cat_id_);
+	}); */
+	/* $("p[cat_id!="+parent_id+"]").hide();
+	$("span[parent_id!="+parent_id+"]").hide(); */
+	
+	var level = self.parent().parent().attr("div_level");
+	var level_int = parseInt(level);
+	
+	$(".cat_div").each(function(){
+		var level1 = $(this).attr("div_level");
+		if(level1 > level){
+			$(this).hide();
+		}
+	});
+	
+}
+
+//递归hide选中span之外同级span的下级分类下的所有子分类
+function span_p_hide_(cat_id_){
+	$("span[parent_id="+cat_id_+"]").each(function(){
+		var cat_id_ = $(this).attr("cat_id");
+		var parent_id_ = $(this).attr("parent_id");
+		/* $("p[cat_id="+cat_id_+"]").hide();
+		$("span[parent_id="+cat_id_+"]").hide(); */
+		$("div[cat_id="+cat_id_+"]").hide();
+		span_p_hide_(cat_id_);
+	});
+	/* $("p[cat_id!="+parent_id+"]").hide();
+	$("span[parent_id!="+parent_id+"]").hide(); */
+}
+
+var initPhotoSwipeFromDOM = function(gallerySelector) {
+
+    // 解析来自DOM元素幻灯片数据（URL，标题，大小...）
+    // (children of gallerySelector)
+    var parseThumbnailElements = function(el) {
+        var thumbElements = el.childNodes,
+            numNodes = thumbElements.length,
+            items = [],
+            figureEl,
+            linkEl,
+            size,
+            item,
+			divEl;
+
+        for(var i = 0; i < numNodes; i++) {
+
+            figureEl = thumbElements[i]; // <figure> element
+
+            // 仅包括元素节点
+            if(figureEl.nodeType !== 1) {
+                continue;
+            }
+			divEl = figureEl.children[0];
+            linkEl = divEl.children[0]; // <a> element
+			
+            size = linkEl.getAttribute('data-size').split('x');
+
+            // 创建幻灯片对象
+            item = {
+                src: linkEl.getAttribute('href'),
+                w: parseInt(size[0], 10),
+                h: parseInt(size[1], 10)
+            };
+
+            if(figureEl.children.length > 1) {
+                // <figcaption> content
+                item.title = figureEl.children[1].innerHTML; 
+            }
+
+            if(linkEl.children.length > 0) {
+                // <img> 缩略图节点, 检索缩略图网址
+                item.msrc = linkEl.children[0].getAttribute('src');
+            } 
+
+            item.el = figureEl; // 保存链接元素 for getThumbBoundsFn
+            items.push(item);
+        }
+
+        return items;
+    };
+
+    // 查找最近的父节点
+    var closest = function closest(el, fn) {
+        return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+    };
+
+    // 当用户点击缩略图触发
+    var onThumbnailsClick = function(e) {
+        e = e || window.event;
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+        var eTarget = e.target || e.srcElement;
+
+        // find root element of slide
+        var clickedListItem = closest(eTarget, function(el) {
+            return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+        });
+
+        if(!clickedListItem) {
+            return;
+        }
+
+        // find index of clicked item by looping through all child nodes
+        // alternatively, you may define index via data- attribute
+        var clickedGallery = clickedListItem.parentNode,
+            childNodes = clickedListItem.parentNode.childNodes,
+            numChildNodes = childNodes.length,
+            nodeIndex = 0,
+            index;
+
+        for (var i = 0; i < numChildNodes; i++) {
+            if(childNodes[i].nodeType !== 1) { 
+                continue; 
+            }
+
+            if(childNodes[i] === clickedListItem) {
+                index = nodeIndex;
+                break;
+            }
+            nodeIndex++;
+        }
+
+        if(index >= 0) {
+            // open PhotoSwipe if valid index found
+            openPhotoSwipe( index, clickedGallery );
+        }
+        return false;
+    };
+
+    // parse picture index and gallery index from URL (#&pid=1&gid=2)
+    var photoswipeParseHash = function() {
+        var hash = window.location.hash.substring(1),
+        params = {};
+
+        if(hash.length < 5) {
+            return params;
+        }
+
+        var vars = hash.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            if(!vars[i]) {
+                continue;
+            }
+            var pair = vars[i].split('=');  
+            if(pair.length < 2) {
+                continue;
+            }           
+            params[pair[0]] = pair[1];
+        }
+
+        if(params.gid) {
+            params.gid = parseInt(params.gid, 10);
+        }
+
+        return params;
+    };
+
+    var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+        var pswpElement = document.querySelectorAll('.pswp')[0],
+            gallery,
+            options,
+            items;
+
+        items = parseThumbnailElements(galleryElement);
+
+        // 这里可以定义参数
+        options = {
+          barsSize: { 
+            top: 100,
+            bottom: 100
+          }, 
+		   fullscreenEl : false,
+			shareButtons: [
+			{id:'wechat', label:'分享微信', url:'#'},
+			{id:'weibo', label:'新浪微博', url:'#'},
+			{id:'download', label:'保存图片', url:'{{raw_image_url}}', download:true}
+			],
+
+            // define gallery index (for URL)
+            galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+            getThumbBoundsFn: function(index) {
+                // See Options -> getThumbBoundsFn section of documentation for more info
+                var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+                    pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                    rect = thumbnail.getBoundingClientRect(); 
+
+                return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+            }
+
+        };
+
+        // PhotoSwipe opened from URL
+        if(fromURL) {
+            if(options.galleryPIDs) {
+                // parse real index when custom PIDs are used 
+                for(var j = 0; j < items.length; j++) {
+                    if(items[j].pid == index) {
+                        options.index = j;
+                        break;
+                    }
+                }
+            } else {
+                // in URL indexes start from 1
+                options.index = parseInt(index, 10) - 1;
+            }
+        } else {
+            options.index = parseInt(index, 10);
+        }
+
+        // exit if index not found
+        if( isNaN(options.index) ) {
+            return;
+        }
+
+        if(disableAnimation) {
+            options.showAnimationDuration = 0;
+        }
+
+        // Pass data to PhotoSwipe and initialize it
+        gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+        gallery.init();
+    };
+
+    // loop through all gallery elements and bind events
+    var galleryElements = document.querySelectorAll( gallerySelector );
+
+    for(var i = 0, l = galleryElements.length; i < l; i++) {
+        galleryElements[i].setAttribute('data-pswp-uid', i+1);
+        galleryElements[i].onclick = onThumbnailsClick;
+    }
+
+    // Parse URL and open gallery if it contains #&pid=3&gid=1
+    var hashData = photoswipeParseHash();
+    if(hashData.pid && hashData.gid) {
+        openPhotoSwipe( hashData.pid ,  galleryElements[ hashData.gid - 1 ], true, true );
+    }
+	};
+
+	// execute above function
+	initPhotoSwipeFromDOM('.my-gallery');
+	
+	$(".my-gallery>figure>div").each(function(){
+		$(this).height($(this).width());
+	});
+	
+</script>
+
+<#-- <#include 'common/footer.html' /> -->

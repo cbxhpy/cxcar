@@ -1,0 +1,81 @@
+<#assign  title="我的收藏" />
+<#include 'common/header.html' />
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			我的收藏
+		</p>
+	</div>
+<!-- 获取会员收藏列表标签 -->
+<#assign collectTag = newTag("collectTag")>
+<!-- 调用会员收藏列表标签 -->
+<#assign collect = collectTag()!''>
+<!-- 将调用的结果赋值给变量 -->
+<#assign collectList = collect.result>
+	<div class="collect_list">
+		<ul>
+			<#if collectList?exists && collectList?size gt 0>
+		 		<#list collectList as favorite>
+		 			<li>
+		 				<div class="c_list">
+		 					<div class="c_left">
+		 						<a href="goods-${favorite.goods_id}.html" class="collect_intro">
+		 							<img src="${favorite.thumbnail!''}" class="mistake">
+		 						</a>
+		 					</div>
+		 					<div class="c_right">
+		 						<a href="goods-${favorite.goods_id}.html" class="collect_intro">
+		 							${favorite.name}
+		 						</a>
+		 						<p>￥${favorite.price?string("0.##")}</p>
+		 					</div>
+		 				</div>
+		 				<div class="c_tools">
+		 					<a href="javascript:;" class="go_cart" rel="${favorite.goods_id}" >加入购物车</a>
+		 					<a href="goods-${favorite.goods_id}.html">查看详细</a>
+		 					<a href="javascript:;" class="collect_del" rel="${favorite.favorite_id}" style="border:0px none;">删除收藏</a>
+		 				</div>
+		 			</li>
+			 	</#list>
+			<#else>
+				<li id="wap_no">暂无收藏</li>
+			</#if>	
+		</ul>
+	</div>
+	<script>
+$(function(){
+	//删除收藏
+	$(".collect_del").click(function(){
+		var favoriteid = $(this).attr("rel");
+		$.post("${ctx}"+"/api/shop/collect!cancelCollect.do",{"favorite_id":favoriteid},function(result){
+			if(result.result==1){				
+				alert("删除收藏成功");
+				location.href="collect.html";
+			}
+			
+			else{				
+				alert(result.message);
+			}			
+		},"json");
+		
+	})
+	//加入购物车
+	$(".go_cart").click(function(){
+		var goodsid = $(this).attr("rel");
+		$.ajax({
+			url:"api/shop/cart!addGoods.do?goodsid="+goodsid+"&num=1",
+			dataType:"json",
+			success : function(data) {	
+				if(data.result==1){																
+					location.href="cart.html"
+				}
+				else{							
+					alert(data.message)
+				}
+			}
+		})
+	})
+})
+</script>
+<#include 'common/footer.html'/>

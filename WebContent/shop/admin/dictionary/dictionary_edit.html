@@ -1,0 +1,58 @@
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="editForms" method="post" class="validate">
+			<table>
+				<tr>
+					<th>数据key：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" id="d_key" value="${dictionary.d_key!}" 
+						name="dictionary.d_key" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>数据值：</th>
+					<td><input class="easyui-validatebox input_text" type="text" id="d_value" value="${dictionary.d_value!}"
+						name="dictionary.d_value" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>关键字：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" id="keyword" value="${dictionary.keyword!}"
+						name="dictionary.keyword" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>排序：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="number" id="sort" value="${dictionary.sort!}"
+						name="dictionary.sort" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>说明：</th>
+					<td>
+						<textarea class="easyui-validatebox input_text" id="intr" rows="4"
+						name="dictionary.intr" data-options="required:true">${dictionary.intr!}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<input type="file" name="pic">
+					</td>
+				</tr>
+				<tr>
+					<th>预览：</th>
+					<td>
+						<#if dictionary.image??>
+							<img alt="" src="${dictionary.image!''}" width="250px">
+						<#else>
+							暂无
+						</#if>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="dictionary.dictionary_id" value="${dictionary.dictionary_id}">
+		</form>
+	</div>
+</div>

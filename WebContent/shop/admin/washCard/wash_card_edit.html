@@ -1,0 +1,61 @@
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="editForms" method="post" class="validate">
+			<table>
+				<tr>
+					<th>名称：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" value="${washCard.card_name!}" 
+						name="washCard.card_name" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<th>简介：</th>
+					<td><input class="easyui-validatebox input_text" type="text" value="${washCard.card_explain!}"
+						name="washCard.card_explain" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>天数：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="number" value="${washCard.wash_day!}"
+						name="washCard.wash_day" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>金额：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="number" id="sort" value="${washCard.price!}"
+						name="washCard.price" data-options="required:true"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>类型：</th>
+					<td>
+						<select class="easyui-validatebox" name="washCard.type" >
+							<option value="1" <#if washCard.type==1>selected</#if>>&nbsp;月卡&nbsp;</option>
+							<option value="2" <#if washCard.type==2>selected</#if>>&nbsp;季卡&nbsp;</option>
+							<option value="3" <#if washCard.type==3>selected</#if>>&nbsp;年卡&nbsp;</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<input type="file" name="pic">
+					</td>
+				</tr>
+				<tr>
+					<th>预览：</th>
+					<td>
+						<#if washCard.image??>
+							<img alt="" src="${washCard.image!''}" width="250px">
+						<#else>
+							暂无
+						</#if>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="washCard.wash_card_id" value="${washCard.wash_card_id}">
+		</form>
+	</div>
+</div>

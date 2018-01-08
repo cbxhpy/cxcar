@@ -1,0 +1,288 @@
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+<style>
+.input_text {
+	width: 200px;
+}
+
+td {
+	text-align: left;
+}
+</style>
+<div style="padding: 10px 0 10px 20px">
+	<form id="editor" method="post">
+		<table width="80%">
+			<tr>
+				<th width="120pxl">用户名：</th>
+				<td><input class="input_text" type="text" readonly="true"
+					name="member.uname" data-options="required:true"
+					value="${(member.uname)!''}"></input></td>
+				<th>密码：</th>
+				<td><input class="input_text easyui-validatebox"
+					type="password" name="member.password" value=""
+					placeholder="不填则为不修改" ></input>
+				</td>
+			</tr>
+			<#-- <tr>
+				<th>出生日期：</th>
+				<td><input class="input_text easyui-datebox"
+					data-options="required:true" name="birthday" id="birthday"
+					style="height: 28px;"
+					value="<@dateformat time='${(member.birthday)!0}' pattern='yyyy-MM-dd'/>"
+					class="dateinput" />
+				</td>
+				<th>Email：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					value="${(member.email)!''}" name="member.email" 
+					data-options="required:true,validType:'email'" ></input>
+				</td>
+			</tr> -->
+
+			<tr>
+				<th>昵称：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.nickname" value="${(member.nickname)!''}"></input></td>
+				<th>余额：</th>
+				<td>
+					<label><b>${member.balance!''}</b></label>
+					<#-- <input class="input_text easyui-validatebox" type="number" name="member.balance" value="${(member.balance)!''}"/> -->
+				</td>
+				<!-- <th>性别：</th>
+				<td><select class="easyui-validatebox input_text"
+					name="member.sex">
+						<option value="1"<#if member.sex==1>selected</#if>
+							>&nbsp;男&nbsp;</option>
+						<option value="0"<#if member.sex==0>selected</#if>
+							>&nbsp;女&nbsp;</option>
+				</select>
+				</td> -->
+			</tr>
+			<tr style="height: 32px;">
+				<th>分润：</th>
+				<td>
+					<label><b>${member.join_income!''}</b><label>
+				</td>
+				<th>合伙人分成：</th>
+				<td>
+					<label><b>${member.partner_amount!''}</b></label>
+				</td>
+			</tr>
+			<tr>
+				<th>头像：</th>
+				<td>
+					<@image width="100px" src="${member.face!''}"  />
+				</td>
+				<th>是否加盟：</th>
+				<td>
+					<select class="easyui-validatebox input_text" name="member.is_join">
+						<option value="0"<#if member.is_join==0>selected</#if>>&nbsp;否&nbsp;</option>
+						<option value="1"<#if member.is_join==1>selected</#if>>&nbsp;是&nbsp;</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>会员角色：</th>
+				<td>
+					<select name="member.role_id" id="roleId" class="input_text" multiple="multiple" style="height: 100px;">
+						<option value="0">--请选择角色--</option>
+						<#if member.memberRoles??>
+							<#list member.memberRoles as role>
+								<option value="${role.role_id }">${role.name }</option>
+							</#list>
+						</#if>
+					</select>
+				</td>
+				<th>运营商：</th>
+				<td>
+					<select name="member.adminuser_id">
+						<option value="">-请选择-</option>
+						<#list adminList as ad>
+							<option value="${ad.userid}" <#if member.adminuser_id?? && ad.userid = member.adminuser_id>selected="selected"</#if>>${ad.username!}</option>
+						</#list>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<th colspan="4"><hr></th>
+			</tr>
+			<tr>
+				<th>下面为申请信息：</th>
+				<td colspan="3"></td>
+			</tr>
+			
+			<tr>
+				<th>名字：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.name" value="${(member.name)!''}"></input></td>
+				<th>身份证：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.card_no" value="${(member.card_no)!''}"></input></td>
+			</tr>
+			
+			<tr>
+				<th>银行：</th>
+				<td>
+					<select name="member.bank_id" class="input_text">
+						<option value="0">--请选择银行--</option> 
+						<option value="1" <#if member.bank_id?? && member.bank_id==1>selected</#if> >中国工商银行</option>
+						<option value="2" <#if member.bank_id?? && member.bank_id==2>selected</#if> >中国建设银行</option> 
+						<option value="3" <#if member.bank_id?? && member.bank_id==3>selected</#if> >中国银行</option> 
+						<option value="4" <#if member.bank_id?? && member.bank_id==4>selected</#if> >中国农业银行</option> 
+						<option value="5" <#if member.bank_id?? && member.bank_id==5>selected</#if> >交通银行</option> 
+						<option value="6" <#if member.bank_id?? && member.bank_id==6>selected</#if> >招商银行</option> 
+						<option value="7" <#if member.bank_id?? && member.bank_id==7>selected</#if> >浦东发展银行</option> 
+						<option value="8" <#if member.bank_id?? && member.bank_id==8>selected</#if> >中信银行</option> 
+						<option value="9" <#if member.bank_id?? && member.bank_id==9>selected</#if> >兴业银行</option> 
+						<option value="10" <#if member.bank_id?? && member.bank_id==10>selected</#if> >中国民生银行</option> 
+						<option value="11" <#if member.bank_id?? && member.bank_id==11>selected</#if> >中国邮政储蓄银行</option> 
+						<option value="12" <#if member.bank_id?? && member.bank_id==12>selected</#if> >中国光大银行</option> 
+						<option value="13" <#if member.bank_id?? && member.bank_id==13>selected</#if> >平安银行</option> 
+						<option value="14" <#if member.bank_id?? && member.bank_id==14>selected</#if> >农商银行</option> 
+						<option value="15" <#if member.bank_id?? && member.bank_id==15>selected</#if> >北京银行</option> 
+						<option value="16" <#if member.bank_id?? && member.bank_id==16>selected</#if> >华夏银行</option> 
+						<option value="17" <#if member.bank_id?? && member.bank_id==17>selected</#if> >广发银行</option> 
+					</select>
+				</td>
+				<th>手机：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.spread_phone" value="${(member.spread_phone)!''}"></input></td>
+			</tr>
+			
+			<tr>
+				<th>开户行：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.bank_name" value="${(member.bank_name)!''}"></input></td>
+				<th>银行卡号：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.bank_no" value="${(member.bank_no)!''}"></input></td>
+			</tr>
+			
+			<tr>
+				<th>微信：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.wx_code" value="${(member.wx_code)!''}"></input></td>
+				<th>支付宝：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.alipay_code" value="${(member.alipay_code)!''}"></input></td>
+			</tr>
+			
+			<#--<tr>
+				<th colspan="4"><hr></th>
+			</tr>
+			<tr>
+				<th>下面为申请信息：</th>
+				<td colspan="3"></td>
+			</tr>
+			
+			<tr>
+				<th>公司名称：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.company_name" value="${(member.company_name)!''}"></input></td>
+				<th>负责人：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.person_name" value="${(member.person_name)!''}"></input></td>
+			</tr>
+			
+			<tr>
+				<th>微信号：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					name="member.wx_code" value="${(member.wx_code)!''}"></input></td>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>固定电话：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					id="tel" name="member.tel" validType="tel"
+					value="${(member.tel)!''}"></input></td>
+				<th>移动电话：</th>
+				<td><input class="input_text easyui-validatebox" type="text"
+					id="mobile" name="member.mobile" data-options="required:false"
+					validType="mobile" value="${(member.mobile)!''}"></input>
+				</td>
+
+			</tr>
+
+			<tr>
+				<th>会员等级：</th>
+				<td><select name="member.lv_id" class="input_text">
+						<option value="0">--请选择等级--</option> 
+						<#if lvlist??> 
+							<#list lvlist as lv>
+								<option value="${lv.lv_id }" <#if member.lv_id==lv.lv_id>selected</#if> >${lv.name }</option> 
+							</#list>
+						</#if>
+				</select></input>
+				</td>
+				<th>邮编：</th>
+				<td><input id="zip" name="member.zip" maxlength="6" 
+					value="${(member.zip)!''}" class="input_text">
+				</td>
+			</tr> 
+			<tr>
+				<th>地区：</th>
+				<td><@regionSelectDirective
+					province_id="${member.province_id!''}"
+					city_id="${member.city_id!''}" region_id="${member.region_id!''}"
+					/></td>
+				<th>地址：</th>
+				<td><input class="input_text" type="text"
+					value="${(member.address)!''}" name="member.address"
+					style="width: 200px;"></input></td>
+			</tr>
+			<tr>
+				<th>安全问题：</th>
+				<td><input class="input_text" type="text" id="pw_question"
+					name="member.pw_question" data-options="required:true"
+					value="${(member.pw_question)!''}"></input></td>
+				<th>回答：</th>
+				<td><input class="input_text" type="text" id="pw_answer"
+					value="${(member.pw_answer)!''}" name="member.pw_answer"
+					data-options="required:true"></input>
+				</td>
+			</tr>
+			<tr>
+				<th width="100pxl">开户银行：</th>
+				<td><input class="input_text" type="text" 
+					name="member.bank_name" data-options="required:true"
+					value="${(member.bank_name)!''}"></input></td>
+				<th>支付密码：</th>
+				<td><input class="input_text easyui-validatebox"
+					type="password" name="member.pay_password" value=""
+					placeholder="不填则为不修改" ></input>
+				</td>
+			</tr>
+			<tr>
+				<th width="100pxl">银行账号：</th>
+				<td><input class="input_text" type="text" 
+					name="member.bank_no" data-options="required:true"
+					value="${(member.bank_no)!''}"></input></td>
+				<th></th>
+				<td>
+				</td>
+			</tr> 
+			<tr>
+				<th width="100pxl">店铺门面：</th>
+				<td>
+					<@image width="400px" src="${member.shop_image!''}"  />
+				</td>
+				<th></th>
+				<td></td>
+			</tr>-->
+
+		</table>
+		<input type="hidden" name="member.member_id"
+			value="${member.member_id}">
+	</form>
+
+	<div style="text-align: center; margin-top: 10px;">
+		<a href="javascript:void(0)" class="button blueButton"
+			onclick="editForm()">保存修改</a>
+	</div>
+</div>
+
+<script>
+	$(function() {
+		$('#roleId').val([${member.role_id!''}]);
+	});
+</script>

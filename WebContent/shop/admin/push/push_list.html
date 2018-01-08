@@ -1,0 +1,180 @@
+<#include '/admin/header.html' >
+<script type="text/javascript" src="js/pushMsg.js"></script>
+<script type="text/javascript" src="../../adminthemes/new/js/main.js"></script>
+<div class="main">
+	<div class="buttonArea">
+		<a href="pushMsg!wblPush.do" class="button blueButton">推送</a>
+		<a href="javascript:void(0)" class="button" onclick="del()">删除</a>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id="advform">
+			<table class="easyui-datagrid"
+				data-options="url:'pushMsg!listJson.do',pageList: [10,15,20,30],pageSize:10,fitColumns:'true',onLoadSuccess:inits"
+				pagination="true" id="advdata">
+				<thead>
+					<tr>
+						<th data-options="field:'push_msg_id',checkbox:true"></th>
+						<th data-options="field:'id',width:70" formatter="formatId">ID</th>
+						<th data-options="field:'title',width:200">标题</th>
+						<th data-options="field:'content',width:200">内容</th>
+						<th data-options="field:'skip_type',width:200" formatter="formatSkipType">跳转方式</th>
+						<th data-options="field:'create_time',width:200" formatter="formatCreatetime">推送时间</th>
+						<th data-options="field:'action',width:100,align:'center'"
+							formatter="formatOperation">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	function append(id) {
+		var map = {}; // Map map = new HashMap();
+		/* if (!id) {
+			map["href"] = "adv!add.do";
+			map["formId"] = "#addForm";
+			map["url"] = "adv!addSave.do?ajax=yes";
+			map["title"] = "添加广告";
+			map["loadshow"] = "正在添加......";
+		} else { */
+			map["href"] = "pushMsg!edit.do?push_msg_id=" + id;
+			map["formId"] = "#editForm";
+			map["url"] = "pushMsg!editSave.do?ajax=yes";
+			map["title"] = "修改推送信息";
+			map["loadshow"] = "正在修改......";
+		/* } */
+		map["divDialog"] = "#divdia";
+		map["gridreload"] = "#advdata";
+
+		//需要验证的参数
+		//map["nameId"]="#name";
+
+		addDialog(map);
+	}
+	function addDialog(map) {
+		$(map["divDialog"]).show();
+		$(map["divDialog"]).dialog({
+			title : map["title"],
+			width : 500,
+			height : 400,
+			closed : false,
+			cache : false,
+			href : map["href"],
+			modal : true,
+			buttons : [ {
+				text : '保存',
+				iconCls : 'icon-ok',
+				handler : function() {
+					var savebtn = $(this);
+	　　				var disabled=savebtn.hasClass("l-btn-disabled");
+	　　				if(!disabled){
+						submitForm(map,savebtn);
+					}
+				}
+			}, {
+				text : '清空',
+				handler : function() {
+					clearForm(map);
+				}
+			} ]
+		});
+	}
+	function submitForm(map,savebtn) {
+		var formflag = $(map["formId"]).form().form('validate');
+		if (formflag) {
+			$.Loading.show(map["loadshow"]);
+			savebtn.linkbutton("disable");
+			var options = {
+				url : map["url"],
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+					if (result.result == 1) {
+						$(map["divDialog"]).dialog('close');
+						$(map["gridreload"]).datagrid('reload');
+						$.Loading.success(result.message);
+					}
+					if (result.result == 0) {
+						$.Loading.error(result.message);
+					}
+					savebtn.linkbutton("enable");
+				},
+				error : function(e) {
+					$.Loading.error("出现错误 ，请重试");
+					savebtn.linkbutton("enable");
+				}
+			};
+			$(map["formId"]).ajaxSubmit(options);
+		}
+	}
+
+	function clearForm(map) {
+		$(map["formId"]).form('clear');
+	}
+	function formatOperation(value, row, index) {
+		var val = "<a class='edit' title='修改' href='javascript:void(0);' onclick='append("
+				+ row.push_msg_id + ")' ></a>";
+
+		return val;
+	}
+
+	function formatId(value,row,index){
+		var val=row.push_msg_id;
+		return val;
+	}
+	
+	function formatCreatetime(value, row, index) {
+		return getFormatDateByLong(value, "yyyy-MM-dd hh:mm:ss");
+	}
+	function formatSkipType(value, row, index){
+		var str = "";
+		if(value=="1"){
+			str = "商品";
+		}else if(value=="2"){
+			str = "外部链接";
+		}else{
+			str = "不跳转";
+		}
+		return str;
+	}
+	function formatEndtime(value, row, index) {
+		return getFormatDateByLong(value, "yyyy-MM-dd");
+	}
+	function del() {
+		var rows = $('#advdata').datagrid("getSelections");
+		if (rows.length < 1) {
+			$.Loading.error("请选择删除推送信息");
+			return;
+		}
+		if (!confirm("确认要删除推送信息吗？")) {
+			return;
+		}
+		$.Loading.show("正在删除......");
+		var options = {
+			url : "pushMsg!delete.do?ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if (result.result == 1) {
+					$.Loading.success(result.message);
+				}
+				if (result.result == 0) {
+					$.Loading.error(result.message);
+				}
+				$("#advdata").datagrid('reload');
+			},
+			error : function(e) {
+				$.Loading.error("出现错误 ，请重试");
+			}
+		};
+		$('#advform').ajaxSubmit(options);
+	}
+	
+	function inits(){
+		PushMsg.init();
+	}
+	
+</script>
+<#include '/admin/footer.html' >

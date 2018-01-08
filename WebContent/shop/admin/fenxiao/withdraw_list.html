@@ -1,0 +1,246 @@
+<#include '/admin/header.html' > <#assign
+dateFormat="com.enation.framework.directive.DateformateDirective"?new()>
+<style>
+.input_text{
+	width: 150px;
+}
+</style>
+<script language="javascript"
+	src="../../adminthemes/new/js/LodopFuncs.js"></script>
+<div id="loading"></div>
+<div class="main">
+	<form id="withdrawForm">
+		<div class='buttonArea'>
+			 <span class="unaudited" style="float:left;display:none">	
+			<a href="javascript:void(0)" class="button" onclick="agree(3)">审核通过</a>
+			<a href="javascript:void(0)" class="button" onclick="agree(4)">审核不通过</a>
+			</span>
+			<span class="approve" style="float:left;display:none">	
+				<a href="javascript:void(0)" class="button" onclick="agree(5)">已转账</a>
+			</span>
+			 
+			 <span style="float: right;"> 
+				 <span id="simpleSearch"> 
+				 		<select id="draw_type" class="inputSelect valid" >
+							<option value="">全部</option>
+							<option value="2">申请中</option>
+							<option value="3">审核通过,未转账</option>
+							<option value="4">审核不通过</option>
+							<option value="5">审核通过,已转账</option>
+						</select>
+						<a href="javascript:void(0)" class="easyui-linkbutton" id="search" data-options="plain:true" onclick="searchDraw()">查询</a> 
+				</span> 
+				<a href="javascript:void(0)" class="button" data-options="plain:true" id="aAdvanced">导出功能</a> &nbsp;&nbsp;
+				</span>
+		</div>
+		<div style="display: block;" class="searchAdvanced">
+			<input id="Advanced" name="Advanced" type="hidden" value="0" />
+			<table width="98%" border="0" cellspacing="0" cellpadding="8">
+				<tr>
+					<td width="70" align="right">提现时间</td>
+					<td><input class="easyui-datebox" style="width: 90px;height: 28px;"
+						id="start_time" data-options="buttons:buttons" /> <span>&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+						<input class="easyui-datebox" style="width: 90px;height: 28px;" id="end_time"
+						data-options="buttons:e_buttons" />
+					</td>
+					<td><a id="exportAdvance"
+						class="button blueButton" onclick="exportDraw()"
+						href="javascript:;">导出提现单</a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="clear height10"></div>
+		<div class="shadowBoxWhite tableDiv">
+			<table class="easyui-datagrid"
+				data-options="url:'fenxiao!withdrawListJson.do',pageList: [5,10,15,20],pageSize:${pageSize},fitColumns:'true'" pagination="true" width="width" id="drawdata">
+				<thead>
+				    <tr>
+				    	<th data-options="field:'id',checkbox:true,width:50" ></th>
+				   	 	<th data-options="field:'member_id',width:100">会员编号</th>
+				   	 	<th data-options="field:'uname',width:100">会员名称</th>
+				   	 	<th data-options="field:'mobile',width:100">手机号</th>
+				   	 	<th data-options="field:'email',width:150">邮箱</th>
+				   	 	<th data-options="field:'yongjin',width:100">积分</th>
+				   	 	<th data-options="field:'create_time',width:100" formatter="formatTime">时间</th>
+				   	 	<th data-options="field:'type',width:100" formatter="formatType">状态</th>
+				   	 	<th data-options="field:'action',width:100" formatter="formatAction">操作</th>
+				   	 </tr>
+				</thead>
+			</table>
+	 </div>
+
+	</form>
+</div>
+<div id="orderinfo" style="display: none;"></div>
+
+<script type="text/javascript">
+function formatTime(value,row,index){
+	
+	return getFormatDateByLong(value, "yyyy-MM-dd hh:mm:ss");
+}
+ 
+function formatAction(value,row,index){
+		var val;
+		
+		if(row.type==2){
+			var val = '<a title="同意" href="javascript:void(0);" onclick="agreeone('
+				+ row.id
+				+ ',3)">通过</a>&nbsp;&nbsp;'
+				+ '<a href="javascript:;" title="拒绝" onclick="agreeone('
+				+ row.id
+				+ ',4)">不通过</a>';
+		}else if(row.type==3){
+				val = '<a title="已转账" href="javascript:void(0);" onclick="agreeone('
+					+ row.id
+					+ ',5)">已转账</a>';
+		}		
+		
+		return val;
+}
+
+//订单状态
+function formatType(value, row, index) {
+	if(value==1){
+		return "获得";
+	}else if(value==2){
+		return "提现申请中";
+	}else if(value==3){
+		return "审核通过,未转账";
+	}else if(value==4){
+		return "审核未通过";
+	}else if(value==5){
+		return "审核通过,已转账";
+	}
+	else{
+		return "消费";
+	}
+	
+}
+
+function agreeone(id,type){
+	
+	$.ajax({
+		url:"fenxiao!withdrawAgree.do?ajax=yes",
+		data:"id="+id+"&type="+type,
+		dataType:"json",
+		success:function(result){
+			if(result.result==1){
+				$.Loading.success(result.message);
+				searchDraw();
+			}else{
+				$.Loading.error(result.message);
+			}	
+		},
+		error : function(e) {
+			alert("出现错误 ，请重试");
+		}
+	});
+	
+}
+	
+function agree(type){
+	
+	var msg = "";
+	if(type==3){
+		msg="确认已选择记录通过审核吗？";		
+	}else if(type==5){
+		msg="确认已选择记录已完成提现线下转账了吗？";
+	}else if(type==4){
+		msg="确认已选择记录审核不通过吗？";
+	}
+	
+	var rows = $('#drawdata').datagrid("getSelections"); 
+	if(rows.length<1){
+		$.Loading.error("请选择要操作的记录");
+		return;
+	}
+	if(!confirm(msg)){	
+		return ;
+	}
+	var options = {
+			url : "fenxiao!withdrawAgree.do?type="+type+"&ajax=yes",
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+				if(result.result==1){
+					$.Loading.success(result.message);
+					searchDraw();
+				}
+				if(result.result==0){ 
+					$.Loading.error(result.message);
+				}
+			},
+			error : function(e) {
+				alert("出现错误 ，请重试");
+			}
+	};
+	$('#withdrawForm').ajaxSubmit(options);	
+}
+
+function searchDraw(){
+	var type= $("#draw_type").val();
+	$('#drawdata').datagrid('load', {
+		type:type,
+		page:1
+	}); 
+	if(type==2){
+		$(".unaudited").show();
+		$(".approve").hide();
+	}else if(type==3){
+		$(".unaudited").hide();
+		$(".approve").show();
+	}
+}
+
+function exportDraw(){
+	var start_time = $('#start_time').datebox('getValue');
+	var end_time = $('#end_time').datebox('getValue');  
+	
+	if(start_time=="" || end_time==""){
+		$.Loading.error("请选择要导出的提现日期范围");
+		return;
+	}
+	location.href="fenxiao!exportDraw.do?start_time="+start_time+"&end_time="+end_time+"&ajax=yes";
+	
+}
+
+$(function(){
+	$(".searchAdvanced").hide();
+	//高级查询按钮
+    $("#aAdvanced").click(function () {
+        if ($("#Advanced").val() == "0") {
+            $("#Advanced").val(1);
+            $("#simpleSearch").hide();
+            //$("#aAdvanced").text("简单搜索")
+            $("#aAdvanced").addClass("searchAdvancedS");
+        } else {
+            $("#Advanced").val(0);
+            $("#simpleSearch").show();
+            //$("#aAdvanced").text("高级搜索");
+            $("#aAdvanced").removeClass("searchAdvancedS");
+        }
+        $(".searchAdvanced").slideToggle("slow");
+    });
+})
+
+var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+buttons.splice(1, 0, {
+text: '清空',
+handler: function(target){
+	 $('#start_time').datebox('setValue',"");
+}
+});
+
+var e_buttons = $.extend([], $.fn.datebox.defaults.buttons);
+e_buttons.splice(1, 0, {
+text: '清空',
+handler: function(target){
+	 $('#end_time').datebox('setValue',"");
+}
+});
+
+
+</script>
+
+<#include '/admin/footer.html' >

@@ -1,0 +1,77 @@
+<div class="main shadowBoxWhite"  style="overflow: hidden;">
+	<div class="easyui-panel" style="border-style: none; ">
+		<div style="padding: 10px 0 10px 20px">
+			<form method="post" id="editForm" class="validate">
+			<table>
+				<tr>
+					<td style="width:100px;">开始时间：</td>
+					<td><input  class="easyui-datebox" data-options="required:true" style="height: 28px;" type="text" name="start_time" value="${start_time}"></input></td>
+				</tr>
+				<tr>
+					<td>结束时间：</td>
+					<td><input  class="easyui-datebox" data-options="required:true" style="height: 28px;" type="text" name="end_time" value="${end_time}"></input></td>
+				</tr>
+				<tr>
+					<td>是否有效：</td>
+					<td>
+						<input type="radio"
+				name="groupBuy.group_stat"<#if
+				groupBuy.group_stat==1>checked="checked"</#if> value="1"
+				class="market_enable" /> 有效&nbsp;&nbsp; <input type="radio"
+				name="groupBuy.group_stat"<#if
+				groupBuy.group_stat==0>checked="checked"</#if> value="0"
+				class="market_enable"/> 无效
+					</td>
+				</tr>		
+				<tr>
+					<td>选择商品：</td>
+					<td>
+						<a herf='javascript:void(0);' onclick='openGoodsSearchDlg(getGoods, 0)'>选择商品</a>
+						<input type="hidden" name="groupBuy.goods_id"  id="goods_id" value="${groupBuy.goods_id}"/>
+						<input type="hidden" name="groupBuy.goods_name"  id="goods_name" value="${groupBuy.goods_name}"/>
+						<input type="hidden" name="groupBuy.product_id"  id="product_id"/>
+						<input type="hidden" name="groupBuy.mktprice"  id="mktprice" value="${groupBuy.mktprice}"/>
+					</td>
+				</tr>
+				<tr>
+					<td>商品名称：</td>
+					<td id="product_name">${groupBuy.goods_name}</td>
+				</tr>
+				
+				<tr>
+					<td>商品价格：</td>
+					<td id="price">${groupBuy.goods.mktprice}</td>
+				</tr>
+				<tr>	
+					<td>商品库存：</td>
+					<td id="store">${groupBuy.goods.store}</td>
+				</tr>
+				
+				<tr>
+					<td>团购价格：</td>
+					<td><input class="easyui-numberbox input_text" type="text" name="groupBuy.group_price" data-options="required:true" isrequired="true" value="${groupBuy.group_price}"  /></td>
+				</tr>			
+				<tr>
+					<td>团购图片(550*360)：</td>
+					<td>
+						<input type="file" id="image" name="image" data-options="required:false"/>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<img src="${imgPath!''}" />
+					</td>
+				</tr>						
+				<tr>
+					<td>团购介绍：</td>
+					<td>
+						<textarea id="remarks" name="groupBuy.group_summary">${groupBuy.group_summary!''?html}</textarea>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="groupBuy.group_id" value="${groupBuy.group_id}">
+			</form>
+		</div>
+	</div>
+</div>

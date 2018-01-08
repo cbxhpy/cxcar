@@ -1,0 +1,188 @@
+<div class="clear"></div>
+<div class="footer-box">
+<div class="ft_sevice">
+		<div class="ft_inner w">
+			<div class="guide">
+				<dl>
+					<dt>关于我们</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":21}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+					
+				</dl>
+				<dl>
+					<dt>购物指南</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":18}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+				</dl>
+				<dl>
+					<dt>配送方式</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":22}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+				</dl>
+				<dl>
+					<dt>支付方式</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":19}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+				</dl>
+				<dl>
+					<dt>售后服务</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":23}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+				</dl>
+				<dl>
+					<dt>新手上路</dt>
+					<#assign dataSearchTag=newTag("dataSearchTag") />
+					<!-- 调用CMS数据搜索标签，并传递所在模型ID参数 -->
+					<#assign webPage = dataSearchTag('{"modelid":2,"catid":17}') />
+					<#list webPage.result as article>
+					<dd><a href="${ctx}/help.html?articleid=${article.id}">${article.title!''}</a></dd>
+					</#list>
+				</dl>
+			</div>
+			
+              
+              <div class="someInfo Left">
+<!--               <h4>7x12H客服在线</h4>-->
+              <div class="someInfotel"><img src="${ctx}/themes/default/images/tel.jpg" /></div>
+			<div class="phone">
+			<p>0592-7776779</p>
+<!--            <label>周一至周日8:00-21:00</label>
+            <label>E-mail:info@homesee.cn</label>-->
+		</div>
+            
+            </div>
+            
+            <div class="contant">
+                <dl class="otherLink">
+                    <dt></dt>
+                    <dd><span class="weixin" title="官方微信"></span><span class="codeImg"><img src="${ctx}/themes/default/images/wx.jpg" /></span></dd>
+                    <dd><a class="weibo" target="_blank" href="" rel="nofollow">扫描关注微信<i class="v"></i></a></dd>
+                </dl>
+            </div>
+            
+		</div>
+	</div>
+
+
+
+<div class="foot-nav"> 
+ <div class="w footer-copy">
+	<span class="yen">  Copyright 2014-2015</span>
+<span id="JS_footer_copyright"> 厦门众道生活电子商务有限公司 <span id="JS_footer_copyright">  All right reseryed. </span>    
+	<a href="http://www.miibeian.gov.cn/state/outPortal/loginPortal.action" target="_blank" class="gray" rel="nofollow">闽ICP备15019846号-1</a>
+	</span>
+    
+</div>
+
+ </div>
+<div class="copyrighpic w"><img src="${ctx}/themes/default/images/f1.jpg" /><img src="${ctx}/themes/default/images/f2.jpg" /></div>
+</div>
+<!--右侧贴边导航quick_links.js控制-->
+<script type="text/javascript" src="${ctx}/themes/default/js/xxw_commonn.js"></script>
+<script type="text/javascript" src="${ctx}/themes/default/js/xxw_quick_links.js"></script>
+<div class="mui-mbar-tabs">
+	<div class="quick_link_mian">
+		<div class="quick_links_panel">
+			<div id="quick_links" class="quick_links">
+				<li>
+					<a href="#" class="my_qlinks"><i class="setting"></i></a>
+					<div class="ibar_login_box status_login">
+						<div class="avatar_box">
+							<#if member?? >
+								<p class="avatar_imgbox">
+									<#if member.face?exists && member.face != ''>
+										<img src="<@imgurl pic='${member.face}'/>" width="100" height="100" />
+									<#else>
+										<@image src="images/default_face.jpg" width="100" height="100" />
+									</#if>
+								</p>
+								<ul class="user_info">
+									<li>您好，${member.name!}</li>
+								</ul>
+                    	<#else>
+                    			<p class="avatar_imgbox">
+                    			<@image src="images/default_face.jpg" width="100" height="100" />
+                    			</p>
+                    			<ul class="user_info">
+								<ul class="user_info">
+									<li>您好，<a href="${ctx}/login.html">请先登录</a></li>
+								</ul>
+								</ul>
+                    	</#if>
+							
+						</div>
+						<div class="login_btnbox">
+							<a href="${ctx}/member/order.html?status=0" class="login_order">我的订单</a>
+							<a href="${ctx}/member/favorite.html" class="login_favorite">我的收藏</a>
+						</div>
+						<i class="icon_arrow_white"></i>
+					</div>
+				</li>
+				<li id="settleup-2016">
+					<a href="${ctx}/cart.html" class="message_list" ><i class="message"></i><div class="span">购物车</div><span class="cart_num num">0</span></a>
+				</li>
+				
+				<li>
+					<a href="#" class="mpbtn_histroy"><i class="zuji"></i></a>
+					<div class="mp_tooltip">我的足迹<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="${ctx}/member/favorite.html" class="mpbtn_wdsc"><i class="wdsc"></i></a>
+					<div class="mp_tooltip">我的收藏<i class="icon_arrow_right_black"></i></div>
+				</li>
+
+			</div>
+			<div class="quick_toggle">
+				<li>
+					<a href="#"><i class="kfzx"></i></a>
+					<div class="mp_tooltip">0592-7776779<i class="icon_arrow_right_black"></i></div>
+				</li>
+				<li>
+					<a href="#none"><i class="mpbtn_qrcode"></i></a>
+					<div class="mp_qrcode" style="display:none;"><img src="${ctx}/themes/default/images/wx.jpg" width="148" height="175" /><i class="icon_arrow_white"></i></div>
+				</li>
+				<li><a href="#top" class="return_top"><i class="top"></i></a></li>
+			</div>
+		</div>
+		<div id="quick_links_pop" class="quick_links_pop hide"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$(".quick_links_panel li").mouseenter(function(){
+		$(this).children(".mp_tooltip").animate({left:-92,queue:true});
+		$(this).children(".mp_tooltip").css("visibility","visible");
+		$(this).children(".ibar_login_box").css("display","block");
+	});
+	$(".quick_links_panel li").mouseleave(function(){
+		$(this).children(".mp_tooltip").css("visibility","hidden");
+		$(this).children(".mp_tooltip").animate({left:-121,queue:true});
+		$(this).children(".ibar_login_box").css("display","none");
+	});
+	$(".quick_toggle li").mouseover(function(){
+		$(this).children(".mp_qrcode").show();
+	});
+	$(".quick_toggle li").mouseleave(function(){
+		$(this).children(".mp_qrcode").hide();
+	});
+</script>

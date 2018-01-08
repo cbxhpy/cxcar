@@ -1,0 +1,102 @@
+<!-- 创建商品规格标签 -->
+<#assign goodsSpecWblTag = newTag("goodsSpecWblTag") >
+<!-- 调用商品规格标签 -->
+<#assign goodsSpec = goodsSpecWblTag("'goods_id':${goods_id!''}")!'' >
+<!-- 规格列表 -->
+<#if goodsSpec.have_spec == 1>
+	<#list goodsSpec.specList as spec>
+		<div class="goods_spec" id="goods_spec" goods_id="${goods_id!''}">
+			<table width="100%" class="spec_item">
+				<tbody>
+					<tr>
+						<td style="width: 10%; white-space: nowrap;"><span><em>${spec.spec_name}</em>：</span></td>
+						<td style="padding-left: 15px;">
+			 				<ul>
+								<#list spec.valueList as val>
+									<li class="spec_word">
+										<a spec_type="${spec.spec_type}" specid="${spec.spec_id}" specvid="${val.spec_value_id}"  href="javascript:;" class="" title="${val.spec_value}">
+											<span>${val.spec_value}</span>
+											<i title="${val.spec_value}">&nbsp;</i>
+										</a>
+									</li>
+								</#list>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<#-- <p class="title" style="float: left;">${spec.spec_name}</p>
+		<div class="nav-select guige_list">
+			<#list spec.valueList as val  >
+				<span specid="${spec.spec_id}" specvid="${val.spec_value_id}">${val.spec_value}</span>
+			</#list>
+		</div> -->
+		
+	</#list>
+	
+<#else>
+</#if>
+
+<script>
+	var haveSpec=0;
+	<#if goodsSpec.have_spec == 1>
+		haveSpec=1;
+	</#if>
+	var Products =
+		[
+			<#if goodsSpec?exists>
+				<#list goodsSpec.productList as product>	
+					{'product_id':${product.product_id},'goods_id':${product.goods_id},'sn':'${product.sn}','store':${product.store!0},
+						'price':${product.price},
+		   				'specs':${product.specsvIdJson}
+					}
+		  			<#if product_has_next >,</#if>
+				</#list>
+			</#if>
+		];
+	$(function(){
+		Eop.SpecWbl.init(haveSpec);
+	});
+</script>
+
+<#-- <#if goods.have_spec?exists && goods.have_spec==1 > 
+	<#assign goodsSpecWblTag = newTag("goodsSpecWblTag") >
+	<#assign goodsSpec = goodsSpecWblTag("'goods_id':${goods_id!''}")!'' >
+	<#if goodsSpec.have_spec == 1>
+		<#list goodsSpec.specList as spec>
+			<table width="100%" class="spec_item">
+				<tbody>
+					<tr>
+						<td style="width: 10%; white-space: nowrap;"><span><em>${spec.spec_name}</em>：</span></td>
+						<td style="padding-left: 15px;">
+			 				<ul>
+								<#list spec.valueList as val  >
+									<#if spec.spec_type==0>
+										<li class="spec_word">
+											<a specid="${spec.spec_id}" specvid="${val.spec_value_id}"  href="javascript:;" class="" title="${val.spec_value}">
+												<span>${val.spec_value}</span>
+												<i title="${val.spec_value}">&nbsp;</i>
+											</a>
+										</li>
+									</#if>
+									<#if spec.spec_type==1>
+										<li class="spec_img">
+											<a specid="${spec.spec_id}" specvid="${val.spec_value_id}"  href="javascript:;" class="" title="${val.spec_value}" >
+												<@image height="30" width="30" title="${val.spec_value}" alt="${val.spec_value}" src="${val.spec_image}" />
+												<i title="${val.spec_value}">&nbsp;</i>
+											</a>
+										</li>
+									</#if>				
+								</#list>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</#list>
+	<#else>
+		
+	</#if>
+	
+</#if> -->

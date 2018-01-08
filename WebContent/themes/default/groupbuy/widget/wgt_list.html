@@ -1,0 +1,39 @@
+<#list webpage.result as item>
+<div class="item <#if (item_index+1)%2 == 0>odd</#if>">
+	<h1><a target="_blank" href="${ctx}/groupbuy/deal-${item.groupid}.html"><@substring title="${item.title}" length="70" dot="..." /></a></h1>
+	<div class="cover"><a target="_blank" href="${ctx}/groupbuy/deal-${item.groupid}.html"><img width="308px" height="188px" alt="${item.title}" title="点击查看详情" src="${item.image}"></a></div>
+	<div class="detail pngfix">
+		<ul class="info cf">
+			<li class="price"><label>现价</label><span>¥</span>${item.price}</li>
+			<li><label>原价</label><del><span>¥</span>${item.oldprice}</del></li>
+			<li><label>折扣</label>${item.discount*10}折</li>
+		</ul>
+		<ul class="status">
+			<li class="volume"><strong>${item.buycount}</strong>人已购买</li>
+			<li class="timeout">
+	            <div class="deal-box deal-timeleft deal-on"><label>剩余</label>
+	            	<span class="timeout-span" endTime="${item.end_time}"></span>
+	            </div>
+	        </li>
+	        <#if item_index==0>
+			<li class="newtag pngfix"><label><a target="_blank" hidefocus="true" href="${ctx}/groupbuy/deal-${item.groupid}.html">今日新单</a></label></li>
+			</#if>
+		</ul>
+	</div>
+	<div class="action pngfix">
+		<label><span>¥</span>${item.price}</label>
+		<a hidefocus="true" target="_blank" href="${ctx}/groupbuy/deal-${item.groupid}.html">去看看</a>
+	</div>
+</div>
+</#list>
+<div class="page-nav-wrapper">
+	<#assign searchpager = "com.enation.app.shop.component.groupbuy.widget.search.pager.SearchPagerDirectiveModel"?new()>
+	<@searchpager pageno="${webpage.currentPageNo}" pagesize="${webpage.pageSize}" totalcount="${webpage.totalCount}" />
+</div>
+<script type="text/javascript">
+	var groupTimout = new GroupTimeout(".timeout-span", ${nowTime});
+	groupTimout.run();
+</script>
+
+		
+

@@ -1,0 +1,277 @@
+<#assign  title="" />
+<#include 'common/header_title.html' />
+<!-- 头部 -->
+	<div class="login-header">
+		<img src="themes/wap/images/flowers/logo.png" alt="">
+	</div>
+	<div class="logn">
+		<form action="" method="post" class="validate" id="login_form">
+			<input type="hidden" name="action" value="login" />
+			<input type="hidden" value="${forward!''}" name="forward" >
+				<div class="m_account">
+					<div class="m_input">
+						<img src="themes/wap/images/flowers/regi-phone.png" alt="" style="width: 0.4rem;left:0.15rem;">
+						<input type="text" name="username" class="username" id="username" placeholder="请输入手机号"></input>
+					</div>
+				</div>
+				<!-- <div class="m_account">
+					<div class="m_input">
+						<input type="text"  name="email" class="email"></input>
+					</div>
+				</div> -->
+				<div class="m_account">
+					<div class="m_input">
+						<img src="themes/wap/images/flowers/logo-pass.png" alt="">
+						<input type="password" name="password" class="password" placeholder="请输入密码"></input>
+					</div>
+				</div>
+				<div class="m_account">
+					<div class="m_input">
+						<img src="themes/wap/images/flowers/regi-baoz.png" alt="">
+						<input type="text" name="validcode" class="validcode" id="validcode" placeholder="请输入验证码"></input>
+					</div>
+				</div>
+				<!-- <div class="m_account">
+					<label>确认密码：</label>
+					<div class="m_input">
+						<input type="password" name="passwd_re" class="passwd_re"></input>
+					</div>
+				</div> 
+				<div class="m_account">
+					<div class="m_input">
+						<img src="themes/wap/images/flowers/logo-pass.png" alt="">
+						<input type="text" tabindex="3" name="validcode" isrequired="true" size="8" autocomplete="off" class="m_small validcode" id="validcode"/>
+					</div>
+					<div class="m_check">
+						<img src="${ctx}/validcode.do?vtype=memberlogin" alt="会员登录验证码" class="check_img" id="LoginimgVerifyCode"/>
+					</div>
+				</div>
+				<div class="register_agree">
+						<label style="width:15%;float:left;display:inline;">&nbsp;</label>
+						<input type="checkbox" checked="checked" value="agree" fun="checkLicense" name="license" id="license" class="license okselected" />
+						<p>已同意并阅读《用户协议》</p>
+				</div>-->
+				<div class="m_submit">
+					<input type="button" value="发送验证码" id="fasongyzm"/>
+					<span class="m_register">
+					<input type="button" tabindex="4" value="注  册" class="register_ok">
+					</span>
+				</div>
+				
+		</form>
+	</div>
+	
+	<script>
+$(function(){
+
+	$("#fasongyzm").click(function(){
+		var self = $(this);
+		var uname = $("#username").val();
+		var phoneReg = /^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(14[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+		if(uname == ""){
+			InitShowMessage("请输入手机号码");
+			return;
+		}else if(!phoneReg.test(uname)) {
+			InitShowMessage("请输入有效的手机号码");
+			return;
+		}
+		$.ajax({
+			url : "${ctx}/shop/mobileMember!sendValidateCode.do?ajax=yes&uname="+uname+"&type=0",
+			type : "POST",
+			dataType : 'json',
+			success : function(json) {
+				if(json.Return==1){
+					
+				}else{
+				
+				}
+				settime(self);//倒计时事件
+				InitShowMessage(json.Detail);
+			},
+			error : function(e) {
+				InitShowMessage("出现错误 ，请重试");
+			}
+		});
+	});
+
+	$("#LoginimgVerifyCode").click(function(){
+		$("#LoginimgVerifyCode").attr("src","${ctx}/validcode.do?vtype=memberreg&r="+new Date().getTime());
+	});
+	
+	$(".m_forget").click(function(){
+		$("#LoginimgVerifyCode").attr("src","${ctx}/validcode.do?vtype=memberreg&r="+new Date().getTime());
+	});
+	
+	//点击注册 	
+	$(".register_ok").click(function(){
+		if(!checkUserName()){
+			return false;
+		};
+		/* if(!checkEmail()){
+			return false;
+		}; */
+		if(!isPasswd()){
+			return false;
+		}
+		/* if(!checkpwd()){
+			return false;
+		} */
+		/* if($(".validcode").val()==""){
+			//alert("请输入验证码！");
+			// 注释-单句提示弹窗统一用以下方法---qyshen
+			InitShowMessage("请输入验证码！");
+			return false;
+		} */
+		/* if(!checkLicense()){
+			alert("请阅读并同意协议！")
+			return false;
+		} */
+		
+		if($("#validcode").val() == ""){
+			InitShowMessage("请输入验证码");
+		}
+		
+		show.show_cover();       //增加遮罩。来阻止在提交ajax时进行其他操作。
+	 	$.post("${ctx}/api/shop/member!registerWbl.do?ajax=yes",
+	 		{
+	 			"username":$(".username").val(),
+				/* "email":$(".email").val(), */
+				"password":$(".password").val(),
+				/* "password_re":$(".password_re").val(), */
+				"validate_code":$(".validcode").val(),
+				/* "license":$(".license").val() */
+			}, 
+			function(result){
+				if(result.result==1){
+					var forward = '${ctx}/member.html'; //默认是会员中心
+					location.href = forward;
+				}else{
+					InitShowMessage(result.message);
+					show.close_cover() //关闭遮罩
+				}
+			},
+			"json"
+		);
+	})
+	
+	//更换用户协议选中图片
+	$(".register_agree input").click(function(){
+		if(!checkLicense()){
+			$(this).removeClass("okselected");
+			$(this).addClass("noselected");
+		}
+		else{
+			$(this).addClass("okselected");
+			$(this).removeClass("noselected");
+		}
+	})
+	
+	//检测用户协议
+	function checkLicense(){
+		if($("#license").is(':checked')){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	//检测用户名
+	function checkUserName(value,callback){
+		var input = $(".username");
+		var username  = input.val();
+		/* var patrn=/^([0-9A-Za-z一-龥]|-|_){4,20}$/;
+		if (!patrn.exec(username)) return "用户名格式不正确！"  */ 
+		var phoneReg = /^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(14[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+		if(!phoneReg.test(username)) {
+			InitShowMessage("请输入有效的手机号码");
+			return;
+		}
+		$.ajax({
+			url:"api/shop/member!checkname.do?ajax=yes",
+			type:"POST",
+			data:"username=" + username,
+			dataType:"json",
+			success:function(json){
+				if(json.result==0){
+					InitShowMessage("手机号已存在");
+					return false;
+				}else{
+					return true;
+				}
+			}		
+		});	
+		return true;
+	}
+
+	//检测邮箱
+	function checkEmail(value,callback){
+		var input = $(".email");
+		var email  = input.val();
+		if($.trim(email)==''){
+			//alert( "注册邮箱不能为空！");
+			InitShowMessage("注册邮箱不能为空！");
+			return false;
+		}
+		var reg = /^([a-z0-9+_]|\-|\.|\-)+@([\w|\-]+\.)+[a-z]{2,4}$/i; 
+		if(!reg.test(email)){
+			//alert("注册邮箱格式不正确！");
+			InitShowMessage("注册邮箱格式不正确！");
+			return false;
+		}
+		$.ajax({
+			url:"api/shop/member!checkemail.do?ajax=yes",
+			type:"POST",
+			data:"email="+email,
+			dataType:"json",
+			success:function(json){
+				if(json.result==0){
+					//alert("注册邮箱重复！");
+					InitShowMessage("注册邮箱重复！");
+					return false;
+				}else{
+					return true;
+				}
+			}		
+		});	
+		return true;
+	}
+
+	function isPasswd(){  
+		var s = $(".password").val()
+		var patrn=/^(\w){6,16}$/;  
+		if (!patrn.exec(s)){
+			InitShowMessage("密码长度为6-12位");
+			return false;
+		}
+		return true  
+	}
+
+	function checkpwd(){
+		if($(".passwd_re").val()==$(".password").val()){
+			return true;
+		}else{ 
+			//alert("密码不一致");
+			InitShowMessage("密码不一致");
+			return false;
+		}
+	}
+
+});
+
+var countdown = 60; 
+function settime(val){ 
+	if(countdown == 0){ 
+		val.removeAttr("disabled"); 
+		val.val("发送验证码"); 
+		countdown = 60; 
+	}else{
+		val.attr("disabled", true); 
+		val.val(countdown+"秒"); 
+		countdown--; 
+		setTimeout(function() { 
+			settime(val) 
+		},1000) 
+	} 
+}
+</script>
+<#include 'common/footer.html'/>

@@ -1,0 +1,131 @@
+<div id="content">
+    <div class="cf" id="deal-intro">
+        <h1>${groupBuy.title}</h1>
+        <div class="main">
+        	<#assign isOpen = groupBuy.end_time &gt;= nowTime>
+            <div class="deal-buy <#if isOpen>deal-price-tag-open<#else>deal-price-tag-expired</#if>">
+                <strong>¥ ${groupBuy.price}</strong> 
+				<a <#if isOpen>style="cursor:pointer;" class="buyBtn"</#if>>抢购</a>
+			</div>
+            <div class="deal-info">
+                <table class="deal-discount">
+                    <tbody><tr>
+                        <th>原价</th>
+                        <th>折扣</th>
+                        <th>节省</th>
+                    </tr>
+                    <tr>
+                        <td><del><span>¥</span>${groupBuy.oldprice}</del></td>
+                        <td>${groupBuy.discount}折</td>
+                        <td>¥${groupBuy.oldprice-groupBuy.price}</td>
+                    </tr>
+                </tbody></table>
+                <div class="deal-status">
+                	<p class="deal-status-count"><strong>${groupBuy.buycount}</strong> 人已购买</p>
+                	<p class="deal-status-time-left">剩余<span class="timeout-span" endTime="${groupBuy.end_time}"></span></p>
+<!--             		<ul class="consumer-protection">
+		                <li class="seven">
+		                    <span class="icon">&nbsp;</span><a target="_blank" title="支持 “7天内未消费，无条件退款”" href="">支持<br>“7天退款”</a>
+		                </li>
+		                <li class="expire">
+		                    <span class="icon">&nbsp;</span><a target="_blank" title="支持 “过期未消费，一键退款”" href="">支持<br>“过期退款”</a>
+		                </li>
+            		</ul>  -->
+            	</div>
+            </div>
+        </div>
+        <div class="side">
+            <div class="deal-buy-cover-img"><img src="${groupBuy.image}"></div>
+            
+            <div class="deal-share">
+                ${widget_share}
+            </div>
+        </div>
+    </div>
+    
+    <div id="deal-stuff">
+        <div class="mainbox cf">
+            <div class="main">
+                <h2 id="blk-deal-detail-643376">本单详情</h2>
+                <div class="blk detail">
+                	${groupBuy.description}
+	            </div>
+			</div>
+			<div class="side"><#if supplierInfo?exists>${supplierInfo!''}<#else>暂无供应商描述</#if></div>
+			<#if isOpen>
+            <div class="deal-buy-bottom"><a hidefocus="true" style="cursor:pointer;" class="pngfix buyBtn">抢购</a></div>
+            </#if>
+        </div>
+    </div>
+    
+</div>
+
+<#if goods.store ==  0 || (goods.isvirtual?exists &&goods.isvirtual==1) >
+<form action="${ctx}/virtual_checkout.html"  id="goodsform" method="post">
+<#else>
+<form action="${ctx}/widget?type=shop_cart&action=add&ajax=yes" id="goodsform" method="post">
+</#if>
+	<input type="hidden" name="productid" value="${groupBuy.goodsid}"/>
+	<input type="hidden" name="itemtype" value="4" />
+	<input type="hidden" name="action" value="add" />
+</form>
+<div class="mt-dialog">
+	<h3 class="head">恭喜，该商品已添加到您的购物车！</h3>
+	<div class="body">
+		<div style="margin-top: 10px;" align="center">
+			<input type="button" class="form-button returnbuy_btn" value="继续购物">		
+			<input type="button" class="form-button checkout_btn" value="去结算">
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var groupTimout = new GroupTimeout(".timeout-span", ${nowTime});
+	groupTimout.run();
+	
+	var showAddSuccess = function(){
+		var html = $(".mt-dialog").html();
+		$.dialog({ title:'提示信息',content:html,lock:true,init:function(){
+			var self = this;
+			$(".ui_content .checkout_btn").jbtn();
+			$(".ui_content .returnbuy_btn").click(function(){
+				self.close();
+			});
+
+			$(".ui_content .checkout_btn").click(function(){
+				location.href="${ctx}/cart.html";
+			});
+			
+		}});
+	}
+	
+	$(".buyBtn").click(function(){	
+		var $this= $(this); 
+		$.Loading.show("请稍候...");		
+		$this.attr("disabled",true);
+
+		<#if goods.store ==  0 || (goods.isvirtual?exists &&goods.isvirtual==1) >
+			$("#goodsform").get(0).submit();
+		<#else>
+		var options={
+				dataType:"json",		
+				success:function(result){
+					$.Loading.hide();
+					if(result.result==1){
+						showAddSuccess();
+					}else{
+						$.dialog.alert("发生错误:"+result.message) 
+					}
+					$this.attr("disabled",false);
+				},
+				error:function(){
+					$.Loading.hide();
+					$.alert("抱歉,发生错误")
+					$this.attr("disabled",false);
+				}
+		}
+		
+		$("#goodsform").ajaxSubmit(options);	
+		
+		</#if>
+	});
+</script>

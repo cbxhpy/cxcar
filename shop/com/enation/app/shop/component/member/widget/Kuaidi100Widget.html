@@ -1,0 +1,26 @@
+<#if result.status=='1'>
+<table   border='0' cellspacing='0' cellpadding='0' id='showtablecontext' style='width:100%;border-collapse:collapse;border-spacing:0;'>
+<tr>
+<td width='163' style='background:#ECECEE;border:1px solid #cecece;color:#2c2c2c;font-size:14px;font-weight:bold;height:28px;line-height:28px;text-indent:15px;'>时间</td>
+<td   style='background:#ECECEE;border:1px solid #cecece;color:#2c2c2c;font-size:14px;font-weight:bold;height:28px;line-height:28px;text-indent:15px;'>地点和跟踪进度</td>
+</tr>
+<#list result.data as item>
+<tr>
+<td style='border:1px solid #DDDDDD;font-size:12px;line-height:22px;padding:3px 5px; color:#626262;'>${item.time!''}</td>
+<td style='border:1px solid #DDDDDD;font-size:12px;line-height:22px;padding:3px 5px; color:#626262;'>${item.context!''}</td>
+</tr>
+</#list>
+</table>
+<#else>
+<table  border='0' cellspacing='0' cellpadding='0' id='showtablecontext' style='width:100%border-collapse:collapse;border-spacing:0;'>
+<tr>
+<td style='background:#ECECEE;border:1px solid #cecece;color:#2c2c2c;font-size:14px;font-weight:bold;height:28px;line-height:28px;text-indent:15px;'>
+<#if result.status=='-1'>
+您的订单号不合法!
+<#else>
+没有查询到相关信息!
+</#if>
+</td>
+</tr>
+</table>
+</#if>

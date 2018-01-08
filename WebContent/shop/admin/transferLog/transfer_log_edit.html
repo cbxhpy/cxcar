@@ -1,0 +1,21 @@
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="editForms" method="post" class="validate">
+			<table>
+				<tr>
+					<th>城市名称：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" value="${operatorCity.city_name!}"
+						name="operatorCity.city_name" data-options="required:true"></input></td>
+				</tr>
+				
+				<tr>
+					<th>排序：</th>
+					<td><input class="easyui-validatebox input_text" type="number" value="${operatorCity.sort!}"
+						name="operatorCity.sort" data-options="required:true"></input>
+					</td>
+				</tr>
+			<input type="hidden" name="operatorCity.operator_city_id" value="${operatorCity.operator_city_id}">
+		</form>
+	</div>
+</div>

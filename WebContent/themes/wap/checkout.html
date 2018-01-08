@@ -1,0 +1,317 @@
+<#assign title="结算" />
+<#assign showback='showback' />
+<#include "common/header_title.html" />
+
+<style type="text/css">
+	body{background: #f6f6f6;}
+</style>
+<div class="mobile">
+	<div class="checkout_vacancy">
+	</div>
+	<form class="validate" id="checkoutform">
+		<div class="region">
+			<div class="consignee">
+				<#-- 创建会员登录标签 -->
+				<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+				<#--调用会员登录标签-->
+				<#assign memberInfo = memberLoginCheckTag() />
+				<!-- 给变量“regon_id” 一个初始值 -->
+				<#assign region_id = 0 >	
+				<#-- 创建会员是否有默认地址标签 -->
+				<#assign defaultConsigneeTag= newTag("defaultConsigneeTag")>
+				<#-- 获取是否有默认地址  -->
+				<#assign defAddress = defaultConsigneeTag()!'none' >
+				<a href="addresslist.html?back=2" >
+					<ul class="receiver">
+		
+						<!-- 判断是否有默认地址，如果没有，标签将返回一个string型的0 -->
+						<#if defAddress!='none'>
+							<li class="order_name" rel="${defAddress.name!''}">
+								<p class="per-name">收货人：${defAddress.name!''}</p>
+								<p class="arro">收货地址：${(defAddress.province)!''}-${defAddress.city!''}-${defAddress.region!''}-${defAddress.addr!''}</p>
+							</li>
+							<li class="c_default" rel="${defAddress.addr_id!''}">
+								<p rel="${defAddress.mobile!''}" class="order_mobile" >联系电话：${defAddress.mobile!''}</p>
+							</li>
+							<input type="hidden" value="${defAddress.addr!''}"  class="order_addr"/>
+							<input type="hidden" value="${defAddress.city!}" rel="${defAddress.city_id!}" class="order_city"/>
+							<input type="hidden" value="${defAddress.province!}" rel="${defAddress.province_id!}" class="order_province"/>
+							<input type="hidden" value="${defAddress.region!}" rel="${defAddress.region_id!}" class="order_region"/>
+							<input type="hidden" value="${defAddress.zip!''}" rel="${defAddress.zip!''}" class="order_zip"/>
+							
+							<#assign region_id = defAddress.region_id >
+							
+						<#else>
+							<li class="no-address">抱歉，目前没有默认地址，请<span style="color:#67a44f;margin:0px 5px;text-decoration: underline;">点击</span>去添加收货地址</li>
+						</#if>
+					</ul>
+				</a>
+			</div>
+			<!-- 购物车信息 -->
+			<div class="goods_wrapper">
+				<#-- 创建购物车标签 -->
+				<#assign cartWblTag= newTag("cartWblTag")>
+				<#--通过购物车标签获取购物项列表 -->
+				<#assign itemList = cartWblTag("{'member_id':'${memberInfo.member_id!''}';'cart_ids':'${cart_ids!''}'}") >
+				<!-- <h1>商品清单<a href="cart.html">共<span>0</span>件商品</a></h1> -->
+				<#if itemList?exists && itemList?size gt 0>
+					<input type="hidden" value="${cart_ids!''}" id="cart_ids"/>
+					<ul class="ch_goodslist">
+						<#list itemList as item >
+							<li itemid="${item.id}"  class="common-box">
+								<p class="list_img"><a href="goods-${item.goods_id}.html"><@image  src="${item.image_default!''}"  /></a></p>
+								<div class="list_goodsintro">
+									<a href="goods-${item.goods_id}.html">${item.name}</a>
+									<p style="font-size: 0.24rem; color:#3e3a39; text-align:left; height: auto;line-height: 0.4rem;">
+										<#if item.others?exists>
+											<#if item.others.specList?exists>
+					    						<#list item.others.specList as spec>
+													${spec.name}：<em style="color:#ff3600;">${spec.value}</em>
+												</#list>
+						    				</#if>
+										</#if>
+									</p>
+									<p><span>数量${item.num}</span>${item.price?string("currency")}</p>
+								</div>
+							</li>
+						</#list>
+					</ul>
+					<div class="xiaoji">
+						<#-- <p><span>&yen576.00</span>商品金额</p>
+						<p><span>&yen0.00</span>优惠</p> 
+						<p class="all-xiaoji"><span>&yen576.00</span>小计</p> -->
+					</div>
+				</#if>
+			</div>
+			
+			<div class="remark" style="background: #fff; padding: 0.1rem 0rem; margin-bottom: 0.2rem;">
+				<p style="padding: 5px 0px 5px 5px; font-size: 0.32rem;">支付方式：只能使用网页版支付宝</p>
+				<input name="paymentId" type="checkbox" value="1" checked="checked" style="display: none"/>
+			</div>
+			
+			<div class="remark" style="background: #fff;">
+				<p style="padding: 8px 0px 0px 5px; font-size: 0.32rem;">订单备注</p>
+				<input type="text" name="remark"  value="" class="coment"/>
+			</div>
+			<#-- <div class="add_up_to">
+			</div> -->
+			<div class="putin_order">
+				<span class="btn-submit">提交订单</span>
+				<label class="heji"><!-- 合计：<span>&yen576.00</span> --></label>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+$(function(){
+	//显示发票板块
+	$(".bill [name=payment]").click(function(){
+		var value = $(this).val();
+		if(value=="1"){
+			$(".i_content").show();
+			$("#receiptTitle").hide();
+		}else{
+			$(".i_content").hide();
+		}
+	});
+	//显示发票抬头
+	$(".i_content [name=receiptType]").click(function(){
+		var demo = $(this).val();
+		if(demo=="1"){
+			$("#receiptTitle").hide();
+		}else{
+			$("#receiptTitle").show();
+		}
+	});
+	
+	//回到上一页
+	$(".go_back").click(function(){
+		/* self.location=document.referrer; */
+		self.location = history.go(-1);
+	})
+	
+	//加载商品总价，由于商品总价信息需要加载配送方式（结算配送费用），所以，当选择配送方式时再加载商品总价，
+	//可以理解为，每点击一次商品配送凡是，就加载一次商品总价信息。
+	$(".quick [name=typeId]").click(function(){
+		var type_id = $(this).val();
+		var diqv_id = $(".order_region").attr("rel");
+		$(".add_up_to").load("checkout_total.html?regionId="+diqv_id+"&typeId="+type_id);
+	})
+	
+	$(".btn-submit").click(function(){
+		
+		//判断结算页是否有商品
+		if($(".ch_goodslist li").length < 1){
+			alert("没有商品要结算，请重新购买");
+			return false;
+		}
+
+		//收获人相关信息
+		var address_id  = parseInt( $(".c_default").attr("rel"));					//地址ID                       
+
+		//配送、支付相关信息、备注
+		var payment_id = parseInt($(':radio[name="paymentId"]:checked').val());		//支付方式ID 1：支付宝 2：微信
+		payment_id = "1";
+		var coment = $(".coment").val(); 											//备注信息	
+		var cart_ids = $("#cart_ids").val();										//购物车项
+
+		//提供所有参数
+		var order_parameters ="address_id="+address_id+"&payment_id="+payment_id+"&remark="+coment+"&cart_ids="+cart_ids;
+		
+		if(isNaN(address_id)){
+			alert("请选择默认收货地址")
+			return false
+		}
+		if(isNaN(payment_id)){
+			alert("请选择支付方式")
+			return false
+		}
+		show.show_cover();	
+																//增加遮罩。来阻止在提交ajax时进行其他操作。   
+		$.ajax({	
+			url : "api/shop/order!createWbl.do?"+order_parameters,
+			type : "POST",
+			dataType : 'json',
+			success : function(result) {
+ 				if(result.result==1){
+	 				location.href="order_create_success.html?orderid="+result.order.order_id;
+	 				//location.href = "orderlist.html";
+	 				//alert("下单成功");
+	 				//show.close_cover();
+	 			}else{
+	 				alert(result.message);
+	 				show.close_cover(); //关闭遮罩
+		 		} 
+			},
+			
+		});
+	});
+	
+	//创建订单
+	$(".putin_order_").click(function(){
+		//判断结算页是否有商品
+		if($(".ch_goodslist li").length < 1){
+			alert("没有商品要结算，请重新购买");
+			return false;
+		}
+
+		//收获人相关信息
+		var address_id  = parseInt( $(".c_default").attr("rel"));       //地址ID                       
+		var city        = $(".order_city").val();                        //城市名称
+		var	city_id     = $(".order_city").attr("rel");                     //城市ID
+		var	province    = $(".order_province").val();                    //所在省的名称
+		var	province_id = $(".order_province").attr("rel") ;                //省ID
+		var	region      = $(".order_region").val();                     //区名称
+		var	region_id   = $(".order_region").attr("rel") ;                  //区ID
+		var	shipAddr    = $(".order_addr").val() ;                    //详细地址
+		var	shipMobile  = $(".order_mobile").attr("rel") ;                  //联系电话
+		var	shipName    = $(".order_name").attr("rel") ;                    //联系人姓名
+		var	shipZip     = $(".order_zip").attr("rel")  ;                    //邮编
+		//配送、支付相关信息、备注
+		var paymentId = parseInt($(':radio[name="paymentId"]:checked').val());             //支付方式ID
+		var typeId    = parseInt($(':radio[name="typeId"]:checked').val());                //配送方式ID
+		var coment    = $(".coment").val();                                                //备注信息	
+		//发票相关信息
+		var	receiptType = $(':radio[name="receiptType"]:checked').val();     //发票类型，1是个人，2是单位
+		var	receipt = $(':radio[name="payment"]:checked').val();	         //索要发票，要是索要是1，不要是空                                                                            
+		var receiptContent       = $('#testSelect option:selected') .val();  //发票内容
+		//发票类型，是个人还是单位
+		if($(':radio[name="receiptType"]:checked').val()==1){  
+			var receiptTitle =$(".order_personal").text();
+		}
+		if($(':radio[name="receiptType"]:checked').val()==2){
+			var receiptTitle =$(".order_company").val();
+		}
+
+		//提供所有参数
+		var order_parameters ="addressId="+address_id+"&city="+city+"&city_id="+city_id+"&province="
+		                       +province+"&province_id="+province_id+"&region="+region+"&region_id="
+							   +region_id+"&shipAddr="+shipAddr+"&shipMobile="+shipMobile+"&shipName="
+							   +shipName+"&shipZip="+shipZip+"&paymentId="+paymentId+"&typeId="
+							   +typeId+"&receipt="+receipt+"&receiptContent="+receiptContent+" &receiptTitle="
+							   +receiptTitle+"&receiptType="+receiptType+"&remark="+coment;
+			if(isNaN(address_id)){
+				alert("请选择默认收货地址")
+				return false
+			}
+			if(isNaN(typeId)){
+				alert("请选择快递方式")
+				return false
+			}
+			show.show_cover();       //增加遮罩。来阻止在提交ajax时进行其他操作。
+			$.ajax({	
+				url : "api/shop/order!create.do?"+order_parameters ,
+				type : "POST",
+				dataType : 'json',
+				success : function(result) {
+	 				if(result.result==1){
+		 				location.href="order_create_success.html?orderid="+result.order.order_id;
+		 			}else{
+		 				alert(result.message);
+		 				show.close_cover() //关闭遮罩
+			 		} 
+				},
+				
+			});
+
+	})
+	
+	//商品清单数量
+	var cartnum = $(".ch_goodslist li").length;
+	$(".goods_wrapper h1 a span").empty();
+	$(".goods_wrapper h1 a span").text(cartnum);
+	
+	//支付方式选中
+	var istools=$('input:radio[name="paymentId"]:checked').val();
+	$(".pay_span"+istools).addClass("selected");
+	
+	$(".pay_way").click(function(){
+		$(".payment li label span").removeClass("selected");
+		$(this).nextAll("span").addClass("selected");
+	})
+	
+	//配送方式
+	var sendtools=$('input:radio[name="typeId"]:checked').val();
+	$(".send_span"+sendtools).addClass("selected");
+	
+	$(".send_way").click(function(){
+		$(".quick li label span").removeClass("selected");
+		$(this).nextAll("span").addClass("selected");
+	})
+	
+	//索要发票
+	var bill=$('input:radio[name="payment"]:checked').val();
+	if(bill==1){
+		$(".ask_for").nextAll("span").addClass("selected");
+	}
+	else{
+		$(".no_for").nextAll("span").addClass("selected");
+	}
+	$(".bill_way").click(function(){
+		$(".bill li label span").removeClass("selected");
+		$(this).nextAll("span").addClass("selected");
+	})
+	
+	//个人与单位切换
+	var own=$('input:radio[name="receiptType"]:checked').val();
+	if(own==1){
+		$(".geren_o").nextAll("span").addClass("selected");
+	}
+	else{
+		$(".geren_p").nextAll("span").addClass("selected");
+	}
+	$(".geren").click(function(){
+		$(".about_receipt label span").removeClass("selected");
+		$(this).nextAll("span").addClass("selected");
+	})
+	
+	//加载默认配送地址后的首次价格
+	var firsttypeId = parseInt($(':radio[name="typeId"]:checked').val());
+	var firstregionId = $(".order_region").attr("rel");
+	$(".add_up_to").load("checkout_total.html?cart_ids=${cart_ids!}&regionId="+firstregionId+"&typeId="+firsttypeId);
+	$(".heji").load("checkout_total.html?cart_ids=${cart_ids!}&regionId="+firstregionId+"&typeId="+firsttypeId);
+})
+</script>
+<#include 'common/show.html' />
+</body>
+</html>

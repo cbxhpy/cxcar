@@ -1,0 +1,57 @@
+<div class="main" style="background-color: white;" >
+	<div class="easyui-panel" style="border-style: none; height: 600px">
+		<div style="padding: 10px 0 10px 20px">
+		<form method="post" id="addForm" class="validate">
+		<table>
+			<tr>
+				<td style="width:100px;">开始时间：</td>
+				<td><input  class="easyui-datebox" data-options="required:true" style="height: 28px;" type="text"   name="start_time"></input></td>
+			</tr>
+			<tr>
+				<td>结束时间：</td>
+				<td><input  class="easyui-datebox" data-options="required:true" style="height: 28px;" type="text"   name="end_time"></input></td>
+			</tr>		
+			<tr>
+				<td>选择商品：</td>
+				<td>
+					<a herf='javascript:void(0);' onclick='openGoodsSearchDlg(getGoods, 0)'>选择商品</a>
+					<input type="hidden" name="groupBuy.goods_id"  id="goods_id"/>
+					<input type="hidden" name="groupBuy.goods_name"  id="goods_name"/>
+					<input type="hidden" name="groupBuy.product_id"  id="product_id"/>
+					<input type="hidden" name="groupBuy.mktprice"  id="mktprice"/>
+					<input type="hidden" name="groupBuy.group_stat"  value="1"/>
+				</td>
+			</tr>
+			<tr>
+				<td>商品名称：</td>
+				<td id="product_name"></td>
+			</tr>
+			
+			<tr>
+				<td>商品价格：</td>
+				<td id="price"></td>
+			</tr>
+			<tr>	
+				<td>商品库存：</td>
+				<td id="store"></td>
+			</tr>
+			
+			<tr>
+				<td>团购价格：</td>
+				<td><input class="easyui-numberbox input_text" type="text" name="groupBuy.group_price" data-options="required:true" isrequired="true"   /></td>
+			</tr>			
+			<tr>
+				<td>团购图片(550*360)：</td>
+				<td><input type="file" id="image" name="image" data-options="required:true"/></td>
+			</tr>						
+			<tr>
+				<td>团购介绍：</td>
+				<td >
+					<textarea id="remarks" name="groupBuy.group_summary"></textarea>
+				</td>
+			</tr>
+		</table>
+		</form>
+		</div>
+	</div>
+</div>

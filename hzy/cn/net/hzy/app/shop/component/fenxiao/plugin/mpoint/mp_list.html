@@ -1,0 +1,57 @@
+<div class="detail">
+	<table cellspacing="0" cellpadding="0" border="0" width="100%">
+		<tbody>
+			<tr>
+				<th>当前红包:</th>
+				<td>${hongbao!0}</td>
+				<th>冻结红包:</th>
+				<td>${hongbaoFreeze!0}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div style="width:100%;"  class="shadowBoxWhite tableDiv">
+	<table id="dg2"></table>
+</div>
+<script type="text/javascript">
+
+function initDataGrid2(){
+	$('#dg2').datagrid({
+	    url:'${ctx}/shop/admin/fenxiao!memberMpListJson.do?member_id=${memberid}',
+	    fitColumns:true,
+	    pagination:true,
+	    columns:[[
+	    {field:'time',title:'日期',width:100,formatter:formatTime},
+	    {field:'type',title:'类型',width:100,formatter:formatType},
+	    {field:'mp',title:'红包',width:100,formatter:formatMp},
+	    {field:'reason',title:'摘要',width:200}
+	    ]]
+		});
+}
+
+//订单状态
+function formatType(value, row, index) {
+	if(value==1){
+		return "获得";
+	}else if(value==2){
+		return "提现申请中";
+	}else if(value==3){
+		return "已提现";
+	}
+	else{
+		return "消费";
+	}
+	
+}
+
+function formatMp(value, row, index){
+
+	return value/100;
+}
+
+function formatTime(value,row,index){
+	
+	return getFormatDateByLong(value, "yyyy-MM-dd hh:mm:ss");
+}
+ 
+</script>

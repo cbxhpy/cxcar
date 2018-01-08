@@ -1,0 +1,11 @@
+<#assign goodsRandomTag = newTag("goodsRandomTag") />
+<#assign goodsRandom = goodsRandomTag('{"tagid":1}') />
+
+商品id : ${goodsRandom.goods_id!''}
+<br>
+商品名称 : ${goodsRandom.name!''}
+<br>
+商品价格： ${goodsRandom.price!''}
+<br>
+
+商品图片 : <@image src="${goodsRandom.thumbnail!''}" alt="${goodsRandom.name}" />

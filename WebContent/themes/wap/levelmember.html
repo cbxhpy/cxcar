@@ -1,0 +1,72 @@
+<#assign  title="我的会员" />
+<#include 'common/header.html' />
+<link rel="stylesheet" href="themes/wap/style/member.css?v=1" type="text/css" />
+<!-- 获取会员列表标签 -->
+<#assign levelMemberlListTag = newTag("levelMemberlListTag")>
+<!-- 调用会员列表标签 -->
+<#assign levelMemberlList = levelMemberlListTag()>
+<#assign level = levelMemberlList.memberList>
+<#assign myLevelNumTag = newTag("myLevelNumTag")>
+<#assign myLevelNum = myLevelNumTag()>
+<!-- 头部 -->
+	<div class="header">
+		<a class="back_member" href="member.html">返回</a>
+		<p>
+			我的会员
+		</p>
+	</div>
+<!-- 获取会员等待评论商品标签 -->
+<#assign memberWaitCommontListTag = newTag("memberWaitCommontListTag")>
+<!-- 调用会员等待评论商品标签 -->
+<#assign memberWaitCommontList = memberWaitCommontListTag()>
+<div class="member_commont " style='width:100%' id=content_wrapper>
+
+<div class="tab">
+	<ul>					
+		<li <#if levelMemberlList.level_type?exists && levelMemberlList.level_type == 1>class="selected"</#if>><a href="levelmember.html?level_type=1"><span>一级会员(<#if myLevelNum??>${myLevelNum.lv_1!0}<#else>0</#if>)</span></a></li>
+		<li <#if levelMemberlList.level_type?exists && levelMemberlList.level_type == 2>class="selected"</#if>><a href="levelmember.html?level_type=2"><span>二级会员(<#if myLevelNum??>${myLevelNum.lv_2!0}<#else>0</#if>)</span></a></li>
+		<!-- <li <#if levelMemberlList.level_type?exists && levelMemberlList.level_type == 3>class="selected"</#if>><a href="levelmember.html?level_type=3"><span>三级会员(<#if myLevelNum??>${myLevelNum.lv_3!0}<#else>0</#if>)</span></a></li> -->
+	</ul>
+</div>
+<div class="box">				
+	<div class="top"></div>
+	<div class="body" >
+	<#if level?size gt 0 >
+		<table cellspacing="0" cellpadding="0" width="100%" >
+			<thead>
+				<tr>
+					<th>头像</th>	 
+					<th>用户名</th>
+					<th>注册时间</th>
+				</tr>
+			</thead>
+			<tbody  >
+				<#list level as levels>
+						<tr>
+							<td>
+							<#if levels.face?exists && levels.face != ''>
+							<img src="<@imgurl pic='${levels.face}'/>"  alt="会员头像缩略图" />
+							<#else>
+							<@image src="images/hutx.jpg" alt="会员头像缩略图" />
+							</#if>
+							</td>
+							<td>${levels.uname!'' }</td>
+							<td><@dateformat time="${levels.regtime?c}" pattern="yyyy-MM-dd HH:mm"/></td>
+						</tr>
+				</#list>
+			</tbody>
+		</table>
+		<div class="pager_border">
+			<@pager pageno="${levelMemberlList.page}" pagesize="${levelMemberlList.pageSize}" totalcount="${levelMemberlList.totalCount}" />
+			<div class="clear"></div>
+		</div>
+		<#else>
+		<div class="empty" >尚无会员</div>
+		</#if>
+	</div>
+	<div class="bottom"></div>
+</div>
+
+</div>
+<div style='clear:both'></div>
+<#include 'common/footer.html'/>

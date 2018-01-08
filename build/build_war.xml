@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="core" default="buildjavamall" basedir="../">
+	<import file="build_eop.xml"/>
+	<import file="build_shop.xml"/>
+	<import file="build_cms.xml"/>
+	
+	<!--请设定为本地硬盘目录-->
+	<property name="tempdir"  value="d:/server" />
+	
+	<!--要编译的类目录-->
+	<property name="build.dir"  value="${tempdir}/classes" />
+
+	<!--classpath-->
+	<path id="buildpath">
+	    <fileset dir="WebContent/WEB-INF/lib">
+	    	  <include name="**/*.jar"/>
+		</fileset>
+    	<fileset dir="WebContent/WEB-INF/jars">
+    		  <include name="**/*.jar"/>   
+		</fileset>	    		
+	    <dirset dir="${build.dir}">   
+	    </dirset>  		  	
+	</path>
+
+	<target name="clean">
+    	
+    	<!--创建编译目录-->
+    	<delete dir="${tempdir}"></delete>
+    	<mkdir dir="${build.dir}"/>
+    	<mkdir dir="${tempdir}/lib"/>
+		
+	</target>
+
+	<!-- 生成javamall产品包 -->
+	<target name="buildjavamall" depends="clean,jar_eop,jar_shop,jar_cms">
+		<delete file="${tempdir}/javamall.war"/>
+		<war destfile="${tempdir}/javamall.war" webxml="WebContent/WEB-INF/web.xml">
+		  <fileset dir="WebContent">
+		  	 <exclude name="products/**"/>
+		  	 <exclude name="saas/**"/>
+		  	 <exclude name="test/**"/>
+		  </fileset>
+		  <fileset dir="WebContent">
+		  	<include name="products/base/**" />
+		  	<include name="products/company/**"/>
+		  	<include name="products/simple/**"/>
+		  </fileset>
+		  <lib dir="${tempdir}/lib">
+		  </lib>
+		  <classes dir="resource" >
+		  </classes>
+		</war>
+	</target>
+
+	
+</project>

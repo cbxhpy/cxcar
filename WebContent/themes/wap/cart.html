@@ -1,0 +1,98 @@
+<#assign title="购物车" />
+<#assign showback='showback' />
+<#include "common/header_title.html" />
+
+<script type="text/javascript" src="themes/wap/js/cart.js"></script>
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+<#-- 创建购物车标签 -->
+<#assign cartWblTag= newTag("cartWblTag")>
+<#--通过购物车标签获取购物项列表 -->
+<#assign itemList = cartWblTag("{'member_id':'${memberInfo.member_id!''}'}") >
+<style type="text/css">
+	body{background: #f6f6f6;}
+</style>
+<div class="cart_list" id="cart_wrapper">
+	<#if itemList?exists && itemList?size gt 0>
+		<ul>
+			<#list itemList as item >
+				<li itemid="${item.id}" productid="${item.product_id}" class="cartlist" price="${item.coupPrice}">
+					<label class="cart_label "><input class="cart_check" type="checkbox" name="" value="${item.id}" ><span></span></label>
+
+					<div class="cart_img">
+						<a target="_blank" href="goods-${item.goods_id}.html">
+							<@image src="${item.image_default!''}" style="cursor: pointer;" />
+						</a>
+					</div>
+					<div class="cart_intro">
+						<a target="_blank" href="goods-${item.goods_id}.html">
+						<p>
+						${item.name}</p>
+						<span>${item.price?string("currency")}</span>
+						</a>
+						<p style="font-size: 0.24rem; color: #3e3a39;">
+							<#if item.others?exists>
+								<#if item.others.specList?exists>
+		    						<#list item.others.specList as spec>
+										${spec.name}：<em style="color:#ff3600;">${spec.value}</em>
+									</#list>
+			    				</#if>
+							</#if>
+						</p>
+						<!-- <p>
+						<#if item.others?exists>
+									<#if item.others.specList?exists>
+										<span>
+											<#list item.others.specList as spec>
+												<#if spec_index!=0></#if><strong>${spec.name}:<em style="color:#ED7108">${spec.value}</em></strong>
+											</#list>
+										</span>
+									</#if>
+									<#if item.others.gys_name?exists>
+										供应商：${item.others.gys_name!''}
+									</#if>
+								</#if>
+						</p> -->
+						
+						<div id="num" class="Numinput" value="${item.num}" itemid="${item.id}" productid="${item.product_id}" >
+							<span class="numadjust decrease">-</span>
+							<input size="5" name="num" autocomplete="off" type="text" value="${item.num}">
+							<span class="numadjust increase">+</span>
+							<div class="del_cart" rel="${item.id}"></div>
+						</div>
+					</div>
+				</li>
+			</#list>
+		</ul>
+	<#else>
+		<div class="cart_blank">您的购物车中暂无商品，赶快<a href="index.html">挑选心爱的商品</a>吧！</div>
+	</#if>
+</div>
+<div class="go_checkout">
+	<label class="allcheck_label"><input id="allcheck" type="checkbox" name=""><span></span>全选</label>
+	<input type="button" class="checkout_btn" value="去结算">
+	<div class="total_wrapper">
+		<#include '/cart/cartTotal.html' />
+	</div>
+</div>
+<script>
+	$(function(){
+		//删除购车列表
+		$(".del_cart").click(function(){
+			var caerid = $(this).attr("rel");
+			if(confirm("确定要删除该商品?")){
+				Cart.deleteGoodsItem(caerid);
+			}
+		})
+		
+		//回到上一页
+		$(".go_back").click(function(){
+			/* self.location=document.referrer; */
+			self.location = history.go(-1);
+		})
+	})
+</script>
+<!-- <div style="width:100%;height:60px;"></div>
+</body>
+</html> -->
+<#include 'common/footer.html'/>

@@ -1,0 +1,97 @@
+<#assign title="个人信息" />
+<#assign showback='showback' />
+<#include "common/header_title.html" />
+
+<#assign memberLoginCheckTag = newTag("memberLoginCheckTag") />
+<#assign memberInfo = memberLoginCheckTag() />
+
+<form id="detail_form" enctype="multipart/form-data">
+	<section class="m-memberinfo common-box">
+		<p>我的头像</p>
+		<div>
+			<div class="input-file">
+			<input type="file" name="face" id="face"/>
+			<@image id="face_image" width="50px" src="${memberInfo.face!''}"/>
+			</div>
+		</div>
+	</section>
+	<section class="m-memberinfo common-box">
+		<p>昵称</p>
+		<div><input type="text" name="name" id="name" value="${memberInfo.name!''}"/></div>
+	</section>
+	<section class="m-memberinfo common-box">
+		<p>手机号</p>
+		<div><input type="text" id="uname" disabled="true" value="${memberInfo.uname!''}"/></div>
+	</section>
+	<section class="m-memberinfo common-box">
+		<a href="changePassword.html">修改登录密码</a>
+	</section>
+	<div style="text-align: center">
+		<input type="button" value="修改" id="xiugai" class="address_button" >
+	</div>
+</form>
+
+
+<script>
+
+$(function(){
+	
+	$("#xiugai").click(function(){
+		var formData = new FormData($( "#detail_form" )[0]); 
+		$.ajax({
+			url : "${ctx}/api/shop/member!updateMember.do?ajax=yes",
+			type : "POST",
+			data: formData,
+			// 告诉jQuery不要去处理发送的数据
+			processData : false, 
+			// 告诉jQuery不要去设置Content-Type请求头
+			contentType : false,
+			dataType : 'json',
+			success : function(data) {	
+				if(data.result==1){
+					if(data.file != ""){
+						$("#face_image").attr("src", data.file);
+					}
+					InitShowMessage(data.message);
+				}
+			},
+			error : function(e) {
+				InitShowMessage("出现错误 ，请重试");
+			}
+		});
+	});
+});
+
+/* $(function(){
+	var formData = new FormData($( "#detail_form" )[0]); 
+	console.log(formData);
+	var options = {
+		url : "${ctx}/api/shop/member!updateMember.do?ajax=yes",
+		type : "POST",
+		data: formData,
+		// 告诉jQuery不要去处理发送的数据
+		processData : false, 
+		// 告诉jQuery不要去设置Content-Type请求头
+		contentType : false,
+		dataType : 'json',
+		success : function(data) {	
+			console.log(data);
+			if(data.result==1){
+				if(data.file != ""){
+					$("image").attr("src", data.file);
+				}
+				InitShowMessage(data.message);
+			}
+		},
+		error : function(e) {
+			InitShowMessage("出现错误 ，请重试");
+		}
+	};
+	
+	$("#xiugai").click(function(){
+	alert(23);
+		$('#detail_form').ajaxSubmit(options);	
+	});
+}); */
+</script>
+<#-- <#include 'common/footer.html'/> -->

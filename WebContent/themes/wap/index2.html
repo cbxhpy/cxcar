@@ -1,0 +1,329 @@
+<#assign  title="商城首页" />
+<#include 'common/header.html'/>
+<!-- 头部 
+	<div class="header">
+		<p>
+<#if title??>
+${header.title}
+<#else>
+${header.title}
+</#if>
+		</p>
+	</div> -->
+<#include 'common/adv.html'/>
+
+<!-- 号外 -->
+<section class="m-extra common-box">
+	<!-- 创建公告标签 -->
+	<#assign noticeListWblTag= newTag("noticeListWblTag")>
+	<!-- 调用广告信息,传递参数文档name -->
+	<#assign notices = noticeListWblTag("'name':'noticeList'")!'' >
+	<!-- 获取广告列表 -->
+	<#assign noticeList = notices.noticeList />
+	<#if !noticeList?exists || noticeList?size==0> 
+	
+	<#else>
+		<#list noticeList as notice>
+			<em></em><div><a href="###">${notice.title!''}</a></div>
+		</#list>
+	</#if>
+	
+</section>
+
+<section class="m-flow">
+	<h2 class="title-h2">鲜花品类</h2>
+	<p class="line"></p>
+	<p class="title-img"><img src="themes/wap/images/flowers/flowers-category.png" alt=""></p>
+</section>
+
+<ul class="index_nav clearfix">
+
+	<!-- 创建公告标签 -->
+	<#assign goodsCatListWblTag= newTag("goodsCatListWblTag")>
+	<!-- 调用广告信息,传递参数文档name -->
+	<#assign goodsCat = goodsCatListWblTag("")!'' >
+	<!-- 获取广告列表 -->
+	<#assign catList = goodsCat.catList />
+	<#if !catList?exists || catList?size==0> 
+	
+	<#else>
+		<#list catList as cat>
+			<li>
+		        <a href="index.html">
+		        	<div class="inner">
+		            	<@image	src="${cat.image!''}" alt="${cat.name!''}"/>
+		            </div>
+		            <p>${cat.name!''}</p>
+		        </a>
+		    </li>
+		</#list>
+	</#if>
+	
+
+    <#-- <li>
+        <a href="index.html">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower1.png" alt="">
+            </div>
+            <p>玫瑰花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower2.png" alt="">
+            </div>
+            <p>百合花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">	
+            	<img src="themes/wap/images/flowers/flower3.png" alt="">
+            </div>
+            <p>菊花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower4.png" alt="">
+            </div>
+            <p>康乃馨</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower5.png" alt="">
+            </div>
+            <p>配花</p>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+        	<div class="inner">
+            	<img src="themes/wap/images/flowers/flower6.png" alt="">
+            </div>
+            <p>配叶</p>
+        </a>
+    </li> -->
+</ul>
+<!--特卖特惠 -->
+<section class="m-spe-ad">
+	<div class="inner">
+		<!-- 创建广告标签 -->
+		<#assign advListWblTag= newTag("advListWblTag")>
+		<!-- 调用广告信息,传递参数acid:1 -->
+		<#assign adv = advListWblTag("'keyword':'homeactivity'")!'' >
+		<!-- 获取广告列表 -->
+		<#assign advList = adv.advList />
+		<#if !advList?exists || advList?size==0> 
+		
+		<#else>
+			<#list advList as adv>
+				<a href="###">
+					<@image border="0" src="${adv.atturl}" alt="${adv.aname!''}" />
+				</a>
+			</#list>
+		</#if>
+	</div>
+</section>
+
+
+<#assign acid_1_2 = 35 >
+<#assign acid_1_3 = 36 >
+<!-- 创建广告标签 -->
+<#assign advListTag= newTag("advListTag")>
+
+<div class="rowspace mt30">
+	<div class="productClass pbBottom6 Mtuijian">
+		<div class="ClassHd clearfix">
+			<i></i>
+			<h2><a>热卖推荐</a></h2>
+		</div>
+		<div class="ClassBd clearfix">
+
+			<div class="index_goodC clearfix">
+				<div class="body1 clearfix">
+					<#assign adv = advListTag("'acid':'${acid_1_2}'")!'' >
+					<#-- 获取广告列表 -->
+					<#assign advList = adv.advList />
+					<#if !advList?exists || advList?size gt 0> 
+						<#-- 获取广告图片宽度 -->
+						<#assign width = adv.adDetails.width />
+						<#-- 获取广告图片高度 -->
+						<#assign height = adv.adDetails.height />
+							<#list advList as adv>
+								<#if adv_index==0>
+									<a href="${ctx}${adv.url!''}"><@image src="${adv.atturl!''}" /></a>
+								</#if>
+							</#list>
+					</#if>
+				</div>
+
+				<#assign adv = advListTag("'acid':'${acid_1_3}'")!'' >
+				<#-- 获取广告列表 -->
+				<#assign advList = adv.advList />
+				<#if !advList?exists || advList?size gt 0> 
+					<#-- 获取广告图片宽度 -->
+					<#assign width = adv.adDetails.width />
+					<#-- 获取广告图片高度 -->
+					<#assign height = adv.adDetails.height />
+						<#list advList as adv>
+							<#assign mycattid=2+adv_index>
+							<#if adv_index<=1>
+								<div class="body${mycattid} clearfix">
+									<a href="${ctx}${adv.url!''}"><@image src="${adv.atturl!''}" /></a>
+								</div>
+
+								
+							</#if>
+						</#list>
+				</#if>
+
+			</div>  
+		</div>
+	</div>
+</div>
+
+<#assign adv = advListTag("'acid':'37'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+	<#list advList as adv>
+		<#if adv_index==0>
+			<div class="ggzy"><a href="${ctx}${adv.url!''}"><@image src="${adv.atturl!''}" /></a></div>
+		</#if>
+	</#list>
+</#if>
+
+<div class="rowspace mt30">
+    <div class="productClass pbBottom6 Mtuijian">
+		<div class="ClassHd clearfix">
+            <i></i>
+            <h2><a>新品上架</a></h2>
+        </div>
+        <div class="ClassBd clearfix">
+            <ul class="productUl">
+
+				<!-- 获取商品列表标签 -->
+				<#assign goodsListTag = newTag("goodsListTag")>
+				<!-- 调用商品列表标签，并传递商品列表所在catid及循环次数 -->
+				<#assign goodsList = goodsListTag("'tagid':'19','goodsnum':'3'")>
+				<#list goodsList as goods>
+                	<li class="two fl">
+                		<a href="goods-${goods.goods_id}.html"><img class="lazy" src="${goods.thumbnail!''}"></a>
+                		<a href="goods-${goods.goods_id}.html"><p class="Pname pt12">${goods.name}</p></a>
+                   		<p class="MtuijianFt">
+                        	<span class="price redS">￥${goods.price}</span>
+                        	<em></em>
+                    	</p>
+					</li>
+				</#list>
+			</ul>
+        </div>
+    </div>
+</div>
+
+<#assign adv = advListTag("'acid':'38'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+	<#list advList as adv>
+		<#if adv_index==0>
+			<div class="ggzy"><a href="${ctx}${adv.url!''}"><@image src="${adv.atturl!''}" /></a></div>
+		</#if>
+	</#list>
+</#if>
+
+<div class="rowspace mt30">
+    <div class="productClass pbBottom6 Mtuijian">
+		<div class="ClassHd clearfix">
+			<i></i>
+        	<h2><a>特价促销</a></h2>
+		</div>
+		<div class="ClassBd clearfix">
+			<ul class="productUl">
+				<!-- 获取商品列表标签 -->
+				<#assign goodsListTag = newTag("goodsListTag")>
+				<!-- 调用商品列表标签，并传递商品列表所在catid及循环次数 -->
+				<#assign goodsList=goodsListTag("'tagid':'19','goodsnum':'3'")>
+				<#list goodsList as goods>
+                	<li class="two fl">
+                   		<a href="goods-${goods.goods_id}.html"><img class="lazy" src="${goods.thumbnail!''}"></a>
+                   		<a href="goods-${goods.goods_id}.html"> <p class="Pname pt12">${goods.name}</p></a>
+                     	<p class="MtuijianFt">
+                        	<span class="price redS">￥${goods.price}</span>
+                         	<em></em>
+                     	</p>
+                 	</li>
+				</#list>
+           </ul>
+         </div>
+    </div>
+</div>
+
+<#assign adv = advListTag("'acid':'39'")!'' >
+<#-- 获取广告列表 -->
+<#assign advList = adv.advList />
+<#if !advList?exists || advList?size gt 0> 
+	<#-- 获取广告图片宽度 -->
+	<#assign width = adv.adDetails.width />
+	<#-- 获取广告图片高度 -->
+	<#assign height = adv.adDetails.height />
+	<#list advList as adv>
+		<#if adv_index==0>
+			<div class="ggzy"><a href="${ctx}${adv.url!''}"><@image src="${adv.atturl!''}" /></a></div>
+		</#if>
+	</#list>
+</#if>
+
+<div class="rowspace mt30">
+    <div class="productClass pbBottom6 Mtuijian">
+		<div class="ClassHdzy clearfix">
+        	<label class="zj"><img src="themes/wap/images/zuj.png" /></label>
+           	<h2><a>浏览记录</a></h2>
+		</div>
+		<div class="ClassBd clearfix">
+			<ul class="productUl">
+				<#-- 创建浏览历史标签 -->
+				<#assign visitedGoodsTag = newTag("visitedGoodsTag") >
+				<#-- 获取浏览历史标签 -->
+				<#assign visitedGoodsTag = visitedGoodsTag()/>
+				<#-- 获取浏览历史商品列表 -->
+				<#assign visitedGoodsList = visitedGoodsTag.visitedGoods />
+				<#assign havi=0>
+				<#list visitedGoodsList as goods>
+					<#assign havi=havi+1>
+					<#if goods_index<=2>
+                    	<li class="two fl">
+                      		<a href="goods-${goods.goods_id}.html"><img class="lazy" src="${goods.thumbnail!''}"></a>
+                      		<a href="goods-${goods.goods_id}.html"> <p class="Pname pt12">${goods.name}</p></a>
+                       		<p class="MtuijianFt">
+                            	<span class="price redS">${goods.price?string.currency}</span>
+                            	<em></em>
+                        	</p>
+                    	</li>
+					</#if>
+				</#list>
+				<#if havi==0>
+					暂无浏览记录
+				</#if>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="index_ad_wrapper"><img src="themes/wap/images/zz.jpg" /></div>
+	
+<#include 'common/footer.html'/>
+

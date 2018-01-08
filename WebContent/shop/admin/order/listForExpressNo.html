@@ -1,0 +1,38 @@
+
+<div class="easyui-panel" style="border-style:none;" >
+	<div style="float: left; height: 25px;">
+	</div>
+	<div style="padding: 10px 0 10px 60px">
+		<form id="addExpressNoForm" method="post" class="validate" >
+			<table>
+				<tr>
+					<th style="text-align: center;">订单号</th>
+					<th style="text-align: center;">收货人</th>
+					<th style="text-align: center;">配送方式</th>
+					<th style="text-align: center;">支付方式</th>
+					<th style="text-align: center;">快递单号</th>
+					<th style="text-align: center;">快递公司</th>
+				</tr>
+				<#list orderList as order>
+					<tr>
+						<td><input type="hidden" name="order_id" value="${order.order_id }" />${order.sn }  </td>
+						<td>${order.ship_name}</td>
+						<td>${order.shipping_type}</td>
+						<td>${order.payment_name}</td>
+						<td><input class="easyui-validatebox input_text" name="expressno" id="expressno" style="width:120px" <#if order.ship_no??>value="${order.ship_no }" </#if>  data-options="required:true" /> </td>
+						<td>	
+							<select name="logicode" id="shipping_type" class="inputSelect valid logicode" style="width: 145px;" >
+								<option value="">--请选择快递公司--</option> 
+								<#if logiList??>
+									<#list logiList as logi>
+										<option value="${logi.code}" <#if order.logi_code?? && logi.code = order.logi_code>selected</#if>>${logi.name}</option>
+									</#list>
+								</#if>
+							</select>
+						</td>
+					</tr>
+				</#list>
+			</table>
+		</form>
+	</div>
+</div>

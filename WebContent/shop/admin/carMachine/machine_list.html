@@ -1,0 +1,270 @@
+<#include '/admin/header.html' >
+<#assign permssion = "com.enation.app.base.core.directive.PermssionDirective"?new()>
+<#assign regionSelectDirective="com.enation.app.base.component.widget.regions.RegionSelectDirective"?new()>
+<#-- <script type="text/javascript" src="js/Machine.js"></script> -->
+<style>
+.input_text{
+	width: 200px;
+}
+</style>
+<div class="main">
+	<div class="buttonArea">
+		<#-- <a href="javascript:void(0)" class="button blueButton" data-options="iconCls:'icon-add',plain:true" onclick="append()">新增数据</a> -->
+		<@permssion actid="!operator_city">
+			<a href="javascript:void(0)" class="easyui-linkbutton"
+					data-options="plain:true" onclick="newTab('添加洗车机','${ctx}/shop/admin/machine!add.do')">添加</a>
+			<a href="javascript:void(0)" class="button" data-options="iconCls:'icon-remove',plain:true" onclick="del()">删除</a>
+		</@permssion>
+		<span style="float:right; height:28px;"> 
+			<a href="javascript:void(0)" class="button b_fr" onclick="searchMachine()">搜索</a>
+			<span>编号：</span>
+			<input class="input_text mr5" id="machine_number" type="text" value="${machine_number!}" style="width: 100px" size="20" placeholder="请输入标号" name="machine_number"> 
+			<span>名称：</span>
+			<input class="input_text mr5" id="machine_name" type="text" value="${machine_name!}" style="width: 200px" size="20" placeholder="名称" name="machine_number"> 
+			<#-- <span>手机号：</span>
+			<input class="input_text mr5" id="uname" type="text" value="${uname!}" size="20" placeholder="请输入手机号" name="uname"> -->
+			<span>地区：</span>
+			<@regionSelectDirective  province_id="${province_id!''}" city_id="${city_id!''}" region_id="${region_id!''}" />
+		</span>
+	</div>
+	<div class="shadowBoxWhite tableDiv">
+		<form id='adcform'>
+			<table class="easyui-datagrid" 
+				data-options="url:'machine!listJson.do',pageList: [10,15,20,30],pageSize:${pageSize},fitColumns:'true'" 
+				pagination="true" id="adcdata">
+			    <thead>
+				    <tr>
+				    	<th data-options="field:'car_machine_id',checkbox:true"></th>
+				    	<th data-options="field:'id',width:50" formatter="formatId">ID</th>
+				    	<th data-options="field:'machine_name',width:100,sortable:'true'">名称</th>
+				    	<th data-options="field:'machine_number',width:60,sortable:'true'">编号</th>
+				    	<th data-options="field:'area',width:120" formatter="formatArea">地区</th>
+				    	<th data-options="field:'address',width:200">地址</th>
+				    	<th data-options="field:'machine_lng',width:80,sortable:'true'">经度</th>
+				    	<th data-options="field:'machine_lat',width:80,sortable:'true'">纬度</th>
+				    	<th data-options="field:'partner_num',width:50,sortable:'true'" >合伙人数</th>
+				    	<th data-options="field:'is_use',width:40,sortable:'true'" formatter="formatOpen">使用</th>
+				    	<th data-options="field:'create_time',width:100" formatter="formatDate">创建时间</th>
+				    	<@permssion actid="!operator_city">
+				    		<th data-options="field:'action',width:50,align:'center'" formatter="formatOperation">操作</th>
+				    	</@permssion>
+				    	<th data-options="field:'action1',width:50,align:'center'" formatter="formatWashRecord">记录</th>
+				    </tr>
+			    </thead>
+			</table>
+		</form>
+		<div id="divdia" style="display: none;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+//搜索
+function searchMachine(){
+	
+	var machine_number = $.trim($("#machine_number").val());
+	var uname = $.trim($("#uname").val());
+	var province_id = $("#province_id").val();
+	var city_id = $("#city_id").val();
+	var region_id = $("#region_id").val();
+	var machine_name = $("#machine_name").val();
+	
+	$('#adcdata').datagrid('load', {
+		 uname : uname,
+		 machine_number : machine_number,
+		 page : 1,
+		 province_id : province_id,
+		 city_id : city_id,
+		 region_id : region_id,
+		 machine_name : machine_name
+    }); 
+}
+
+function append(id){
+	var map = {}; // Map map = new HashMap();
+	if(!id){
+		map["href"] ="machine!add.do";
+		map["formId"] ="#addForm";
+		map["url"] ="machine!addSave.do?ajax=yes";
+		map["title"]="添加洗车机";
+		map["loadshow"]="正在添加......";
+	}else{
+		map["href"] ="machine!edit.do?dictionary_id="+id;
+		map["formId"] ="#editForms";
+		map["url"] ="machine!editSave.do?ajax=yes";
+		map["title"]="修改洗车机";
+		map["loadshow"]="正在修改......";
+	}
+	map["divDialog"]="#divdia";
+	map["gridreload"]="#adcdata";
+	
+	//需要验证的参数
+	map["nameId"]="#name";
+	map["urlId"]="#acwidth";
+	
+	addDialog(map);
+}
+function addDialog(map){
+	$(map["divDialog"]).show();
+	$(map["divDialog"]).dialog({
+		title: map["title"],
+		width: 500,
+		height: 400,
+		closed: false,
+		cache: false,
+		href: map["href"],
+		modal: true,
+		buttons: [{
+			 text:'保存',
+			 iconCls:'icon-ok',
+			 handler:function(){
+				 var savebtn = $(this);
+　　				 var disabled=savebtn.hasClass("l-btn-disabled");
+　　				 if(!disabled){
+					submitForm(map,savebtn);
+					}
+　　				 }
+			 },{
+			 text:'清空',
+			 handler:function(){
+				 clearForm(map);
+			 }
+		}]
+	});
+}
+function submitForm(map,saveBtn) {
+	var formflag = $(map["formId"]).form().form('validate');
+	if(formflag){
+		$.Loading.show(map["loadshow"]);
+		saveBtn.linkbutton("disable"); //禁用	
+		var options = {
+			url : map["url"],
+			type : "POST",
+			dataType : 'json',
+			success : function(result){
+				$.Loading.hide();
+				if(result.result==1){
+					$(map["divDialog"]).dialog('close');
+					$(map["gridreload"]).datagrid('reload');
+					$.Loading.success(result.message);
+				}
+				if(result.result==0){ 
+					$.Loading.error(result.message);
+				}
+				$(saveBtn).linkButton("enable");
+			
+			},
+			error : function(e) {
+				alert("出现错误 ，请重试");
+				$(saveBtn).linkButton("enable");
+			}
+		};
+		$(map["formId"]).ajaxSubmit(options);
+	}
+	saveBtn.linkbutton("enable"); 
+}
+function clearForm(map) {
+	$(map["formId"]).form('clear');
+}
+
+function formatOperation(value,row,index){
+	var val = "<a class='edit' title='修改' href='javascript:void(0);' onclick='newTab(\"修改洗车机\",\"${ctx}/shop/admin/machine!edit.do?car_machine_id="
+		+ row.car_machine_id + "\")' ></a>"
+	return val;
+	/* var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.dictionary_id+")' ></a>";
+	return val; */
+}
+
+function formatWashRecord(value,row,index){
+	var val = "<a class='edit' title='记录' href='javascript:void(0);' onclick='newTab(\""+row.machine_number+"-洗车记录\",\"${ctx}/shop/admin/washRecord!list.do?car_machine_id="
+		+ row.car_machine_id + "\")' ></a>"
+	return val;
+	/* var val="<a class='edit' title='修改' href='javascript:void(0);' onclick='append("+row.dictionary_id+")' ></a>";
+	return val; */
+}
+
+function formatId(value, row, index){
+	var val = row.car_machine_id;
+	return val;
+}
+
+function formatAtype(value,row,index){
+	var val;
+	if(value==0){
+		val="图片";
+	}else if(value==1){
+		val="Flash";
+	}
+	return val;
+}
+
+function formatArea(value, row, index) {
+	var val='';
+	if(row.province!=null&&row.province!=''){
+		val = row.province;
+	}
+	if(row.city!=null&&row.city!=''){
+		val = val + "-" + row.city;
+	}
+	if(row.region!=null&&row.region!=''){
+		val = val + "-" + row.region;
+	}
+	return val;
+}
+
+function formatOpen(value,row,index){
+	var val;
+	if(value==0){
+		val="否";
+	}else if(value==1){
+		val="是";
+	}
+	return val;
+}
+
+function formatDate(value,row,index){
+	if(value==null||value==0){
+		return "";
+	}
+	else{
+		return getFormatDateByLong(value*0.001, "yyyy-MM-dd hh:mm");
+	}
+}
+
+function del(){
+	var rows = $('#adcdata').datagrid("getSelections"); 
+		if(rows.length<1){
+			$.Loading.error("请选择删除洗车机");
+			return;
+		}
+		if(!confirm("确认删除？")){	
+		return ;
+	}
+	$.Loading.show("正在删除......");
+	var options = {
+		url : "machine!delete.do?ajax=yes",
+		type : "POST",
+		dataType : 'json',
+		success : function(result) {
+			if(result.result==1){
+				$.Loading.success(result.message);
+				var rows = $('#adcdata').datagrid("getSelections"); 
+				for(var i =0;i<rows.length;i++){      
+		 			var index = $('#adcdata').datagrid('getRowIndex',rows[i]); 
+		 			$('#adcdata').datagrid('deleteRow',index);    
+		 		}
+			}
+			if(result.result==0){
+				$.Loading.error(result.message);
+			}
+		},
+		error : function(e) {
+			$.Loading.error("出现错误 ，请重试");
+		}
+	};
+	$('#adcform').ajaxSubmit(options);
+
+};
+</script>
+<#include '/admin/footer.html' >
+ 

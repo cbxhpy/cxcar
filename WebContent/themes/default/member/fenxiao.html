@@ -1,0 +1,87 @@
+<#assign  title="我的分消" />
+<#include 'member_header.html' />
+<!-- 获取会员佣金标签 -->
+<#assign memberYongjinTag = newTag("memberYongjinTag")>
+<!-- 调用会员佣金标签 -->
+<#assign memberYongjin = memberYongjinTag()>
+
+<div class="data">
+	<h2>我的分销</h2>
+</div>	
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>关于分消:</h3>
+				<ol>
+					<li>描写相关细节</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="point_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+			<div class="pointsSumm">
+				<h4>邀请链接</h4>
+				<div class="overview">
+					<#if member.info_full == 1>
+						<p class="layerCol"><input type="text" value="http://www.xixibuy.cn/register.html?invite=${memberYongjin.unameurl!''}"/></p>
+					<#else>
+						<p class="layerCol">您还未完善会员资料，请<a href="info.html">完善基础资料</a> 获取邀请链接</p>
+					</#if>
+				</div>
+				<!-- <h4>我的消费</h4>
+				<div class="overview">
+					<p class="layerCol">累计消费：<strong>${memberYongjin.hongbao}</strong></p>
+					
+				</div>
+				 -->
+				<h4>我的红包</h4>
+				<div class="overview">
+					<p class="layerCol">可用红包：<strong>${memberYongjin.hongbao}</strong>冻结红包：<strong>${memberYongjin.hongbaoFreeze}</strong></p>
+				</div>
+				<h4>我的嘻币</h4>
+				<div class="overview">
+					<p class="layerCol">可用嘻币：<strong>${memberYongjin.yongjin!0}</strong>冻结嘻币：<strong>${memberYongjin.yongjinFreeze}</strong></p>
+				</div>	
+				<h4>充值</h4>
+				<div class="overview">
+					<p class="layerCol">
+						<form id="advance" method="post" action="${ctx}/api/shop/chargepay.do">
+						充值金额：<input class="inputText" type="text" name="money" id="money" style="width:150px;"/> &nbsp; <a href="javascript:;" id="btnSubmit">充值</a>
+						</form>
+					</p>
+				</div>					
+			</div>
+		</div>
+		<div class="bottom"></div>
+	</div>
+</div>
+<div class="rr_bottom"></div>
+</div>
+</div>	
+</div>
+<script>
+$(function(){
+	$("#btnSubmit").click(function(){
+		var money = $("#money").val();
+		
+		if(money==""){
+			alert("请输入充值金额");
+			return ;
+		}
+		if(isNaN(money)!==false){
+			alert("金额必须为纯数字");
+			return ;
+		}
+		$("#advance").submit();
+	});
+});	
+</script>
+<#include '../common/footer.html'/>

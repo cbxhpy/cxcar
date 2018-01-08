@@ -1,0 +1,62 @@
+<#assign  title="我的红包" />
+<#include 'member_header.html' />
+<!-- 获取会员积分标签 -->
+<#assign memberPointTag = newTag("memberPointTag")>
+<!-- 调用会员积分标签 -->
+<#assign memberPoint = memberPointTag()>
+
+<!-- 获取关键字“member”会员MAP集合 -->
+<#assign mp = memberPoint.member>
+
+<div class="data">
+	<h2>我的红包</h2>
+</div>	
+<!--温馨提示-->
+<div class="tip">
+	<div class="top"></div>
+	<div class="body">
+		<@image src="images/gth.jpg" />
+		<div>
+			<h3>红包规则:</h3>
+				<ol>
+					<li>规则描述规则描述规则描述规则描述</li>
+				</ol>
+		</div>
+	</div>
+	<div class="bottom"></div>
+</div>
+<!--温馨提示结束-->
+<div class="tab">
+	<ul>
+		<li class="selected">
+			<a href="point.html"><span>我的红包</span></a>
+		</li>
+		<li>
+			<a href="point_list.html?action=list"><span>红包明细</span></a>
+		</li>
+		<li>
+			<a href="point_freeze.html?action=freeze"><span>冻结明细</span></a>
+		</li>
+	</ul>
+</div>
+<div class="point_wrap white_box">
+	<div class="box">
+		<div class="top"></div>
+		<div class="body">
+			<div class="pointsSumm">
+				<h4>消费红包</h4>
+				<div class="overview">
+					<p class="layerCol">可用红包：<strong>${(mp.mp/100)?string("#.##")!0}</strong>冻结红包：<strong>${(memberPoint.freezepoint/100)?string("#.##")!0}</strong></p>
+				</div>
+				
+			</div>
+		</div>
+		<div class="bottom"></div>
+	</div>
+</div>
+</div>
+<div class="rr_bottom"></div>
+</div>
+</div>	
+</div>
+		<#include '../common/footer.html'/>

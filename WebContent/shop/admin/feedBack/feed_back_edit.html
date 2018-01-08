@@ -1,0 +1,51 @@
+<#assign dateformat="com.enation.framework.directive.DateformateDirective"?new()>
+<div class="main" style="background-color: white;">
+	<div class="easyui-panel" style="border-style: none;">
+		<form id="editForms" method="post" class="validate">
+			<table>
+				<tr>
+					<th>手机号：</th>
+					<td><input class="easyui-validatebox input_text" type="text" value="${feedBack.uname!}"
+						name="feedBack.uname" data-options="required:true" disabled></input>
+					</td>
+					<th>编码：</th>
+					<td>
+						<input class="easyui-validatebox input_text" type="text" value="${feedBack.machine_number!}" 
+						name="feedBack.machine_number" data-options="required:true" disabled></input>
+					</td>
+				</tr>
+				<tr>
+					<th>问题：</th>
+					<td colspan="3">
+						<select class="easyui-validatebox" name="feedBack.problem_id" disabled>
+							<option value="1" <#if feedBack.problem_id==1>selected</#if>>清水枪坏了</option>
+							<option value="2" <#if feedBack.problem_id==2>selected</#if>>泡沫枪坏了</option>
+							<option value="3" <#if feedBack.problem_id==3>selected</#if>>吸尘器坏了</option>
+							<option value="4" <#if feedBack.problem_id==4>selected</#if>>车辆违规停放</option>
+							<option value="5" <#if feedBack.problem_id==5>selected</#if>>刷卡机坏了</option>
+							<option value="6" <#if feedBack.problem_id==6>selected</#if>>其他</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>图片：</th>
+					<td>
+						<#if feedBack.image_one??>
+							<img alt="" src="${feedBack.image_one!''}" width="250px">
+						<#else>
+						</#if>
+						<#if feedBack.image_two??>
+							<img alt="" src="${feedBack.image_two!''}" width="250px">
+						<#else>
+						</#if>
+						<#if feedBack.image_three??>
+							<img alt="" src="${feedBack.image_three!''}" width="250px">
+						<#else>
+						</#if>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="feedBack.feedback_id" value="${feedBack.feedback_id}">
+		</form>
+	</div>
+</div>

@@ -1,0 +1,46 @@
+<#assign cartTag= newTag("cartTag")> 
+<#assign itemList = cartTag() >
+<#if (itemList?size>0) >
+<div id="settleup-content">
+	<div class="smt">
+		<h4 class="fl">最新加入的商品</h4>
+	</div>
+	<div class="smc">
+		<#assign totalNum = 0 />
+		<#assign totalPrice = 0 />
+		<#list itemList as item>
+		<ul id="mcart-sigle" class="item" itemid="${item.id}">
+			<li>
+				<div class="p-img fl">
+					<a href="${ctx}/goods-${item.goods_id}.html" target="_blank" title="${item.name}">
+						<@image height="50" width="50" src="${item.image_default}" />
+					</a>
+				</div>
+				<div class="p-name fl">
+					<a href="${ctx}/goods-${item.goods_id}.html" title="${item.name}" target="_blank">
+						${item.name} </a>
+				</div>
+				<div class="p-detail fr ar">
+					<span class="p-price"> <strong> ￥${item.price} </strong> ×${item.num}
+					</span> <br> <a href="javascript:;" itemid="${item.id}" class="delete">删除</a>
+				</div>
+			</li>
+		</ul>
+			<#assign totalNum=totalNum+item.num />
+			<#assign totalPrice=totalPrice+item.price*totalNum />
+		</#list>
+	</div>
+	<div class="smb ar">
+		<div class="p-total">
+			共 <b> ${totalNum} </b> 件商品 共计 <strong> ￥ ${totalPrice} </strong>
+		</div>
+		<a href="${ctx}/cart.html" title="去结算" id="btn-payforgoods"> 去结算 </a>
+	</div>
+</div>
+<#else>
+<div class="prompt">
+	<div class="nogoods">
+		购物车中还没有商品，赶紧选购吧！
+	</div>
+</div>
+</#if>
