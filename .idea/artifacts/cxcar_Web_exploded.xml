@@ -105,6 +105,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/yuicompressor-2.4.6.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/jars/servlet-api.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/jars/jsp-api.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.ejb.jar" />
         </element>
       </element>
     </root>
