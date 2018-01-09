@@ -54,6 +54,7 @@
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/httpmime-4.3.4.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/jackson-all-1.9.11.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javassist-3.11.0.GA.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.ejb.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/jaxen-1.1.6.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/jboss-marshalling-2.0.0.Beta2.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/jdom-1.1.jar" />
@@ -105,7 +106,6 @@
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/yuicompressor-2.4.6.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/jars/servlet-api.jar" />
           <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/jars/jsp-api.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/WebContent/WEB-INF/lib/javax.ejb.jar" />
         </element>
       </element>
     </root>

@@ -607,7 +607,7 @@ public class MobileMachineAction extends WWAction{
 				jsonData.put("disinfection", "1"); // 是否消毒 暂时放着
 				jsonData.put("wash_record_id", washRecordId); // 洗车记录id
 				jsonData.put("new_number", new_number); // 新硬件机器码
-				
+
 				json = ResponseUtils.toMakeJson(CXConstant.ReturnCode.CODE_200, ReturnMsg.RightMsg.RETURN_SUCCESS, "1", jsonData.toString());
 				ResponseUtils.renderJson(response, json.toString());
 				return;
